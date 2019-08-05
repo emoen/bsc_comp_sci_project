@@ -1,0 +1,123 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of BankI">
+  <TITLE>The BankI implementation</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="IMPLEMENTATION"><B>IMPLEMENTATION</B></A>    BankI
+
+<A NAME="REFINES"><B>REFINES</B></A>           <A HREF="Bank.mch.html#MACHINE">Bank</A>
+
+<A NAME="SEES"><B>SEES</B></A>	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="IMPORTS"><B>IMPORTS</B></A>   
+	<A HREF="accNr_Narr.mch.html#MACHINE">accNr_Narr</A>(<A HREF="Bank.mch.html#DEFINITIONS">MAXINT</A>, <A HREF="Bank.mch.html#CONSTANTS">maxAccounts</A>),
+	<A HREF="count_Nvar.mch.html#MACHINE">count_Nvar</A>(<A HREF="Bank.mch.html#CONSTANTS">maxAccounts</A>)
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>  
+	<A HREF="count_Nvar.mch.html#OPNAME!count_STO_NVAR">count_STO_NVAR</A>(0)
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  accNr, rep <-- <A NAME="OPNAME!create_account"><A HREF="Bank.mch.html#OPNAME!create_account">create_account</A> =
+	<B>VAR</B> ii, ok <B>IN</B>
+		ii <-- <A HREF="count_Nvar.mch.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>;
+		ii := ii + 1;
+		<B>IF</B> ii <= <A HREF="Bank.mch.html#CONSTANTS">maxAccounts</A> <B>THEN</B>
+			<A HREF="accNr_Narr.mch.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A>(ii, 0);
+			<A HREF="count_Nvar.mch.html#OPNAME!count_STO_NVAR">count_STO_NVAR</A>(ii);
+			accNr := ii;
+			rep := TRUE
+		<B>ELSE</B>
+			accNr := 0;
+			rep := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+
+  ok, newBalance <-- <A NAME="OPNAME!deposit"><A HREF="Bank.mch.html#OPNAME!deposit">deposit</A>(acc, amount) = 
+	<B>BEGIN</B>
+		<B>VAR</B> ii <B>IN</B>
+			ii <-- <A HREF="count_Nvar.mch.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>;
+			<B>IF</B> acc <= ii & acc <= <A HREF="Bank.mch.html#CONSTANTS">maxAccounts</A> & amount &gt; 0 <B>THEN</B>
+				<B>VAR</B> curBal <B>IN</B>
+					curBal <-- <A HREF="accNr_Narr.mch.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A>(acc);
+					newBalance := curBal + amount;
+					<A HREF="accNr_Narr.mch.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A>(acc, newBalance);
+					ok := TRUE
+				<B>END</B>
+			<B>ELSE</B>
+				ok := FALSE;
+				newBalance := 0
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>;
+
+  ok <-- <A NAME="OPNAME!withdraw"><A HREF="Bank.mch.html#OPNAME!withdraw">withdraw</A>(acc, amount) = 	
+	<B>BEGIN</B>
+		<B>VAR</B> ii <B>IN</B>
+			ii <-- <A HREF="count_Nvar.mch.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>;
+			<B>IF</B> acc <= ii & acc <= <A HREF="Bank.mch.html#CONSTANTS">maxAccounts</A> & amount &gt; 0 <B>THEN</B>
+				<B>VAR</B> curBal <B>IN</B>
+					curBal <-- <A HREF="accNr_Narr.mch.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A>(acc);
+					<B>IF</B> curBal - amount &gt;= 0 <B>THEN</B>
+						<A HREF="accNr_Narr.mch.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A>(acc, curBal - amount);
+						ok := TRUE
+					<B>END</B>
+				<B>END</B>
+			<B>ELSE</B>
+				ok := FALSE
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>;
+
+  rr <--<A NAME="OPNAME!isaccount"><A HREF="Bank.mch.html#OPNAME!isaccount">isaccount</A>(acc) = 
+	<B>BEGIN</B>
+		<B>VAR</B> ii <B>IN</B>
+			ii <-- <A HREF="count_Nvar.mch.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>;
+			<B>IF</B> acc <= ii <B>THEN</B>
+				rr := TRUE
+			<B>ELSE</B>
+				rr := FALSE
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>;
+
+  bal <-- <A NAME="OPNAME!getbalance"><A HREF="Bank.mch.html#OPNAME!getbalance">getbalance</A>(acc) = 
+	<B>BEGIN</B>
+		<B>VAR</B> ii <B>IN</B>
+			ii <-- <A HREF="count_Nvar.mch.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>;
+			<B>IF</B> acc <= ii <B>THEN</B>
+				bal <-- <A HREF="accNr_Narr.mch.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A>(acc)
+			<B>ELSE</B>
+				bal := 0
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:37 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,109 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(Arithmetic(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(encrypt , decrypt)
+;
+(encrypt , decrypt)
+;
+(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))
+;
+(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(encrypt_op,decrypt_op)
+;
+(encrypt_op , decrypt_op)
+;
+(Cipher(ee , dd , nn):(ee*dd mod (nn-1) = 1 & dd : NAT & ee : NAT & nn : NAT1):(?))
+;
+(
+(
+ (encrypt_op)
+;
+ (? , Val_Op , Det_Op , (rr <-- encrypt_op(mm)))
+;
+ (mm)
+;
+ (rr)
+;
+ (
+ (mm : 0..nn-1)
+ |
+ (
+ (rr := encrypt(mm))
+ )
+ )
+;
+ (
+ (mm : 0..nn-1)
+ |
+ (
+ (rr := encrypt(mm))
+ )
+ )
+)
+,
+(
+ (decrypt_op)
+;
+ (? , Val_Op , Det_Op , (rr <-- decrypt_op(mm)))
+;
+ (mm)
+;
+ (rr)
+;
+ (
+ (mm : 0..nn-1)
+ |
+ (
+ (rr := decrypt(mm))
+ )
+ )
+;
+ (
+ (mm : 0..nn-1)
+ |
+ (
+ (rr := decrypt(mm))
+ )
+ )
+)
+)

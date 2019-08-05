@@ -1,0 +1,23 @@
+IMPLEMENTATION    
+	ExponentialCipherI
+
+REFINES           
+	ExponentialCipherRef
+
+IMPORTS
+	Arithmetic
+
+OPERATIONS
+  
+  rr <-- encrypt_op(mm) =
+	VAR tmp IN
+		tmp <-- exp_op(mm, ee);
+		rr := tmp mod nn 
+	END;
+
+  rr <-- decrypt_op(mm) = 
+	VAR tmp IN
+		tmp <-- exp_op(mm, dd);
+		rr := tmp mod nn
+	END
+END

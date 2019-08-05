@@ -1,0 +1,37 @@
+IMPLEMENTATION   ArithmeticIoI
+
+REFINES          ArithmeticIo
+
+SEES             basic_io, String_TYPE 
+
+CONSTANTS        string1
+
+PROPERTIES       string1 ="Arithmetic operation number? "
+
+OPERATIONS
+
+  Arithmetic_Menu =
+    BEGIN
+      PUT_STR("  0 Arithmetic Menu ");
+      NWL(2);
+      PUT_STR("  1 exp_op");
+      NWL(2);
+      PUT_STR("  2 Quit");
+      NWL(1)
+    END;
+
+  op<--Get_Arithmetic_Op =
+    VAR opcode IN
+      opcode <-- GET_PROMPT_NBR(string1,2);
+      CASE opcode OF
+        EITHER 0 THEN
+          op:=Arithmetic_Menu_OP
+        OR 1 THEN
+          op:=exp_op_OP
+        OR 2 THEN
+          op:=Quit_OP
+        END
+      END
+    END
+
+END

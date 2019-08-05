@@ -1,0 +1,214 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of basic_io.h Code Module">
+  <TITLE>basic_io.h Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> &lt;stdio.h&gt;
+
+<B>extern</B> <B>FILE</B> * _b;
+
+<B>#define</B> <A NAME="OPNAME!INI_basic_io"><A HREF="basic_io.mch.html">INI_basic_io</A></A>()       <B>{</B> _b = <B>stdout</B>; <B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!GET_NAT"><A HREF="basic_io.mch.html#OPNAME!GET_NAT">GET_NAT</A></A>(r)           <A NAME="OPNAME!GET_NBR"><A HREF="basic_io.mch.html#OPNAME!GET_NBR">GET_NBR</A></A> ( r, 2147483646 )
+
+<B>#define</B> <A NAME="OPNAME!GET_PROMPT_NAT"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_NAT">GET_PROMPT_NAT</A></A>(r,s)  <A NAME="OPNAME!GET_PROMPT_NBR"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_NBR">GET_PROMPT_NBR</A></A> ( r, s, 2147483646 )
+
+<B>#define</B> <A NAME="OPNAME!PUT_NBR_PAD"><A HREF="basic_io.mch.html#OPNAME!PUT_NBR_PAD">PUT_NBR_PAD</A></A>(n,p)     <A NAME="OPNAME!PUT_NAT_PAD"><A HREF="basic_io.mch.html#OPNAME!PUT_NAT_PAD">PUT_NAT_PAD</A></A> ( n, p )
+
+<B>#define</B> <A NAME="OPNAME!GET_INT"><A HREF="basic_io.mch.html#OPNAME!GET_INT">GET_INT</A></A>(r)           GET_ITGR ( r, -2147483647, +2147483646 )
+
+<B>#define</B> <A NAME="OPNAME!GET_PROMPT_INT"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_INT">GET_PROMPT_INT</A></A>(r,s)  GET_PROMPT_ITGR ( r, s, -2147483647, +2147483646 )
+
+<B>#define</B> <A NAME="OPNAME!PUT_INT_PAD"><A HREF="basic_io.mch.html#OPNAME!PUT_INT_PAD">PUT_INT_PAD</A></A>(n,p)     PUT_ITGR_PAD ( n, p )
+
+<B>#define</B> _lib_GET_TOK(t)           GET_NAT ( t )
+
+<B>#define</B> _lib_GET_PROMPT_TOK(t,s)  GET_PROMPT_NAT ( t, s )
+
+<B>#define</B> _lib_PUT_TOK(t)           <A NAME="OPNAME!PUT_NAT"><A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A></A> ( t )
+
+<B>#define</B> <A NAME="OPNAME!PUT_STR_PAD"><A HREF="basic_io.mch.html#OPNAME!PUT_STR_PAD">PUT_STR_PAD</A></A>(s,p)     <A NAME="OPNAME!PUT_STR"><A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A></A> ( s ); \
+                             <A NAME="OPNAME!BLK"><A HREF="basic_io.mch.html#OPNAME!BLK">BLK</A></A> ( p - <B>strlen</B> ( ( <B>char</B> * ) s ) )
+
+<B>#define</B> <A NAME="OPNAME!PUT_BOOL_PAD"><A HREF="basic_io.mch.html#OPNAME!PUT_BOOL_PAD">PUT_BOOL_PAD</A></A>(b,p)    <A NAME="OPNAME!PUT_BOOL"><A HREF="basic_io.mch.html#OPNAME!PUT_BOOL">PUT_BOOL</A></A>(b); \
+                             <B>if</B>   ( b ) BLK ( p - 4 ); \
+                             <B>else</B>       BLK ( p - 5 )
+
+<B>#define</B> <A NAME="OPNAME!PUT_EOT"><A HREF="basic_io.mch.html#OPNAME!PUT_EOT">PUT_EOT</A></A>()            <A NAME="OPNAME!PUT_CHR"><A HREF="basic_io.mch.html#OPNAME!PUT_CHR">PUT_CHR</A></A> ( '\004' )
+
+
+<B>#ifndef</B> _BT_Motif
+
+
+<B>#define</B> PUT_NAT(n)           <B>fprintf</B> ( _b, "%d", n )
+
+<B>#define</B> <A NAME="OPNAME!PUT_NBR"><A HREF="basic_io.mch.html#OPNAME!PUT_NBR">PUT_NBR</A></A>(n)           PUT_NAT ( n )
+
+<B>#define</B> <A NAME="OPNAME!PUT_INT"><A HREF="basic_io.mch.html#OPNAME!PUT_INT">PUT_INT</A></A>(n)           <B>if</B> ( n &gt;= 0 ) <B>fprintf</B> ( _b, "+" ); PUT_NAT ( n )
+
+<B>#define</B> PUT_CHR(c)           <B>fprintf</B> ( _b, "%c", ( <B>char</B> ) c )
+
+<B>#define</B> PUT_STR(s)           <B>fprintf</B> ( _b, ( <B>char</B> * ) s )
+
+<B>#define</B> PUT_BOOL(b)          <B>if</B>   ( b )  PUT_STR ( "TRUE" ); \
+                             <B>else</B>        PUT_STR ( "FALSE" )
+
+<B>#define</B> <A NAME="OPNAME!FLSH"><A HREF="basic_io.mch.html#OPNAME!FLSH">FLSH</A></A>()               <B>fflush</B>( <B>stdout</B>)
+
+<B>#define</B> <A NAME="OPNAME!GET_STR"><A HREF="basic_io.mch.html#OPNAME!GET_STR">GET_STR</A></A>(s)           <B>gets</B> ( ( <B>char</B> * ) s )
+
+<B>#define</B> <A NAME="OPNAME!GET_PROMPT_STR"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_STR">GET_PROMPT_STR</A></A>(s,t)  PUT_STR ( ( <B>char</B> * ) t ); <B>gets</B> ( ( <B>char</B> * ) s )
+
+<B>#define</B> _lib_PUT_ACT_TOK(T,t) \
+  <B>if</B> ( T [ 0 ] [ 0 ] == '\0' ) <B>{</B> \
+    PUT_STR ( T [ t ] ); \
+  <B>}</B> \
+  <B>else</B> <B>{</B> \
+    <B>if</B> ( ( strcmp ( T [ 0 ], "SCALAR" ) != 0 )        && \
+         ( strcmp ( T [ 0 ], "0..2147483646" ) != 0 )    ) <B>{</B> \
+      PUT_STR( T [ 0 ] ); PUT_CHR ('.'); \
+    <B>}</B> \
+    PUT_NAT ( t ); \
+  <B>}</B>
+
+<B>#define</B> _lib_GET_PROMPT_ACT_TOK(t,T,s) \
+  PUT_STR ( s ); \
+  _lib_GET_ACT_TOK (t, T )
+
+<B>#else</B>
+
+<B>extern</B> <B>void</B> NWL_M ();
+<B>extern</B> <B>void</B> BLK_M ();
+<B>extern</B> <B>void</B> PUT_NAT_M ();
+<B>extern</B> <B>void</B> PUT_INT_M ();
+<B>extern</B> <B>void</B> PUT_STR_M ();
+<B>extern</B> <B>void</B> PUT_CHR_M ();
+<B>extern</B> <B>void</B> PUT_BTS_M ();
+<B>extern</B> <B>void</B> PUT_BOOL_M ();
+<B>extern</B> <B>void</B> GET_PROMPT_NBR_M ();
+<B>extern</B> <B>void</B> GET_PROMPT_ITGR_M ();
+<B>extern</B> <B>void</B> GET_PROMPT_STR_M ();
+<B>extern</B> <B>void</B> GET_PROMPT_CHR_M ();
+<B>extern</B> <B>void</B> GET_PROMPT_BTS_M ();
+<B>extern</B> <B>void</B> GET_PROMPT_BOOL_M ();
+<B>extern</B> <B>void</B> PUT_ACT_TOK_M ();
+<B>extern</B> <B>void</B> GET_ACT_TOK_M ();
+<B>extern</B> <B>void</B> GET_SET_ACT_TOK_M ();
+<B>extern</B> <B>void</B> GET_SET_TOK_M ();
+
+<B>#define</B> PUT_STR(s)           PUT_STR_M ( s )
+
+<B>#define</B> PUT_CHR(c)           PUT_CHR_M ( c )
+
+<B>#define</B> PUT_NAT(n)           PUT_NAT_M ( n )
+
+<B>#define</B> PUT_NBR(n)           PUT_NAT ( n )
+
+<B>#define</B> PUT_INT(n)           PUT_INT_M ( n )
+
+<B>#define</B> PUT_BOOL(b)          PUT_BOOL_M ( b )
+
+<B>#define</B> FLSH()               ;
+
+<B>#define</B> GET_STR(s)           GET_PROMPT_STR ( s, "        Input string:     " )
+
+
+<B>#define</B> _lib_PUT_ACT_TOK(T,t) \
+  <B>if</B> ( T [ 0 ][ 0 ] == '\0' ) \
+    PUT_ACT_TOK_M ( T, t ); \
+  <B>else</B> \
+    _lib_PUT_TOK ( t )
+
+<B>#define</B> _lib_GET_ACT_TOK(t,T) \
+  <B>if</B> ( T [ 0 ][ 0 ] == '\0' ) \
+    GET_ACT_TOK_M ( T, t, "      Select token:     " ); \
+  <B>else</B> \
+    _lib_GET_TOK ( t )
+
+<B>#define</B> _lib_GET_PROMPT_ACT_TOK(t,T,s) \
+  <B>if</B> ( T [ 0 ][ 0 ] == '\0' ) \
+    GET_ACT_TOK_M ( T, t, s ); \
+  <B>else</B> \
+    _lib_GET_PROMPT_TOK ( t, s )
+
+<B>#define</B> _lib_GET_SET_ACT_TOK(m,t,T) \
+  <B>if</B> ( T [ 0 ][ 0 ] == '\0' ) \
+    GET_SET_ACT_TOK_M ( T, m, t ); \
+  <B>else</B> \
+    GET_SET_TOK_M ( T, m, t )
+
+<B>#endif</B>
+
+<B>#ifndef</B> _BT_Motif
+
+<B>#define</B> <A NAME="OPNAME!REDIR_stdout"><A HREF="basic_io.mch.html#OPNAME!REDIR_stdout">REDIR_stdout</A></A>(r,f)  * r = ( ( ( _b = <B>fopen</B> ( ( <B>char</B> * ) f, "w" ) ) != NULL ) != 0 )
+
+<B>#define</B> <A NAME="OPNAME!REAPP_stdout"><A HREF="basic_io.mch.html#OPNAME!REAPP_stdout">REAPP_stdout</A></A>(r,f)  * r = ( ( ( _b = <B>fopen</B> ( ( <B>char</B> * ) f, "a" ) ) != NULL ) != 0 )
+
+<B>#define</B> <A NAME="OPNAME!RESTR_stdout"><A HREF="basic_io.mch.html#OPNAME!RESTR_stdout">RESTR_stdout</A></A>(r)    * r = ( ( <B>fclose</B> ( _b ) == 0 ) != 0 ); _b = <B>stdout</B>
+
+<B>#else</B>
+
+<B>#define</B> REDIR_stdout(r,f)    * r = FALSE
+
+<B>#define</B> REAPP_stdout(r,f)    * r = FALSE
+
+<B>#define</B> RESTR_stdout(r)      * r = FALSE
+
+<B>#endif</B>
+
+
+<B>void</B> <A NAME="OPNAME!NWL"><A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A></A> ();
+<B>void</B> BLK ();
+<B>void</B> GET_NBR ();
+<B>void</B> GET_PROMPT_NBR ();
+<B>void</B> GET_ITGR ();
+<B>void</B> GET_PROMPT_ITGR ();
+<B>void</B> <A NAME="OPNAME!GET_BOOL"><A HREF="basic_io.mch.html#OPNAME!GET_BOOL">GET_BOOL</A></A> ();
+<B>void</B> <A NAME="OPNAME!GET_PROMPT_BOOL"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_BOOL">GET_PROMPT_BOOL</A></A> ();
+<B>void</B> <A NAME="OPNAME!GET_BTS"><A HREF="basic_io.mch.html#OPNAME!GET_BTS">GET_BTS</A></A> ();
+<B>void</B> <A NAME="OPNAME!GET_PROMPT_BTS"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_BTS">GET_PROMPT_BTS</A></A> ();
+<B>void</B> <A NAME="OPNAME!PUT_BTS"><A HREF="basic_io.mch.html#OPNAME!PUT_BTS">PUT_BTS</A></A> ();
+<B>void</B> <A NAME="OPNAME!GET_CHR"><A HREF="basic_io.mch.html#OPNAME!GET_CHR">GET_CHR</A></A> ();
+<B>void</B> <A NAME="OPNAME!GET_PROMPT_CHR"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_CHR">GET_PROMPT_CHR</A></A> ();
+<B>void</B> PUT_NAT_PAD ();
+<B>void</B> PUT_ITGR_PAD ();
+
+<B>#ifndef</B> _BT_Motif
+
+<B>void</B> _lib_GET_ACT_TOK ();
+<B>void</B> _lib_GET_SET_ACT_TOK ();
+
+<B>#else</B>
+
+<B>void</B> GET_PROMPT_STR();
+
+<B>#endif</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:12:50 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

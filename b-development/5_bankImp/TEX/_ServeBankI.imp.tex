@@ -1,0 +1,276 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ServeBankI.imp.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPLEMENTATION
+%
+\bbnl
+{\bf IMPLEMENTATION} \bhsp\+{\em ServeBankI\/} \-\label{ServeBankI}\index{ServeBankI}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  REFINES
+%
+\bbnl
+{\bf REFINES} \bhsp{\em ServeBank\/}\label{ServeBank}\index{ServeBank}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em basic\_io\/}\label{basic_io}\index{basic_io}  , \bnl
+{\em file\_dump\/}\label{file_dump}\index{file_dump}  , \bnl
+{\em String\_TYPE\/}\label{String_TYPE}\index{String_TYPE}  , \bnl
+{\em Scalar\_TYPE\/}\label{Scalar_TYPE}\index{Scalar_TYPE}  , \bnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPORTS
+%
+\bbnl
+{\bf IMPORTS} \+ \bbnl
+{\em Bank\/}\label{Bank}\index{Bank}  , \bnl
+{\em Bank\_SocketServer\/}\label{Bank_SocketServer}\index{Bank_SocketServer}  ( {\em SCALAR\/}\label{SCALAR}\index{SCALAR}  $\cup$ {\em BOOL\/}\label{BOOL}\index{BOOL}  , {\em 10\/} , {\em 10\/} )  , \bnl
+{\em Cipher\/}\label{Cipher}\index{Cipher}  ( {\em ee\_ser\/}\label{ee_ser}\index{ee_ser}  , {\em dd\_ser\/}\label{dd_ser}\index{dd_ser}  , {\em nn\/}\label{nn}\index{nn}  )  , \bnl
+{\em publicDecrypt\_Nvar\/}\label{publicDecrypt_Nvar}\index{publicDecrypt_Nvar}  ( {\em MAXINT\/}\label{MAXINT}\index{MAXINT}  )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em publicDecrypt\_STO\_NVAR\/}\label{publicDecrypt_STO_NVAR}\index{publicDecrypt_STO_NVAR}  ( {\em 0\/} )
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em publicDecrypt\_STO\_NVAR}}{{\em publicDecrypt\_Nvar}}{{\sc operations}}{\bbpageref{publicDecrypt_STO_NVAR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION startServer
+%
+{\em ok\/} $\longleftarrow$  {\bf { startServer}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em xx\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt Server running.
+} ''  )  \bStatementSemiColon \bnl
+{\em FLSH\/}\label{FLSH}\index{FLSH}  \bStatementSemiColon \bnl
+{\em xx\/} $\longleftarrow$ {\em Bank\_INIT\/}\label{Bank_INIT}\index{Bank_INIT}  (  `` {\tt banklock} ''  , {\em 3200\/} ,  `` {\tt bankbuff} ''  )  \bStatementSemiColon \bnl
+{\em ok\/} $\longleftarrow$ {\em Bank\_ACCEPT\/}\label{Bank_ACCEPT}\index{Bank_ACCEPT}  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt connection Established.
+} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em Bank\_ACCEPT}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_ACCEPT}}
+\bxrefline{{\em Bank\_INIT}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_INIT}}
+\bxrefline{{\em FLSH}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{FLSH}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION listenForUser
+%
+{\bf { listenForUser}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em rep\/} , {\em pp\/} , {\em op\/} \- \bhsp \bOpnWord{IN} \+\bnl
+\bOpnWord{WHILE} \+{\em 1\/} $=$ {\em 1\/} \- \bhsp \bOpnWord{DO} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+WAITING HERE...
+} ''  )  \bStatementSemiColon \bnl
+{\em rep\/} , {\em pp\/} $\longleftarrow$ {\em Bank\_READ\/}\label{Bank_READ}\index{Bank_READ}  \bStatementSemiColon \bnl
+{\em op\/} $\longleftarrow$ {\em Bank\_GET\_TOK\/}\label{Bank_GET_TOK}\index{Bank_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt First tok is} ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em op\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em op\/} $=$ {\em 1\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+INSIDE create\_account
+} ''  )  \bStatementSemiColon \bnl
+\bOpnWord{VAR} \+{\em ret\_a\/} , {\em ret\_b\/} , {\em crypt\_ret\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em ret\_a\/} , {\em ret\_b\/} $\longleftarrow$ {\em create\_account\/}\label{create_account}\index{create_account}  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt calling create acc.
+} ''  )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt account number is:} ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em ret\_a\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \bStatementSemiColon \bnl
+{\em crypt\_ret\/} $\longleftarrow$ {\em encrypt\_op\/}\label{encrypt_op}\index{encrypt_op}  ( {\em ret\_a\/} )  \bStatementSemiColon \bnl
+{\em Bank\_PUT\_TOK\/}\label{Bank_PUT_TOK}\index{Bank_PUT_TOK}  ( {\em crypt\_ret\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em Bank\_PUT\_TOK\/}\label{Bank_PUT_TOK}\index{Bank_PUT_TOK}  ( {\em ret\_b\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt Going to write tok
+} ''  )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em Bank\_WRITE\/}\label{Bank_WRITE}\index{Bank_WRITE}  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt have put str
+} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em op\/} $=$ {\em 2\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+INSIDE deposit
+} ''  )  \bStatementSemiColon \bnl
+\bOpnWord{VAR} \+{\em in\_a\/} , {\em in\_b\/} , {\em ret\_a\/} , {\em ret\_b\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em in\_a\/} $\longleftarrow$ {\em Bank\_GET\_TOK\/}\label{Bank_GET_TOK}\index{Bank_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em in\_b\/} $\longleftarrow$ {\em Bank\_GET\_TOK\/}\label{Bank_GET_TOK}\index{Bank_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ret\_a\/} , {\em ret\_b\/} $\longleftarrow$ {\em deposit\/}\label{deposit}\index{deposit}  ( {\em in\_a\/} , {\em in\_b\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt deposit to accNr: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em in\_a\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt  amount:} ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em in\_b\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \bStatementSemiColon \bnl
+{\em Bank\_PUT\_TOK\/}\label{Bank_PUT_TOK}\index{Bank_PUT_TOK}  ( {\em ret\_a\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em Bank\_PUT\_TOK\/}\label{Bank_PUT_TOK}\index{Bank_PUT_TOK}  ( {\em ret\_b\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em Bank\_WRITE\/}\label{Bank_WRITE}\index{Bank_WRITE}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em op\/} $=$ {\em 3\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+INSIDE withdraw
+} ''  )  \bStatementSemiColon \bnl
+\bOpnWord{VAR} \+{\em in\_a\/} , {\em in\_b\/} , {\em ret\_a\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em in\_a\/} $\longleftarrow$ {\em Bank\_GET\_TOK\/}\label{Bank_GET_TOK}\index{Bank_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em in\_b\/} $\longleftarrow$ {\em Bank\_GET\_TOK\/}\label{Bank_GET_TOK}\index{Bank_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ret\_a\/} $\longleftarrow$ {\em withdraw\/}\label{withdraw}\index{withdraw}  ( {\em in\_a\/} , {\em in\_b\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt withdraw from accNr: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em in\_a\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt  amount: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em in\_b\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \bStatementSemiColon \bnl
+{\em Bank\_PUT\_TOK\/}\label{Bank_PUT_TOK}\index{Bank_PUT_TOK}  ( {\em ret\_a\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em Bank\_WRITE\/}\label{Bank_WRITE}\index{Bank_WRITE}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em op\/} $=$ {\em 4\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+INSIDE isaccount
+} ''  )  \bStatementSemiColon \bnl
+\bOpnWord{VAR} \+{\em in\_a\/} , {\em ret\_a\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em in\_a\/} $\longleftarrow$ {\em Bank\_GET\_TOK\/}\label{Bank_GET_TOK}\index{Bank_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ret\_a\/} $\longleftarrow$ {\em isaccount\/}\label{isaccount}\index{isaccount}  ( {\em in\_a\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt isaccount with accNr: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em in\_a\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \bStatementSemiColon \bnl
+{\em Bank\_PUT\_TOK\/}\label{Bank_PUT_TOK}\index{Bank_PUT_TOK}  ( {\em ret\_a\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em Bank\_WRITE\/}\label{Bank_WRITE}\index{Bank_WRITE}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em op\/} $=$ {\em 5\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+INSIDE getbalance
+} ''  )  \bStatementSemiColon \bnl
+\bOpnWord{VAR} \+{\em in\_a\/} , {\em ret\_a\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em in\_a\/} $\longleftarrow$ {\em Bank\_GET\_TOK\/}\label{Bank_GET_TOK}\index{Bank_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ret\_a\/} $\longleftarrow$ {\em getbalance\/}\label{getbalance}\index{getbalance}  ( {\em in\_a\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt balance for accNr: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em in\_a\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \bStatementSemiColon \bnl
+{\em Bank\_PUT\_TOK\/}\label{Bank_PUT_TOK}\index{Bank_PUT_TOK}  ( {\em ret\_a\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em Bank\_WRITE\/}\label{Bank_WRITE}\index{Bank_WRITE}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em rep\/} $=$ {\em FALSE\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt could not send value
+} ''  )  \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt AND returning values
+} ''  )  \-\bnl
+\bOpnWord{END}  \bStatementSemiColon \bnl
+{\em op\/} $:=$  {\em 0\/} \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt value of OP} ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em op\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \-\bnl
+\bOpnWord{INVARIANT} \+\bnl
+{\em 1\/} $=$ {\em 1\/} \-\bnl
+\bOpnWord{VARIANT} \+\bnl
+{\em 1\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em Bank\_GET\_TOK}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_GET_TOK}}
+\bxrefline{{\em Bank\_PUT\_TOK}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_PUT_TOK}}
+\bxrefline{{\em Bank\_READ}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_READ}}
+\bxrefline{{\em Bank\_WRITE}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_WRITE}}
+\bxrefline{{\em create\_account}}{{\em Bank}}{{\sc operations}}{\bbpageref{create_account}}
+\bxrefline{{\em deposit}}{{\em Bank}}{{\sc operations}}{\bbpageref{deposit}}
+\bxrefline{{\em encrypt\_op}}{{\em Cipher}}{{\sc operations}}{\bbpageref{encrypt_op}}
+\bxrefline{{\em getbalance}}{{\em Bank}}{{\sc operations}}{\bbpageref{getbalance}}
+\bxrefline{{\em isaccount}}{{\em Bank}}{{\sc operations}}{\bbpageref{isaccount}}
+\bxrefline{{\em PUT\_NAT}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_NAT}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\bxrefline{{\em withdraw}}{{\em Bank}}{{\sc operations}}{\bbpageref{withdraw}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for ServeBankI
+%
+\bxrefhead{Cross-references for ServeBankI}
+\bxrefline{{\em Bank}}{}{{\sc machine}}{\bbpageref{Bank}}
+\bxrefline{{\em Bank\_ACCEPT}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_ACCEPT}}
+\bxrefline{{\em Bank\_GET\_TOK}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_GET_TOK}}
+\bxrefline{{\em Bank\_INIT}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_INIT}}
+\bxrefline{{\em Bank\_PUT\_TOK}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_PUT_TOK}}
+\bxrefline{{\em Bank\_READ}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_READ}}
+\bxrefline{{\em Bank\_SocketServer}}{}{{\sc machine}}{\bbpageref{Bank_SocketServer}}
+\bxrefline{{\em Bank\_WRITE}}{{\em Bank\_SocketServer}}{{\sc operations}}{\bbpageref{Bank_WRITE}}
+\bxrefline{{\em basic\_io}}{}{{\sc machine}}{\bbpageref{basic_io}}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em Cipher}}{}{{\sc machine}}{\bbpageref{Cipher}}
+\bxrefline{{\em create\_account}}{{\em Bank}}{{\sc operations}}{\bbpageref{create_account}}
+\bxrefline{{\em dd\_ser}}{{\em Bank}}{{\sc definitions}}{\bbpageref{dd_ser}}
+\bxrefline{{\em deposit}}{{\em Bank}}{{\sc operations}}{\bbpageref{deposit}}
+\bxrefline{{\em ee\_ser}}{{\em Bank}}{{\sc definitions}}{\bbpageref{ee_ser}}
+\bxrefline{{\em encrypt\_op}}{{\em Cipher}}{{\sc operations}}{\bbpageref{encrypt_op}}
+\bxrefline{{\em file\_dump}}{}{{\sc machine}}{\bbpageref{file_dump}}
+\bxrefline{{\em FLSH}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{FLSH}}
+\bxrefline{{\em getbalance}}{{\em Bank}}{{\sc operations}}{\bbpageref{getbalance}}
+\bxrefline{{\em isaccount}}{{\em Bank}}{{\sc operations}}{\bbpageref{isaccount}}
+\bxrefline{{\em MAXINT}}{{\em Bank}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\bxrefline{{\em nn}}{{\em Bank}}{{\sc definitions}}{\bbpageref{nn}}
+\bxrefline{{\em publicDecrypt\_Nvar}}{{\em publicDecrypt\_Nvar}}{{\sc variables}}{\bbpageref{publicDecrypt_Nvar}}
+\bxrefline{{\em publicDecrypt\_STO\_NVAR}}{{\em publicDecrypt\_Nvar}}{{\sc operations}}{\bbpageref{publicDecrypt_STO_NVAR}}
+\bxrefline{{\em PUT\_NAT}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_NAT}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\bxrefline{{\em SCALAR}}{{\em Scalar\_TYPE}}{{\sc sets}}{\bbpageref{SCALAR}}
+\bxrefline{{\em Scalar\_TYPE}}{}{{\sc machine}}{\bbpageref{Scalar_TYPE}}
+\bxrefline{{\em ServeBank}}{}{{\sc machine}}{\bbpageref{ServeBank}}
+\bxrefline{{\em String\_TYPE}}{}{{\sc machine}}{\bbpageref{String_TYPE}}
+\bxrefline{{\em withdraw}}{{\em Bank}}{{\sc operations}}{\bbpageref{withdraw}}
+\vskip 3.5ex

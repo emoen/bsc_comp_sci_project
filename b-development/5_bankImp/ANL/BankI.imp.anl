@@ -1,0 +1,492 @@
+(
+ (?)
+ ;
+ (
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11),
+ (RES == accountNumber , account := {} , {})
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11),
+ (RES == accountNumber , account := {} , {})
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts)
+;
+(maxAccounts)
+;
+(maxAccounts = 6)
+;
+(maxAccounts = 6)
+;
+(
+(accNr_Narr(5000 , maxAccounts):(0 < 5000 & 5000 <= 2147483646 & maxAccounts <= 2147483646 & maxAccounts : NAT & 5000 : NAT):((?),(?),(?)))
+,
+(count_Nvar(maxAccounts):(maxAccounts <= 2147483646 & maxAccounts : NAT):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(accNr_Narr , count_Nvar)
+;
+(?)
+;
+(accNr_Narr : 1..maxAccounts --> 0..5000 & count_Nvar : 0..maxAccounts)
+;
+(?)
+;
+(count_STO_NVAR(0))
+;
+(count_Nvar := 0;
+@accNr_Narrx.(accNr_Narrx : 1..maxAccounts --> 0..5000 ==> accNr_Narr := accNr_Narrx);
+count_STO_NVAR(0))
+;
+(create_account,deposit,withdraw,isaccount,getbalance)
+;
+(create_account , deposit , withdraw , isaccount , getbalance)
+;
+(BankI(?):(?):(Bank))
+;
+(
+(
+ (create_account)
+;
+ (? , Mod_Op , NonDet_Op , (accNr , rep <-- create_account))
+;
+ (?)
+;
+ (accNr , rep)
+;
+ (
+ (true)
+ |
+ (
+ (VAR ii , ok IN
+ ii <-- count_VAL_NVAR;
+ ii := ii+1;
+ IF ii <= maxAccounts THEN
+ accNr_STO_NARR(ii , 0);
+ count_STO_NVAR(ii);
+ accNr := ii;
+ rep := TRUE
+ ELSE
+ accNr := 0;
+ rep := FALSE
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(ii , ok).
+ (
+ (
+ (
+ (ii <-- count_VAL_NVAR)
+ )
+ ;
+ (
+ (ii := ii+1)
+ )
+ )
+ ;
+ (
+ (
+ (
+ (ii <= maxAccounts)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (accNr_STO_NARR(ii , 0))
+ )
+ ;
+ (
+ (count_STO_NVAR(ii))
+ )
+ )
+ ;
+ (
+ (accNr := ii)
+ )
+ )
+ ;
+ (
+ (rep := TRUE)
+ )
+ )
+ )
+ []
+ (
+ (
+ (maxAccounts < ii)
+ )
+ ==>
+ (
+ (
+ (accNr := 0)
+ )
+ ;
+ (
+ (rep := FALSE)
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (deposit)
+;
+ (? , Mod_Op , NonDet_Op , (ok , newBalance <-- deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok , newBalance)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR ii IN
+ ii <-- count_VAL_NVAR;
+ IF acc <= ii & acc <= maxAccounts & amount > 0 THEN
+ VAR curBal IN
+ curBal <-- accNr_VAL_NARR(acc);
+ newBalance := curBal+amount;
+ accNr_STO_NARR(acc , newBalance);
+ ok := TRUE
+ END
+ ELSE
+ ok := FALSE;
+ newBalance := 0
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(ii).
+ (
+ (
+ (ii <-- count_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (acc <= ii & acc <= maxAccounts & 0 < amount)
+ )
+ ==>
+ (
+ @(curBal).
+ (
+ (
+ (
+ (
+ (curBal <-- accNr_VAL_NARR(acc))
+ )
+ ;
+ (
+ (newBalance := curBal+amount)
+ )
+ )
+ ;
+ (
+ (accNr_STO_NARR(acc , newBalance))
+ )
+ )
+ ;
+ (
+ (ok := TRUE)
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(acc <= ii & acc <= maxAccounts & 0 < amount))
+ )
+ ==>
+ (
+ (
+ (ok := FALSE)
+ )
+ ;
+ (
+ (newBalance := 0)
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (withdraw)
+;
+ (? , Mod_Op , NonDet_Op , (ok <-- withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR ii IN
+ ii <-- count_VAL_NVAR;
+ IF acc <= ii & acc <= maxAccounts & amount > 0 THEN
+ VAR curBal IN
+ curBal <-- accNr_VAL_NARR(acc);
+ IF curBal-amount >= 0 THEN
+ accNr_STO_NARR(acc , curBal-amount);
+ ok := TRUE
+ END
+ END
+ ELSE
+ ok := FALSE
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(ii).
+ (
+ (
+ (ii <-- count_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (acc <= ii & acc <= maxAccounts & 0 < amount)
+ )
+ ==>
+ (
+ @(curBal).
+ (
+ (
+ (curBal <-- accNr_VAL_NARR(acc))
+ )
+ ;
+ (
+ (
+ (
+ (0 <= curBal-amount)
+ )
+ ==>
+ (
+ (
+ (accNr_STO_NARR(acc , curBal-amount))
+ )
+ ;
+ (
+ (ok := TRUE)
+ )
+ )
+ )
+ []
+ (
+ (
+ (curBal-amount < 0)
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(acc <= ii & acc <= maxAccounts & 0 < amount))
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (isaccount)
+;
+ (? , Val_Op , NonDet_Op , (rr <-- isaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR ii IN
+ ii <-- count_VAL_NVAR;
+ IF acc <= ii THEN
+ rr := TRUE
+ ELSE
+ rr := FALSE
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(ii).
+ (
+ (
+ (ii <-- count_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (acc <= ii)
+ )
+ ==>
+ (
+ (rr := TRUE)
+ )
+ )
+ []
+ (
+ (
+ (ii < acc)
+ )
+ ==>
+ (
+ (rr := FALSE)
+ )
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (getbalance)
+;
+ (? , Val_Op , NonDet_Op , (bal <-- getbalance(acc)))
+;
+ (acc)
+;
+ (bal)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR ii IN
+ ii <-- count_VAL_NVAR;
+ IF acc <= ii THEN
+ bal <-- accNr_VAL_NARR(acc)
+ ELSE
+ bal := 0
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(ii).
+ (
+ (
+ (ii <-- count_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (acc <= ii)
+ )
+ ==>
+ (
+ (bal <-- accNr_VAL_NARR(acc))
+ )
+ )
+ []
+ (
+ (
+ (ii < acc)
+ )
+ ==>
+ (
+ (bal := 0)
+ )
+ )
+ )
+ )
+ )
+ )
+)
+)

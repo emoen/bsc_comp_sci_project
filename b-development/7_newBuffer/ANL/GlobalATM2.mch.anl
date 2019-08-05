@@ -1,0 +1,57 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(accountNumber , transactionId)
+;
+(accountNumber , transactionId)
+;
+(?)
+;
+(?)
+;
+(card(accountNumber) : NAT1 & card(transactionId) : NAT1)
+;
+(card(accountNumber) : NAT1 & card(transactionId) : NAT1)
+;
+(?)
+;
+(?)
+;
+(totalBalance)
+;
+(totalBalance)
+;
+(totalBalance : accountNumber --> NAT)
+;
+(totalBalance : accountNumber --> NAT)
+;
+(?)
+;
+(totalBalance := {})
+;
+(totalBalance := {})
+;
+(?)
+;
+(?)
+;
+(GlobalATM2(?):(?):(?))
+;
+(
+?
+)

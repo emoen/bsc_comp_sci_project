@@ -1,0 +1,232 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(basic_io(?):(?):((?),(?),(?)))
+,
+(String_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(ServeBank_Ops(ServeBank_Menu_OP , startServer_OP , listenForUser_OP , Quit_OP))
+;
+(ServeBank_Ops(ServeBank_Menu_OP , startServer_OP , listenForUser_OP , Quit_OP))
+;
+(string1)
+;
+(string1)
+;
+(string1 = "ServeBank operation number? ")
+;
+(string1 = "ServeBank operation number? ")
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(ServeBank_Menu,Get_ServeBank_Op)
+;
+(ServeBank_Menu , Get_ServeBank_Op)
+;
+(ServeBankIoI(?):(?):(ServeBankIo))
+;
+(
+(
+ (ServeBank_Menu)
+;
+ (? , Val_Op , Det_Op , ServeBank_Menu)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ PUT_STR(" 0 ServeBank Menu ");
+ NWL(2);
+ PUT_STR(" 1 startServer");
+ NWL(1);
+ PUT_STR(" 2 listenForUser");
+ NWL(2);
+ PUT_STR(" 3 Quit");
+ NWL(1)
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (PUT_STR(" 0 ServeBank Menu "))
+ )
+ ;
+ (
+ (NWL(2))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" 1 startServer"))
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" 2 listenForUser"))
+ )
+ )
+ ;
+ (
+ (NWL(2))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" 3 Quit"))
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+)
+,
+(
+ (Get_ServeBank_Op)
+;
+ (? , Val_Op , NonDet_Op , (op <-- Get_ServeBank_Op))
+;
+ (?)
+;
+ (op)
+;
+ (
+ (true)
+ |
+ (
+ (VAR opcode IN
+ opcode <-- GET_PROMPT_NBR(string1 , 3);
+ CASE opcode OF
+ EITHER 0 THEN
+ op := ServeBank_Menu_OP
+ OR
+ 1
+ THEN
+ op := startServer_OP
+ OR
+ 2
+ THEN
+ op := listenForUser_OP
+ OR
+ 3
+ THEN
+ op := Quit_OP
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(opcode).
+ (
+ (
+ (opcode <-- GET_PROMPT_NBR(string1 , 3))
+ )
+ ;
+ (
+ (
+ (
+ (
+ (
+ (opcode : {0})
+ )
+ ==>
+ (
+ (op := ServeBank_Menu_OP)
+ )
+ )
+ []
+ (
+ (
+ (opcode : {1})
+ )
+ ==>
+ (
+ (op := startServer_OP)
+ )
+ )
+ )
+ []
+ (
+ (
+ (opcode : {2})
+ )
+ ==>
+ (
+ (op := listenForUser_OP)
+ )
+ )
+ )
+ []
+ (
+ (
+ (opcode : {3})
+ )
+ ==>
+ (
+ (op := Quit_OP)
+ )
+ )
+ )
+ )
+ )
+ )
+)
+)

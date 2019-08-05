@@ -1,0 +1,3 @@
+THEORY Initialisation IS
+0
+END

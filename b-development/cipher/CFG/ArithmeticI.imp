@@ -1,0 +1,30 @@
+IMPLEMENTATION    
+	ArithmeticI
+
+REFINES          
+	Arithmetic
+
+OPERATIONS
+ rr <-- exp_op(aa, bb) =
+	IF aa /= 0 or bb /= 0 THEN
+		VAR
+			ii,
+			kk
+		IN
+			ii := bb;
+			kk := 1;
+			WHILE 
+				ii /= 0
+			DO
+				kk := kk * aa;
+				ii := ii - 1
+			INVARIANT
+				ii : NAT &
+				kk = exp(aa, bb-ii) 
+			VARIANT
+				ii
+			END;
+			rr := kk
+		END
+	END
+END

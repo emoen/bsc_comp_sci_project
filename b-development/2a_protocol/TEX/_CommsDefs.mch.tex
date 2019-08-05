@@ -1,0 +1,36 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CommsDefs.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em CommsDefs\/} \-\label{CommsDefs}\index{CommsDefs}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SETS
+%
+\bbnl
+{\bf SETS} \+ \bbnl
+{\em STATE\/}\label{STATE}\index{STATE}  $=$  \{ \+{\em idle\/} , {\em conpending\/} , {\em conrequest\/} , {\em have\_report\/} , {\em connected\/} \- \}  \bStatementSemiColon \bnl
+{\em MESSAGES\/}\label{MESSAGES}\index{MESSAGES}  $=$  \{ \+{\em con\/} , {\em true\/} , {\em false\/} \- \}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CONSTANTS
+%
+\bbnl
+{\bf CONSTANTS} \+ \bbnl
+{\em buffsize\/}\label{buffsize}\index{buffsize}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PROPERTIES
+%
+\bbnl
+{\bf PROPERTIES} \+ \bbnl
+{\em buffsize\/} $=$ {\em 100\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent

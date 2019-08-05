@@ -1,0 +1,105 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Receiver.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em Receiver\/} \-\label{Receiver}\index{Receiver}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  USES
+%
+\bbnl
+{\bf USES} \bhsp{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \bhsp{\em SecureNetwork\/}\label{SecureNetwork}\index{SecureNetwork}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em inval\/}\label{inval}\index{inval}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em inval\/} $\in$ {\em MESSAGE\/}\label{MESSAGE}\index{MESSAGE}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em MESSAGE}}{{\em SecureNetwork}}{{\sc sets}}{\bbpageref{MESSAGE}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION do\_receive
+%
+{\em rep\/} $\longleftarrow$  {\bf { do\_receive}}  \bhsp $\defs$ \+ \bnl
+{\em inval\/} , {\em rep\/} $\longleftarrow$ {\em receive\/}\label{receive}\index{receive}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em receive}}{{\em SecureNetwork}}{{\sc operations}}{\bbpageref{receive}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION can\_do\_send
+%
+{\em rep\/} $\longleftarrow$  {\bf { can\_do\_send}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em bb\/} \-\bnl
+\bOpnWord{WHERE} \+{\em bb\/} $\in$ {\em MESSAGE\/}\label{MESSAGE}\index{MESSAGE}  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em rep\/} $\longleftarrow$ {\em send\/}\label{send}\index{send}  ( {\em bb\/} )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em MESSAGE}}{{\em SecureNetwork}}{{\sc sets}}{\bbpageref{MESSAGE}}
+\bxrefline{{\em send}}{{\em SecureNetwork}}{{\sc operations}}{\bbpageref{send}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Receiver
+%
+\bxrefhead{Cross-references for Receiver}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em MESSAGE}}{{\em SecureNetwork}}{{\sc sets}}{\bbpageref{MESSAGE}}
+\bxrefline{{\em receive}}{{\em SecureNetwork}}{{\sc operations}}{\bbpageref{receive}}
+\bxrefline{{\em SecureNetwork}}{}{{\sc machine}}{\bbpageref{SecureNetwork}}
+\bxrefline{{\em send}}{{\em SecureNetwork}}{{\sc operations}}{\bbpageref{send}}
+\vskip 3.5ex

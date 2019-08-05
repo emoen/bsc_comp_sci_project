@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of count_Nvar.h Code Module">
+  <TITLE>count_Nvar.h Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>extern</B> <B>int</B> count_NvarP1;
+<B>extern</B> <B>int</B> count_Nscv;
+
+<B>#define</B> <A NAME="OPNAME!INI_count_Nvar"><A HREF="count_Nvar.mch.html">INI_count_Nvar</A></A>()   {count_Nscv = 0;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_VAL_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A></A>(uu) {*(uu) = count_Nscv;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_STO_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_STO_NVAR">count_STO_NVAR</A></A>(vv) {count_Nscv = vv;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_MIN_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_MIN_NVAR">count_MIN_NVAR</A></A>(uu,vv) {if( count_Nscv&lt;=vv )<B>{</B> *(uu) = count_Nscv ;}else{ *(uu) = vv ;<B>}</B>;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_MAX_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_MAX_NVAR">count_MAX_NVAR</A></A>(uu,vv) {if( count_Nscv&gt;=vv )<B>{</B> *(uu) = count_Nscv ;}else{ *(uu) = vv ;<B>}</B>;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_PRE_INC_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_PRE_INC_NVAR">count_PRE_INC_NVAR</A></A>(bb)   {*(bb) = \
+                    ((count_Nscv &lt; count_NvarP1)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_INC_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_INC_NVAR">count_INC_NVAR</A></A>()   {count_Nscv = count_Nscv+1;<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!count_PRE_DEC_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_PRE_DEC_NVAR">count_PRE_DEC_NVAR</A></A>(bb)  {*(bb) = ((count_Nscv &gt; 0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_DEC_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_DEC_NVAR">count_DEC_NVAR</A></A>()  {count_Nscv = count_Nscv-1;<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!count_PRE_ADD_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_PRE_ADD_NVAR">count_PRE_ADD_NVAR</A></A>(bb,vv) {*(bb) = \
+                   ((vv&lt;=count_NvarP1-count_Nscv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_ADD_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_ADD_NVAR">count_ADD_NVAR</A></A>(vv) {count_Nscv = count_Nscv+(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!count_PRE_SUB_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_PRE_SUB_NVAR">count_PRE_SUB_NVAR</A></A>(bb,vv) {*(bb) = ((vv&lt;=count_Nscv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_SUB_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_SUB_NVAR">count_SUB_NVAR</A></A>(vv) {count_Nscv = count_Nscv-(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!count_PRE_MUL_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_PRE_MUL_NVAR">count_PRE_MUL_NVAR</A></A>(bb,vv) {*(bb) = \
+                    ( (count_Nscv!=0) ? ((vv&lt;=count_NvarP1/count_Nscv)!=0) : 1) ;<B>}</B> 
+<B>#define</B> <A NAME="OPNAME!count_MUL_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_MUL_NVAR">count_MUL_NVAR</A></A>(vv) {count_Nscv = count_Nscv*(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!count_PRE_DIV_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_PRE_DIV_NVAR">count_PRE_DIV_NVAR</A></A>(bb,vv) {*(bb) = ((vv&gt;0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_DIV_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_DIV_NVAR">count_DIV_NVAR</A></A>(vv) {count_Nscv = count_Nscv/(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!count_PRE_MOD_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_PRE_MOD_NVAR">count_PRE_MOD_NVAR</A></A>(bb,vv) {*(bb) = ((vv&gt;0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_MOD_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_MOD_NVAR">count_MOD_NVAR</A></A>(vv) {count_Nscv = count_Nscv-(vv)*(count_Nscv/(vv));<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!count_EQL_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_EQL_NVAR">count_EQL_NVAR</A></A>(bb,vv) {*(bb) = ((count_Nscv==vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_NEQ_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_NEQ_NVAR">count_NEQ_NVAR</A></A>(bb,vv) {*(bb) = ((count_Nscv!=vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_GTR_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_GTR_NVAR">count_GTR_NVAR</A></A>(bb,vv) {*(bb) = ((count_Nscv&gt; vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_GEQ_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_GEQ_NVAR">count_GEQ_NVAR</A></A>(bb,vv) {*(bb) = ((count_Nscv&gt;=vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_SMR_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_SMR_NVAR">count_SMR_NVAR</A></A>(bb,vv) {*(bb) = ((count_Nscv&lt; vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!count_LEQ_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_LEQ_NVAR">count_LEQ_NVAR</A></A>(bb,vv) {*(bb) = ((count_Nscv&lt;=vv)!=0);<B>}</B>
+
+<B>void</B> <A NAME="OPNAME!count_SAV_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_SAV_NVAR">count_SAV_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!count_SAVN_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_SAVN_NVAR">count_SAVN_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!count_RST_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_RST_NVAR">count_RST_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!count_RSTN_NVAR"><A HREF="count_Nvar.mch.html#OPNAME!count_RSTN_NVAR">count_RSTN_NVAR</A></A>();
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:34 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

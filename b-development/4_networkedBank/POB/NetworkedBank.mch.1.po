@@ -1,0 +1,27 @@
+THEORY Initialisation IS
+0;0
+END
+&
+THEORY ATM_create_account IS
+0
+END
+&
+THEORY ATM_deposit IS
+1;0;1
+END
+&
+THEORY ATM_withdraw IS
+0;0;0
+END
+&
+THEORY ATM_isaccount IS
+0;0;0
+END
+&
+THEORY ATM_getbalance IS
+0;0;0
+END
+&
+THEORY check_clientreq IS
+0;0;1;1;1;0;1;1;0;1;1;1;1;0;1;1;0;1;1;1;0;1;1;1;0;1
+END

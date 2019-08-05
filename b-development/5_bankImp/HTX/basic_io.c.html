@@ -1,0 +1,648 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of basic_io.c Code Module">
+  <TITLE>basic_io.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "basic_io.h"
+
+<B>#ifndef</B> _BT_Motif
+
+<B>#define</B> mess_bool   <B>while</B>( c!='\n' )<B>{</B> \
+                      c = <B>getchar</B>(); \
+                    <B>}</B> \
+                    <B>fprintf</B>(_b, "    Not a boolean (TRUE/FALSE) - re-input: ")
+
+
+<B>#define</B> mess_bits <B>while</B>( c!='\n' )<B>{</B> \
+                    c = <B>getchar</B>(); \
+                  <B>}</B> \
+                  <B>fprintf</B>(_b, "    Not a bit string (0/1's) - re-input: ")
+
+<B>#define</B> init_bits n = 0; \
+                  <B>while</B>( (c&lt;'0') || (c&gt;'1') )<B>{</B> \
+                    mess_bits; \
+                    c = <B>getchar</B>(); \
+                  <B>}</B>
+
+
+
+<B>#define</B> mess_nbr  <B>while</B>( c!='\n' )<B>{</B> \
+                    c = <B>getchar</B>(); \
+                  <B>}</B> \
+                  <B>fprintf</B>(_b, "    Not a number (0..%d) - re-input: ",d)
+
+<B>#define</B> init_nbr  n = 0; \
+                  <B>while</B>( (c&lt;'0') || (c&gt;'9') )<B>{</B> \
+                    mess_nbr; \
+                    c = <B>getchar</B>(); \
+                  <B>}</B>
+
+<B>#define</B> mess_int(l,u) \
+                  <B>while</B> ( c != '\n' ) <B>{</B> c = <B>getchar</B>(); <B>}</B> \
+                  <B>fprintf</B> ( _b, "    Not an integer in the range " ); \
+                  <B>if</B> ( l &gt;= 0 ) <B>fprintf</B> ( _b, "+%d", l ); <B>else</B> <B>fprintf</B> ( _b, "%d", l ); \
+                  <B>fprintf</B> ( _b, " to " ); \
+                  <B>if</B> ( u &gt;= 0 ) <B>fprintf</B> ( _b, "+%d", u ); <B>else</B> <B>fprintf</B> ( _b, "%d", u ); \
+                  <B>fprintf</B> ( _b, " \n    Re-input as +nnn/-nnn: " )
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+_lib_GET_ACT_TOK( <B>int</B> * t, <B>char</B> * * T )
+<B>#else</B>
+_lib_GET_ACT_TOK( t, T )
+<B>int</B> * t;
+<B>char</B> * * T;
+<B>#endif</B>
+<B>{</B>
+  <B>int</B> n;
+  <B>int</B> i;
+  <B>int</B> j;
+  <B>int</B> done = 0;
+  <B>char</B> u [ 50 ];
+  <B>if</B> ( T [ 0 ] [ 0 ] != '\0' )  <B>{</B> 
+    <A NAME="OPNAME!BLK"><A HREF="basic_io.mch.html#OPNAME!BLK">BLK</A></A> ( 2 ); <A NAME="OPNAME!PUT_STR"><A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A></A> ( T [ 0 ] ); PUT_STR (  " value: " ); <A NAME="OPNAME!FLSH"><A HREF="basic_io.mch.html#OPNAME!FLSH">FLSH</A></A> ();
+    <A NAME="OPNAME!GET_NAT"><A HREF="basic_io.mch.html#OPNAME!GET_NAT">GET_NAT</A></A> ( &n );
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    i = 1;
+    <B>while</B>( T [ i ] [ 0 ] != '_' ) i++;
+    j = 0;
+    <B>while</B> ( T [ i ] [ j + 1 ] != '\0' && j &lt; 50 ) <B>{</B>
+      u [ j ] = T [ i ] [ j + 1 ];
+     j++;
+    <B>}</B>
+    u [ j ] = '\0';
+    <B>while</B>( ! done ) <B>{</B>
+      i = 1;
+      <A NAME="OPNAME!NWL"><A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A></A> ( 1 );
+      <B>while</B>( T [ i ] [ 0 ] != '_' )<B>{</B>
+        BLK ( 8 ); PUT_STR ( u ); PUT_STR ( "." );
+        <A NAME="OPNAME!PUT_NAT_PAD"><A HREF="basic_io.mch.html#OPNAME!PUT_NAT_PAD">PUT_NAT_PAD</A></A> ( i, 4 ); PUT_STR ( T [ i ] ); NWL ( 1 );
+        i++;
+      <B>}</B>
+      BLK ( 4 ); PUT_STR ( u ); PUT_STR ( " value  (1.." );
+      <A NAME="OPNAME!PUT_NAT"><A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A></A> ( i - 1 ); PUT_STR ( "): "); FLSH ();
+      GET_NAT ( &n );
+      <B>if</B>   ( n &gt;= 1 && n &lt;= i - 1 ) <B>{</B> done = 1; <B>}</B>
+      <B>else</B>                          <B>{</B> BLK(15); PUT_STR (" Bad input!" ); <B>}</B>
+    <B>}</B>
+  <B>}</B>
+  NWL ( 1 );
+  *t = n; 
+<B>}</B>
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+_lib_GET_SET_ACT_TOK( <B>int</B> m, <B>int</B> * t, <B>char</B> * * T )
+<B>#else</B>
+_lib_GET_SET_ACT_TOK( m, t, T )
+<B>int</B> m;
+<B>int</B> * t;
+<B>char</B> * * T;
+<B>#endif</B>
+<B>{</B>
+  <B>int</B> n;
+  <B>int</B> i;
+  <B>int</B> j;
+  <B>int</B> done;
+  <B>char</B> u [ 50 ];
+  <B>if</B> ( T [ 0 ] [ 0 ] != '\0' )  <B>{</B>
+      <B>for</B> ( j = 0 ; j &lt; m ; j++ ) <B>{</B>
+        BLK ( 2 ); PUT_STR ( T [ 0 ] ); PUT_STR (  " value # ");
+        PUT_NAT ( j + 1 ); PUT_STR ( ": "); FLSH ();
+        GET_NAT ( &n );
+        t [ j ] = n;
+      <B>}</B>
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    i = 1;
+    <B>while</B>( T [ i ] [ 0 ] != '_' ) i++;
+    j = 0;
+    <B>while</B> ( T [ i ] [ j + 1 ] != '\0' && j &lt; 50 ) <B>{</B>
+      u [ j ] = T [ i ] [ j + 1 ];
+     j++;
+    <B>}</B>
+    u [ j ] = '\0';
+    i = 1;
+    <B>while</B>( T [ i ] [ 0 ] != '_' )<B>{</B>
+      BLK ( 8 ); PUT_STR ( u ); PUT_STR ( "." );
+      PUT_NAT_PAD ( i, 4 ); PUT_STR ( T [ i ] ); NWL ( 1 );
+      i++;
+    <B>}</B>
+    <B>for</B> ( j = 0 ; j &lt; m ; j++ ) <B>{</B>
+      done = 0;
+      <B>while</B>( ! done ) <B>{</B>
+        BLK ( 4 ); PUT_STR ( u ); PUT_STR ( " value # " ); PUT_NAT ( j + 1 );
+        PUT_STR(" (1.."); PUT_NAT ( i - 1 ); PUT_STR ( "): "); FLSH ();
+        GET_NAT ( &n );
+        <B>if</B>   ( n &gt;= 1 && n &lt;= i - 1 ) <B>{</B> t [ j ] = n; done = 1; <B>}</B>
+        <B>else</B>                          <B>{</B> BLK(15); PUT_STR (" Bad input!\n" ); <B>}</B>
+      <B>}</B>
+    <B>}</B>
+  <B>}</B> 
+  NWL ( 1 );
+<B>}</B>
+
+<B>#else</B>
+
+<B>#define</B> chk_slen(s) \
+  <B>if</B> ( <B>strlen</B> ( s ) &gt; 250 ) <B>{</B> \
+    NWL ( 2 ); \
+    PUT_STR_M ( s ); \
+    PUT_STR_M ( " too long (max 250)" ); \
+    NWL ( 2 ); \
+    <B>return</B>; \
+  <B>}</B>
+
+<B>#endif</B>
+
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+NWL( <B>int</B> n )
+<B>#else</B>
+NWL( n )
+<B>int</B> n;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	<B>int</B> i = 1;
+	<B>while</B> ( i &lt;= n ) <B>{</B>
+		<B>fprintf</B> ( _b, "\n" );
+		i++;
+	<B>}</B>
+<B>#else</B>
+        NWL_M ( n );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+BLK( <B>int</B> n )
+<B>#else</B>
+BLK( n )
+<B>int</B> n;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	<B>int</B> i = 1;
+	<B>while</B>( i &lt;= n ) <B>{</B>
+		<B>fprintf</B> ( _b, " " );
+		i++;
+	<B>}</B>
+<B>#else</B>
+        BLK_M ( n );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!GET_NBR"><A HREF="basic_io.mch.html#OPNAME!GET_NBR">GET_NBR</A></A>( <B>int</B> *r, <B>int</B> d )
+<B>#else</B>
+GET_NBR( r, d )
+<B>int</B> *r, d;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	<B>register</B> <B>int</B> c,m,k,l,n ;
+	<B>{</B>
+                n = 0;
+		k = d/10;
+		l = d-10*(d/10);
+		c = <B>getchar</B>();
+		init_nbr;
+		<B>while</B>( (c&gt;='0') && (c&lt;='9') )<B>{</B>
+			m = c-'0';
+			<B>if</B>( n&lt;k )<B>{</B>
+				n = 10*n+m;
+				c = <B>getchar</B>();
+			<B>}</B> <B>else</B> <B>if</B>( n == k )<B>{</B>
+				<B>if</B>( m&lt;=l )<B>{</B>
+					n = 10*n+m;
+					c = <B>getchar</B>();
+				<B>}</B> <B>else{</B>
+					mess_nbr;
+					c = <B>getchar</B>();
+					init_nbr;
+				<B>}</B>
+			<B>}</B> <B>else</B> <B>{</B>
+				mess_nbr;
+				c = <B>getchar</B>();
+				init_nbr;
+			<B>}</B>
+		<B>}</B>
+		<B>while</B>( c!='\n' )<B>{</B>
+			c = <B>getchar</B>();
+		<B>}</B>
+		*r = n;
+	<B>}</B>
+<B>#else</B>
+        <A NAME="OPNAME!GET_PROMPT_NBR"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_NBR">GET_PROMPT_NBR</A></A> (r, "Input natural number:", d);
+<B>#endif</B>
+<B>}</B>
+
+
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+GET_PROMPT_NBR( <B>int</B> *r, <B>char</B> *s, <B>int</B> d )
+<B>#else</B>
+GET_PROMPT_NBR( r, s, d )
+<B>int</B> *r, d;
+<B>char</B> *s;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	PUT_STR ( s );
+	GET_NBR ( r, d );
+<B>#else</B>
+        chk_slen( s );
+        GET_PROMPT_NBR_M ( r, s, d );
+<B>#endif</B>
+<B>}</B>
+
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+GET_ITGR( <B>int</B> *r, <B>int</B> l, <B>int</B> u )
+<B>#else</B>
+GET_ITGR( r, l, u )
+<B>int</B> *r, l, u;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+  <B>int</B> buf [ 10 ];
+  <B>int</B> i, c, is_neg, j, n, done;
+
+  done = 0;
+  <B>while</B> ( ! done ) <B>{</B>
+    i = 0;
+    c = <B>getchar</B>();
+    <B>while</B> ( ( c == ' ' ) || ( c == '\t' ) ) <B>{</B> c = <B>getchar</B>(); <B>}</B>
+    <B>if</B> ( ( c != '+' ) && ( c != '-' ) ) <B>{</B>
+      mess_int ( l, u );
+    <B>}</B>
+    <B>else</B> <B>{</B>
+      <B>if</B>   ( c == '+' )   is_neg = 0;
+      <B>else</B>                is_neg = 1;
+      c = <B>getchar</B>();
+      <B>while</B> ( ( i &lt; 10 ) && ( c&gt;='0' ) && ( c&lt;='9' ) ) <B>{</B>
+        buf [ i++ ] = c - '0';
+        c = <B>getchar</B>();
+      <B>}</B>
+      <B>if</B> ( ( c != '\n' ) || ( ! i ) || ( i &gt; 10 ) ) <B>{</B>
+        mess_int ( l, u );
+      <B>}</B>
+      <B>else</B> <B>{</B>
+        <B>if</B> ( i &lt; 10 ) <B>{</B>
+          done = 1;
+	<B>}</B>
+        <B>else</B> <B>{</B>
+          n = 0;
+          <B>for</B> ( j = 0 ; j &lt; 9 ; j++ ) <B>{</B> n = ( n * 10 ) + buf [ j ]; <B>}</B>
+          <B>if</B> ( n &lt; 214748364 ) <B>{</B>
+            done = 1;
+	  <B>}</B>
+          <B>else</B> <B>if</B> ( n &gt; 214748364 ) <B>{</B>
+            mess_int ( l, u );
+	  <B>}</B>
+          <B>else</B> <B>{</B>
+            <B>if</B> ( is_neg ) <B>{</B>
+              <B>if</B>   ( buf [ 9 ] &lt;= 7 ) <B>{</B> done = 1; <B>}</B>
+              <B>else</B>                    <B>{</B> mess_int ( l, u ); <B>}</B>
+	    <B>}</B>
+            <B>else</B> <B>{</B>
+              <B>if</B>   ( buf [ 9 ] &lt;= 6 ) <B>{</B> done = 1; <B>}</B>
+              <B>else</B>                    <B>{</B> mess_int ( l, u ); <B>}</B>
+	    <B>}</B>
+	  <B>}</B>
+	<B>}</B>
+      <B>}</B>
+    <B>}</B>
+    <B>if</B> ( done ) <B>{</B>
+      n = 0;
+      <B>for</B> ( j = 0 ; j &lt; i ; j++ ) <B>{</B> n = ( n * 10 ) + buf [ j ]; <B>}</B>
+      <B>if</B> ( is_neg ) n = -n;
+      <B>if</B> ( ( n &lt; l ) || ( n &gt; u ) ) <B>{</B>
+        done = 0;
+        mess_int ( l, u );
+      <B>}</B>
+    <B>}</B>
+  <B>}</B>
+  *r = n;
+<B>#else</B>
+  GET_PROMPT_ITGR_M (r, "Input integer:", l, u );
+<B>#endif</B>
+<B>}</B>
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+PUT_ITGR_PAD( <B>int</B> n, <B>int</B> p )
+<B>#else</B>
+PUT_ITGR_PAD( n, p )
+<B>int</B> n;
+<B>int</B> p;
+<B>#endif</B>
+<B>{</B>
+  <B>if</B> ( n &gt;= 0 ) <B>fprintf</B> ( _b, "+" ); <B>else</B> <B>fprintf</B> ( _b, "-" );
+  <B>if</B> ( p &gt; 0 ) PUT_NAT_PAD ( n, p-1 ); <B>else</B> PUT_NAT ( n );
+<B>}</B>
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+GET_PROMPT_ITGR( <B>int</B> *r, <B>char</B> *s, <B>int</B> l, <B>int</B> u )
+<B>#else</B>
+GET_PROMPT_ITGR( r, s, l, u )
+<B>int</B> *r, l, u;
+<B>char</B> *s;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	PUT_STR ( s );
+	GET_ITGR ( r, l, u );
+<B>#else</B>
+	chk_slen( s );
+	GET_PROMPT_ITGR_M ( r, s, l, u );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>#ifdef</B> _BT_Motif
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!GET_PROMPT_STR"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_STR">GET_PROMPT_STR</A></A>( <B>char</B> *s, <B>char</B> *t )
+<B>#else</B>
+GET_PROMPT_STR( s, t )
+<B>char</B> *s;
+<B>char</B> *t;
+<B>#endif</B>
+<B>{</B>
+        chk_slen( t );
+        GET_PROMPT_STR_M ( s, t );
+<B>}</B>
+<B>#endif</B>
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!GET_BOOL"><A HREF="basic_io.mch.html#OPNAME!GET_BOOL">GET_BOOL</A></A>( <B>int</B> *r )
+<B>#else</B>
+GET_BOOL( r )
+<B>int</B> *r;
+<B>#endif</B>
+<B>{</B> 
+<B>#ifndef</B> _BT_Motif
+	<B>int</B> b,c;
+	b = 1;
+	<B>while</B>( b == 1 )<B>{</B>
+		c = <B>getchar</B>();
+		<B>if</B>( c == 'T' )<B>{</B>
+			c = <B>getchar</B>();
+			<B>if</B>( c == 'R' )<B>{</B>
+				c = <B>getchar</B>();
+				<B>if</B>( c == 'U' )<B>{</B>
+					c = <B>getchar</B>();
+					<B>if</B>( c == 'E' )<B>{</B>
+						*r = 1;
+						b = 0;
+						<B>while</B>( c!='\n' )<B>{</B>
+							c = <B>getchar</B>();
+						<B>}</B>
+					<B>}</B> <B>else{</B>
+						mess_bool;
+					<B>}</B>
+				<B>}</B> <B>else{</B>
+					mess_bool;
+				<B>}</B>
+			<B>}</B> <B>else{</B>
+				mess_bool;
+			<B>}</B>
+		<B>}</B> <B>else</B> <B>if</B>( c == 'F' )<B>{</B>
+			c = <B>getchar</B>();
+			<B>if</B>( c == 'A' )<B>{</B>
+				c = <B>getchar</B>();
+				<B>if</B>( c == 'L' )<B>{</B>
+					c = <B>getchar</B>();
+					<B>if</B>( c == 'S' )<B>{</B>
+						c = <B>getchar</B>();
+						<B>if</B>( c == 'E' )<B>{</B>
+							*r = 0;
+							b = 0;
+							<B>while</B>( c!='\n' )<B>{</B>
+								c = <B>getchar</B>();
+							<B>}</B>
+						<B>}</B> <B>else{</B>
+							mess_bool;
+						<B>}</B>
+					<B>}</B> <B>else{</B>
+						mess_bool;
+					<B>}</B>
+				<B>}</B> <B>else{</B>
+					mess_bool;
+				<B>}</B>
+			<B>}</B> <B>else{</B>
+				mess_bool;
+			<B>}</B>
+		<B>}</B> <B>else{</B>
+			mess_bool;
+		<B>}</B>
+	<B>}</B>
+<B>#else</B>
+        <A NAME="OPNAME!GET_PROMPT_BOOL"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_BOOL">GET_PROMPT_BOOL</A></A> ( r, "Input boolean:" );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+GET_PROMPT_BOOL( <B>int</B> *r, <B>char</B> *s )
+<B>#else</B>
+GET_PROMPT_BOOL( r, s )
+<B>int</B> *r;
+<B>char</B> *s;
+<B>#endif</B>
+<B>{</B> 
+<B>#ifndef</B> _BT_Motif
+	PUT_STR ( s );
+	GET_BOOL( r );
+<B>#else</B>
+        GET_PROMPT_BOOL_M ( r, s );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!GET_BTS"><A HREF="basic_io.mch.html#OPNAME!GET_BTS">GET_BTS</A></A>( <B>int</B> *s )
+<B>#else</B>
+GET_BTS( s )
+<B>int</B> *s;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	<B>register</B> <B>int</B> c;
+	<B>unsigned</B> <B>int</B> k,l,m,n ;
+	<B>{</B>
+                n = 0;
+		k = 2147483647;
+		l = 1;
+		c = <B>getchar</B>();
+		init_bits;
+		<B>while</B>( (c&gt;='0') && (c&lt;='1') )<B>{</B>
+			m = c-'0';
+			<B>if</B>( n&lt;k )<B>{</B>
+				n = 2*n+m;
+				c = <B>getchar</B>();
+			<B>}</B> <B>else</B> <B>if</B>( n == k )<B>{</B>
+				<B>if</B>( m&lt;=l )<B>{</B>
+					n = 2*n+m;
+					c = <B>getchar</B>();
+				<B>}</B> <B>else{</B>
+					mess_bits;
+					c = <B>getchar</B>();
+					init_bits;
+				<B>}</B>
+			<B>}</B> <B>else{</B>
+				mess_bits;
+				c = <B>getchar</B>();
+				init_bits;
+			<B>}</B>
+		<B>}</B>
+		<B>while</B>( c!='\n' )<B>{</B>
+			c = <B>getchar</B>();
+		<B>}</B>
+		*s = n;
+	<B>}</B>
+<B>#else</B>
+        <A NAME="OPNAME!GET_PROMPT_BTS"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_BTS">GET_PROMPT_BTS</A></A> ( s, "Input bit string:" );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+GET_PROMPT_BTS( <B>int</B> *s, <B>char</B> *t )
+<B>#else</B>
+GET_PROMPT_BTS( s, t )
+<B>int</B> *s;
+<B>char</B> *t;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	PUT_STR ( t );
+        GET_BTS( s );
+<B>#else</B>
+        chk_slen( t );
+        GET_PROMPT_BTS_M ( s, t );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!PUT_BTS"><A HREF="basic_io.mch.html#OPNAME!PUT_BTS">PUT_BTS</A></A>( <B>int</B> r )
+<B>#else</B>
+PUT_BTS( r )
+<B>int</B> r;
+<B>#endif</B>
+<B>{</B>
+<B>#ifndef</B> _BT_Motif
+	<B>int</B> i;
+	i = 32;
+	<B>while</B>( i&gt;0 )<B>{</B>
+		PUT_NAT ( (((r&gt;&gt;(i-1))%2)+2)%2 );
+		i--;
+	<B>}</B>
+<B>#else</B>
+        PUT_BTS_M ( r );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!GET_CHR"><A HREF="basic_io.mch.html#OPNAME!GET_CHR">GET_CHR</A></A>( <B>int</B> *c )
+<B>#else</B>
+GET_CHR( c )
+<B>int</B> *c;
+<B>#endif</B>
+<B>{</B> 
+<B>#ifndef</B> _BT_Motif
+	<B>register</B> <B>int</B> d;
+	d = <B>getchar</B>();
+	*c =  d;
+	<B>while</B>( d!='\n' )<B>{</B>
+		d = <B>getchar</B>();
+	<B>}</B>
+<B>#else</B>
+        <A NAME="OPNAME!GET_PROMPT_CHR"><A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_CHR">GET_PROMPT_CHR</A></A> ( c, "Input character:" );
+<B>#endif</B>
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+GET_PROMPT_CHR( <B>int</B> *c, <B>char</B> *s )
+<B>#else</B>
+GET_PROMPT_CHR( c, s )
+<B>int</B> *c;
+<B>char</B> *s;
+<B>#endif</B>
+<B>{</B> 
+<B>#ifndef</B> _BT_Motif
+        PUT_STR ( s );
+	GET_CHR ( c );
+<B>#else</B>
+        chk_slen( s );
+        GET_PROMPT_CHR_M ( c, s );
+<B>#endif</B>
+<B>}</B>
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+PUT_NAT_PAD( <B>int</B> n, <B>int</B> p )
+<B>#else</B>
+PUT_NAT_PAD( n, p )
+<B>int</B> n;
+<B>int</B> p;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> l = 0;
+	<B>int</B> m = n;
+        <B>while</B> ( m ) <B>{</B> l++; m = ( m / 10 ); <B>}</B>
+        PUT_NAT ( n );
+        <B>if</B> ( p &gt; l ) BLK ( p - l );
+<B>}</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:12:50 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

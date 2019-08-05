@@ -1,0 +1,150 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(
+(Aircraft(maxaircraft):(maxaircraft : NAT):((?),(?),(?)))
+)
+;
+(CONTROLLER)
+;
+(CONTROLLER)
+;
+(?)
+;
+(?)
+;
+(card(CONTROLLER) = maxcontroller & card(CONTROLLER) : NAT1)
+;
+(card(CONTROLLER) = maxcontroller & card(CONTROLLER) : NAT1)
+;
+(?)
+;
+(?)
+;
+(controllers , controls)
+;
+(controllers , controls)
+;
+(controllers <: CONTROLLER & controls : controllers --> FIN(aircraft) & !(cc1 , cc2).(cc1 : controllers & cc2 : controllers & not(cc1 = cc2) => controls(cc1) /\ controls(cc2) = {}))
+;
+(controllers <: CONTROLLER & controls : controllers --> FIN(aircraft) & !(cc1 , cc2).(cc1 : controllers & cc2 : controllers & not(cc1 = cc2) => controls(cc1) /\ controls(cc2) = {}))
+;
+(?)
+;
+(controllers := {} || controls := {})
+;
+(controllers , controls := {} , {})
+;
+(create_controller,hand_over,add_aircraft)
+;
+(create_controller , hand_over , add_aircraft)
+;
+(Controller(maxcontroller):(maxcontroller : NAT):(?))
+;
+(
+(
+ (create_controller)
+;
+ (? , Mod_Op , NonDet_Op , (cc <-- create_controller))
+;
+ (?)
+;
+ (cc)
+;
+ (
+ (controllers /= CONTROLLER)
+ |
+ (
+ (ANY oo WHERE
+ oo : CONTROLLER-controllers
+ THEN
+ controllers := controllers \/ {oo} ||
+ cc := oo ||
+ controls(oo) := {}
+ END)
+ )
+ )
+;
+ (
+ (not(controllers = CONTROLLER))
+ |
+ (
+ @(oo).
+ (
+ (
+ (oo : CONTROLLER-controllers)
+ )
+ ==>
+ (
+ (controllers , cc , controls := controllers \/ {oo} , oo , controls <+ {oo |-> {}})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (hand_over)
+;
+ (? , Mod_Op , Det_Op , hand_over(cc1 , cc2 , acft))
+;
+ (cc1 , cc2 , acft)
+;
+ (?)
+;
+ (
+ (cc1 : controllers & cc2 : controllers & cc1 /= cc2 & acft : aircraft & acft : controls(cc1))
+ |
+ (
+ (controls := controls <+ {cc1 |-> controls(cc1)-{acft} , cc2 |-> (controls(cc2) \/ {acft})})
+ )
+ )
+;
+ (
+ (cc1 : controllers & cc2 : controllers & not(cc1 = cc2) & acft : aircraft & acft : controls(cc1))
+ |
+ (
+ (controls := controls <+ {cc1 |-> controls(cc1)-{acft} , cc2 |-> (controls(cc2) \/ {acft})})
+ )
+ )
+)
+,
+(
+ (add_aircraft)
+;
+ (? , Mod_Op , Det_Op , add_aircraft(cc , acft))
+;
+ (cc , acft)
+;
+ (?)
+;
+ (
+ (cc : controllers & acft : aircraft & not(acft : union(ran(controls))))
+ |
+ (
+ (controls(cc) := controls(cc) /\ {acft})
+ )
+ )
+;
+ (
+ (cc : controllers & acft : aircraft & not(acft : union(ran(controls))))
+ |
+ (
+ (controls := controls <+ {cc |-> (controls(cc) /\ {acft})})
+ )
+ )
+)
+)

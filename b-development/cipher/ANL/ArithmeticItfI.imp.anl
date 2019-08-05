@@ -1,0 +1,247 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (MaxScalar == 2147483646)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(Arithmetic_Ops(Arithmetic_Menu_OP , exp_op_OP , Quit_OP) , SCALAR , BOOL(FALSE , TRUE) , CHAR , STRING)
+;
+(string1 , string2 , string3)
+;
+(prime , exp , string1 , string2 , string3)
+;
+(string1 = " Input (NAT) Value for aa: " & string2 = " Input (NAT) Value for bb: " & string3 = " Value (NAT) returned in rr: ")
+;
+(string1 = " Input (NAT) Value for aa: " & string2 = " Input (NAT) Value for bb: " & string3 = " Value (NAT) returned in rr: " & exp : NAT*NAT +-> NAT & !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0) & prime <: NAT & SCALAR = 0..2147483646 & card(SCALAR) = 2147483647 & card(SCALAR) : NAT1 & STRING = {ss | ss : seq(CHAR) & size(ss) <= 1000} & card(CHAR) : NAT1 & card(STRING) : NAT1)
+;
+(
+(Arithmetic(?):(?):((?),(?),(?)))
+,
+(ArithmeticIo(?):(?):((?),(?),(?)))
+,
+(Itf_token_io(SCALAR):(card(SCALAR) : NAT1):((?),(?),(?)))
+,
+(basic_io(?):(?):((?),(?),(?)))
+,
+(file_dump(?):(?):((?),(?),(?)))
+,
+(Scalar_TYPE(?):(?):((?),(?),(?)))
+,
+(Bool_TYPE(?):(?):((?),(?),(?)))
+,
+(String_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(main)
+;
+(main)
+;
+(ArithmeticItfI(?):(?):(ArithmeticItf))
+;
+(
+(
+ (main)
+;
+ (? , Val_Op , NonDet_Op , main)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (VAR count , op IN
+ count := 2147483646;
+ op := Arithmetic_Menu_OP;
+ WHILE count /= 0 & op /= Quit_OP DO
+ CASE op OF
+ EITHER Arithmetic_Menu_OP THEN
+ NWL(1);
+ Arithmetic_Menu;
+ NWL(1)
+ OR
+ exp_op_OP
+ THEN
+ NWL(1);
+ VAR aaX , bbX , rrX IN
+ aaX <-- GET_PROMPT_NAT(string1);
+ bbX <-- GET_PROMPT_NAT(string2);
+ NWL(1);
+ rrX <-- exp_op(aaX , bbX);
+ PUT_STR(string3);
+ PUT_NBR(rrX);
+ NWL(1)
+ END;
+ NWL(1)
+ END
+ END;
+ op <-- Get_Arithmetic_Op;
+ count := count-1
+ VARIANT
+ count
+ INVARIANT
+ true
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(count , op).
+ (
+ (
+ (
+ (count := 2147483646)
+ )
+ ;
+ (
+ (op := Arithmetic_Menu_OP)
+ )
+ )
+ ;
+ (
+ WHILE
+ (not(count = 0) & not(op = Quit_OP))
+ DO
+ (
+ (
+ (
+ (
+ (
+ (op : {Arithmetic_Menu_OP})
+ )
+ ==>
+ (
+ (
+ (
+ (NWL(1))
+ )
+ ;
+ (
+ (Arithmetic_Menu)
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+ []
+ (
+ (
+ (op : {exp_op_OP})
+ )
+ ==>
+ (
+ (
+ (
+ (NWL(1))
+ )
+ ;
+ (
+ @(aaX , bbX , rrX).
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (aaX <-- GET_PROMPT_NAT(string1))
+ )
+ ;
+ (
+ (bbX <-- GET_PROMPT_NAT(string2))
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ ;
+ (
+ (rrX <-- exp_op(aaX , bbX))
+ )
+ )
+ ;
+ (
+ (PUT_STR(string3))
+ )
+ )
+ ;
+ (
+ (PUT_NBR(rrX))
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+ )
+ ;
+ (
+ (op <-- Get_Arithmetic_Op)
+ )
+ )
+ ;
+ (
+ (count := count-1)
+ )
+ )
+ INVARIANT
+ (true)
+ VARIANT
+ (count)
+ END
+ )
+ )
+ )
+ )
+)
+)

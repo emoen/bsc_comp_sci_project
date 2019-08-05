@@ -1,0 +1,559 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of accNr_Narr.c Code Module">
+  <TITLE>accNr_Narr.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "accNr_Narr.h"
+
+<B>#include</B> &lt;stdio.h&gt;
+<B>#include</B> &lt;sys/types.h&gt;
+<B>#include</B> &lt;netinet/in.h&gt;
+
+<B>extern</B> <B>FILE</B> *dump_file;
+
+<B>#define</B> convert_arr_htonl(a,i,n) \
+  j = i; \
+  k = 0; \
+  <B>while</B> ( k &lt; n ) <B>{</B> \
+    a [ j ] = htonl ( a [ j ] ); \
+    j++; \
+    k++; \
+  <B>}</B>
+
+<B>#define</B> convert_arr_ntohl(a,i,n) \
+  j = i; \
+  k = 0; \
+  <B>while</B> ( k &lt; n ) <B>{</B> \
+    a [ j ] = ntohl ( a [ j ] ); \
+    j++; \
+    k++; \
+  <B>}</B>
+
+<B>#define</B>  write_fm(a,b)    <B>fwrite</B>(&a,<B>sizeof</B>(<B>int</B>),b,dump_file)
+
+<B>void</B>
+<A NAME="OPNAME!accNr_SAV_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SAV_NARR">accNr_SAV_NARR</A></A>()
+<B>{</B>
+	write_fm(accNr_Narray<B>[</B>1<B>]</B>,accNr_NarrP2);
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!accNr_SAVN_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SAVN_NARR">accNr_SAVN_NARR</A></A>()
+<B>{</B>
+        <B>int</B> j, k;
+	convert_arr_htonl(accNr_Narray,1,accNr_NarrP2);
+	write_fm(accNr_Narray<B>[</B>1<B>]</B>,accNr_NarrP2);
+	convert_arr_ntohl(accNr_Narray,1,accNr_NarrP2);
+<B>}</B>
+
+
+<B>#define</B>  read_fm(a,b)    <B>fread</B>(&a,<B>sizeof</B>(<B>int</B>),b,dump_file)
+
+<B>void</B>
+<A NAME="OPNAME!accNr_RST_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_RST_NARR">accNr_RST_NARR</A></A>()
+<B>{</B>
+	read_fm(accNr_Narray<B>[</B>1<B>]</B>,accNr_NarrP2);
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!accNr_RSTN_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_RSTN_NARR">accNr_RSTN_NARR</A></A>()
+<B>{</B>
+        <B>int</B> j, k;
+	read_fm(accNr_Narray<B>[</B>1<B>]</B>,accNr_NarrP2);
+	convert_arr_ntohl(accNr_Narray,1,accNr_NarrP2);
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SWP_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SWP_NARR">accNr_SWP_NARR</A></A>( <B>int</B> ii, <B>int</B> jj )
+<B>#else</B>
+accNr_SWP_NARR( ii, jj )
+<B>int</B> ii, jj;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> i;
+	i=accNr_Narray<B>[</B>ii<B>]</B>;
+	accNr_Narray<B>[</B>ii<B>]</B>=accNr_Narray<B>[</B>jj<B>]</B>;
+	accNr_Narray<B>[</B>jj<B>]</B>=i;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_MAX_IDX_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_MAX_IDX_NARR">accNr_MAX_IDX_NARR</A></A>( <B>int</B> *vv, <B>int</B> ii, <B>int</B> jj )
+<B>#else</B>
+accNr_MAX_IDX_NARR( vv, ii, jj )
+int* vv;
+<B>int</B> ii, jj;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> x,t,k;
+	x=ii;
+	t=0;
+	k=ii;
+	<B>while</B>( x&lt;=jj )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>x<B>]</B>&gt;=t )<B>{</B>
+			t=accNr_Narray<B>[</B>x<B>]</B>;
+			k=x;
+		<B>}</B>;
+		x=x+1;
+	<B>}</B>;
+	*(vv)=k;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_MIN_IDX_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_MIN_IDX_NARR">accNr_MIN_IDX_NARR</A></A>( <B>int</B> *vv, <B>int</B> ii, <B>int</B> jj )
+<B>#else</B>
+accNr_MIN_IDX_NARR( vv, ii, jj )
+int* vv;
+<B>int</B> ii, jj;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> x,t,k;
+	x=ii;
+	k=ii;
+	t=accNr_NarrP1;
+	<B>while</B>( x&lt;=jj )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>x<B>]</B>&lt;=t )<B>{</B>
+			t=accNr_Narray<B>[</B>x<B>]</B>;
+			k=x;
+		<B>}</B>;
+		x=x+1;
+	<B>}</B>;
+	*(vv)=k;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_LO_EQL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_EQL_NARR">accNr_SCH_LO_EQL_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_LO_EQL_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=jj;
+	y=kk+1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> == vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r+1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=kk+1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_LO_NEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_NEQ_NARR">accNr_SCH_LO_NEQ_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_LO_NEQ_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=jj;
+	y=kk+1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> != vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r+1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=kk+1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_LO_GEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_GEQ_NARR">accNr_SCH_LO_GEQ_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_LO_GEQ_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=jj;
+	y=kk+1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &gt;= vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r+1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=kk+1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_LO_GTR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_GTR_NARR">accNr_SCH_LO_GTR_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_LO_GTR_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=jj;
+	y=kk+1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &gt; vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r+1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=kk+1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_LO_LEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_LEQ_NARR">accNr_SCH_LO_LEQ_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_LO_LEQ_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=jj;
+	y=kk+1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &lt;= vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r+1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=kk+1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_LO_SMR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_SMR_NARR">accNr_SCH_LO_SMR_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_LO_SMR_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=jj;
+	y=kk+1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &lt; vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r+1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=kk+1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_HI_EQL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_EQL_NARR">accNr_SCH_HI_EQL_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_HI_EQL_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=kk;
+	y=jj-1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> == vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r-1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=jj-1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_HI_NEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_NEQ_NARR">accNr_SCH_HI_NEQ_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_HI_NEQ_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=kk;
+	y=jj-1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> != vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r-1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=jj-1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_HI_GEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_GEQ_NARR">accNr_SCH_HI_GEQ_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_HI_GEQ_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=kk;
+	y=jj-1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &gt;= vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r-1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=jj-1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_HI_GTR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_GTR_NARR">accNr_SCH_HI_GTR_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_HI_GTR_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=kk;
+	y=jj-1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &gt; vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r-1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=jj-1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_HI_LEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_LEQ_NARR">accNr_SCH_HI_LEQ_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_HI_LEQ_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=kk;
+	y=jj-1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &lt;= vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r-1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=jj-1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SCH_HI_SMR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_SMR_NARR">accNr_SCH_HI_SMR_NARR</A></A>( <B>int</B> *bb, <B>int</B> *ii, <B>int</B> jj, <B>int</B> kk, <B>int</B> vv )
+<B>#else</B>
+accNr_SCH_HI_SMR_NARR( bb, ii, jj, kk, vv )
+<B>int</B> *bb;
+<B>int</B> *ii;
+<B>int</B> jj, kk, vv;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> r,y;
+	r=kk;
+	y=jj-1;
+	<B>while</B>( y!=r )<B>{</B>
+		<B>if</B>( accNr_Narray<B>[</B>r<B>]</B> &lt; vv )<B>{</B>
+			y=r;
+		<B>}</B> <B>else{</B>
+			r=r-1;
+		<B>}</B>;
+	<B>}</B>
+	*(bb)=((r!=jj-1)!=0);
+	*(ii)=r;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SRT_ASC_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SRT_ASC_NARR">accNr_SRT_ASC_NARR</A></A>( <B>int</B> ii, <B>int</B> jj )
+<B>#else</B>
+accNr_SRT_ASC_NARR( ii, jj )
+<B>int</B> ii, jj;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> i,v,b,r;
+	i=ii;
+	<B>while</B>( i&lt;jj )<B>{</B>
+		<A NAME="OPNAME!accNr_VAL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A></A>(&v,i+1);
+		accNr_SCH_LO_GTR_NARR(&b,&r,ii,i,v);
+		<B>if</B>( b==1 )<B>{</B>
+			<A NAME="OPNAME!accNr_RHT_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_RHT_NARR">accNr_RHT_NARR</A></A>(r,i,1);
+			<A NAME="OPNAME!accNr_STO_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A></A>(r,v);
+		<B>}</B>;
+		i=i+1;
+	<B>}</B>;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_SRT_DSC_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SRT_DSC_NARR">accNr_SRT_DSC_NARR</A></A>( <B>int</B> ii, <B>int</B> jj )
+<B>#else</B>
+accNr_SRT_DSC_NARR( ii, jj )
+<B>int</B> ii, jj;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> i,v,b,r;
+	i=ii;
+	<B>while</B>( i&lt;jj )<B>{</B>
+		accNr_VAL_NARR(&v,i+1);
+		accNr_SCH_LO_SMR_NARR(&b,&r,ii,i,v);
+		<B>if</B>( b==1 )<B>{</B>
+			accNr_RHT_NARR(r,i,1);
+			accNr_STO_NARR(r,v);
+		<B>}</B>;
+		i=i+1;
+	<B>}</B>;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_REV_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_REV_NARR">accNr_REV_NARR</A></A>( <B>int</B> ii, <B>int</B> jj )
+<B>#else</B>
+accNr_REV_NARR( ii, jj )
+<B>int</B> ii, jj;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> i,j;
+	i=ii;
+	j=jj;
+	<B>while</B>( i&lt;j )<B>{</B>
+		accNr_SWP_NARR(i,j);
+		i=i+1;
+		j=j-1;
+	<B>}</B>;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+accNr_RHT_NARR( <B>int</B> ii, <B>int</B> jj, <B>int</B> nn )
+<B>#else</B>
+accNr_RHT_NARR( ii, jj, nn )
+<B>int</B> ii, jj, nn;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> k,n;
+	n=jj-ii+1;
+	k=0;
+	<B>while</B>( k&lt;n )<B>{</B>
+		<B>if</B>( jj+nn-k&lt;=accNr_NarrP2 )<B>{</B>
+			accNr_Narray<B>[</B>jj+nn-k<B>]</B>=accNr_Narray<B>[</B>jj-k<B>]</B>;
+		<B>}</B>
+		k=k+1;
+	<B>}</B>;
+<B>}</B>
+
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!accNr_LFT_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_LFT_NARR">accNr_LFT_NARR</A></A>( <B>int</B> ii, <B>int</B> jj, <B>int</B> nn )
+<B>#else</B>
+accNr_LFT_NARR( ii, jj, nn )
+<B>int</B> ii, jj, nn;
+<B>#endif</B>
+<B>{</B>
+	<B>int</B> k,n;
+	n=jj-ii+1;
+	k=0;
+	<B>while</B>( k&lt;n )<B>{</B>
+		<B>if</B>( ii-nn+k&gt;=1 )<B>{</B>
+			accNr_Narray<B>[</B>ii-nn+k<B>]</B>=accNr_Narray<B>[</B>ii+k<B>]</B>;
+		<B>}</B>
+		k=k+1;
+	<B>}</B>;
+<B>}</B>
+
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:31 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

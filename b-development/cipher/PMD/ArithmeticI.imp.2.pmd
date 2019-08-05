@@ -1,0 +1,38 @@
+PROOFMETHOD ArithmeticI.imp.2.pmd IS
+
+  USETAC (UsersTheory~;BToolUsersTheory~),
+         (FwdUsersTheory~;FwdBToolUsersTheory~ /* ;FEQL~ */ )
+
+  REASONING_DEPTH 2
+
+  ON ?
+
+  END
+
+  &
+
+  THEORY UsersTheory IS
+
+    ?
+
+  END
+
+  &
+
+  THEORY FwdUsersTheory IS
+
+    ?
+
+  END
+
+END
+
+DEFINITIONS
+
+  ?
+
+INCLUSIONS
+
+  "PMD/ArithmeticI.imp.1.pmd"
+  ,
+  "PMD/ArithmeticI.imp.1.btl.pmd"

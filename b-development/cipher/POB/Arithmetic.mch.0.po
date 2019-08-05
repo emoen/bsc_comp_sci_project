@@ -1,0 +1,37 @@
+THEORY PropertiesX IS
+  ctx(Arithmetic) => exp : NAT*NAT +-> NAT;
+  ctx(Arithmetic) => !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0);
+  ctx(Arithmetic) => prime <: NAT
+END
+&
+THEORY EnumerateX END
+&
+THEORY NotEqualX END
+&
+THEORY RewriteToFalseOrTrueX END
+&
+THEORY FwdContra0X END
+&
+THEORY FwdEqual1X END
+&
+THEORY ExpandHypX IS
+  pre(exp_op) => aa : NAT;
+  pre(exp_op) => bb : NAT
+END
+&
+THEORY Initialisation
+END
+&
+THEORY exp_op
+END
+&
+THEORY Context IS
+  cst(Arithmetic) => #prime.(prime <: NAT);
+  cst(Arithmetic) => #exp.(exp : NAT*NAT +-> NAT & !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0))
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

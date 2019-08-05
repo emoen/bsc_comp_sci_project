@@ -1,0 +1,361 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts)
+;
+(?)
+;
+(maxAccounts = 6)
+;
+(
+(Globals(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(con , pubDecrypt)
+;
+(con , pubDecrypt)
+;
+(con : BOOL & pubDecrypt : 1..6)
+;
+(con : BOOL & pubDecrypt : 1..6)
+;
+(?)
+;
+(con , pubDecrypt := FALSE , 6)
+;
+(con , pubDecrypt := FALSE , 6)
+;
+(connecting,shut_down,create_account,deposit,withdraw,isaccount,getbalance)
+;
+(connecting , shut_down , create_account , deposit , withdraw , isaccount , getbalance)
+;
+(ATM(?):(?):(?))
+;
+(
+(
+ (connecting)
+;
+ (? , Mod_Op , NonDet_Op , connecting)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (con :: BOOL)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(conx).
+ (
+ (
+ (conx : BOOL)
+ )
+ ==>
+ (
+ (con := conx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (shut_down)
+;
+ (? , Mod_Op , NonDet_Op , (ok <-- shut_down))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ok :: BOOL ||
+ con := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ @(okx).
+ (
+ (
+ (okx : BOOL)
+ )
+ ==>
+ (
+ (ok := okx)
+ )
+ )
+ )
+ ||
+ (
+ (con := FALSE)
+ )
+ )
+ )
+)
+,
+(
+ (create_account)
+;
+ (? , Val_Op , NonDet_Op , (accNr , rep <-- create_account))
+;
+ (?)
+;
+ (accNr , rep)
+;
+ (
+ (con = TRUE)
+ |
+ (
+ (
+ (accNr :: 0..maxAccounts)
+ )
+ ||
+ (
+ (rep :: BOOL)
+ )
+ )
+ )
+;
+ (
+ (con = TRUE)
+ |
+ (
+ (
+ @(accNrx).
+ (
+ (
+ (accNrx : 0..maxAccounts)
+ )
+ ==>
+ (
+ (accNr := accNrx)
+ )
+ )
+ )
+ ||
+ (
+ @(repx).
+ (
+ (
+ (repx : BOOL)
+ )
+ ==>
+ (
+ (rep := repx)
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (deposit)
+;
+ (? , Val_Op , NonDet_Op , (ok , newBalance <-- deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok , newBalance)
+;
+ (
+ (acc : 0..maxAccounts & amount : NAT1 & con = TRUE)
+ |
+ (
+ (
+ (ok :: BOOL)
+ )
+ ||
+ (
+ (newBalance :: NAT)
+ )
+ )
+ )
+;
+ (
+ (acc : 0..maxAccounts & amount : NAT1 & con = TRUE)
+ |
+ (
+ (
+ @(okx).
+ (
+ (
+ (okx : BOOL)
+ )
+ ==>
+ (
+ (ok := okx)
+ )
+ )
+ )
+ ||
+ (
+ @(newBalancex).
+ (
+ (
+ (newBalancex : NAT)
+ )
+ ==>
+ (
+ (newBalance := newBalancex)
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (withdraw)
+;
+ (? , Val_Op , NonDet_Op , (ok <-- withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok)
+;
+ (
+ (acc : 0..maxAccounts & amount : NAT1 & con = TRUE)
+ |
+ (
+ (ok :: BOOL)
+ )
+ )
+;
+ (
+ (acc : 0..maxAccounts & amount : NAT1 & con = TRUE)
+ |
+ (
+ @(okx).
+ (
+ (
+ (okx : BOOL)
+ )
+ ==>
+ (
+ (ok := okx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (isaccount)
+;
+ (? , Val_Op , NonDet_Op , (rr <-- isaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (acc : 0..maxAccounts & con = TRUE)
+ |
+ (
+ (rr :: BOOL)
+ )
+ )
+;
+ (
+ (acc : 0..maxAccounts & con = TRUE)
+ |
+ (
+ @(rrx).
+ (
+ (
+ (rrx : BOOL)
+ )
+ ==>
+ (
+ (rr := rrx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (getbalance)
+;
+ (? , Val_Op , NonDet_Op , (bal <-- getbalance(acc)))
+;
+ (acc)
+;
+ (bal)
+;
+ (
+ (acc : 0..maxAccounts & con = TRUE)
+ |
+ (
+ (bal :: 0..5000)
+ )
+ )
+;
+ (
+ (acc : 0..maxAccounts & con = TRUE)
+ |
+ (
+ @(balx).
+ (
+ (
+ (balx : 0..5000)
+ )
+ ==>
+ (
+ (bal := balx)
+ )
+ )
+ )
+ )
+)
+)

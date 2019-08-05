@@ -1,0 +1,118 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(startServer,listenForUser)
+;
+(startServer , listenForUser)
+;
+(ServeBank(?):(?):(?))
+;
+(
+(
+ (startServer)
+;
+ (? , Val_Op , NonDet_Op , (ok <-- startServer))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (ok :: BOOL)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(okx).
+ (
+ (
+ (okx : BOOL)
+ )
+ ==>
+ (
+ (ok := okx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (listenForUser)
+;
+ (? , Val_Op , Det_Op , listenForUser)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+)
+)

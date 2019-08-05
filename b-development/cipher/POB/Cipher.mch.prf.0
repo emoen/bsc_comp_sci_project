@@ -1,0 +1,52 @@
+(
+Cipher.mch(1):Constraints.1:
+
+(1[1] | (1 = 1) | EQL),
+(2[1] | (1-0 = 1) | 1,ARI),
+(3[1] | (1-0*2 = 1) | 2,ARI),
+(4[1] | (1-1/2*2 = 1) | 3,ARI),
+(5[1] | (1 mod 2 = 1) | 4,Law.1),
+(6[1] | (1*1 mod 2 = 1) | 5,ARI),
+(7[1] | ([ee := 1](ee*1 mod 2 = 1)) | 6,SUB),
+(8[1] | (#ee.(ee : NAT & ee*1 mod 2 = 1)) | 7,Law.2),
+(9[1] | (#ee.[dd := 1](ee : NAT & ee*dd mod 2 = 1)) | 8,SUB),
+(10[1] | (#(dd , ee).(dd : NAT & ee : NAT & ee*dd mod 2 = 1)) | 9,Law.3),
+(11[1] | (#(dd , ee).(dd : NAT & ee : NAT & ee*dd mod (3-1) = 1)) | 10,ARI),
+(12[1] | (#(dd , ee).[nn := 3](dd : NAT & ee : NAT & ee*dd mod (nn-1) = 1)) | 11,SUB),
+(13[1] | (#(dd , nn , ee).(dd : NAT & ee : NAT & nn : NAT1 & ee*dd mod (nn-1) = 1)) | 12,BToolUsersTheory.1)
+)
+;
+LAWS
+(
+BToolUsersTheory.1:
+(
+  bsearch((a : NAT1) , b , c) &
+  bsearch(a , A , B) &
+  (#B.[a := 3]c)
+ =>
+  (#A.b)
+);
+Law.1(RewritePredicate0X.1):
+(
+  a : 0..2147483647 &
+  b : 0..2147483647 &
+  b > 0
+ =>
+  a mod b == a-a/b*b
+);
+Law.2(Exist1X.15):
+(
+  bsearch((a : NAT) , b , c) &
+  [a := 1]c
+ =>
+  (#a.b)
+);
+Law.3(Exist1X.16):
+(
+  bsearch((a : NAT) , b , c) &
+  bsearch(a , A , B) &
+  (#B.[a := 1]c)
+ =>
+  (#A.b)
+)
+)

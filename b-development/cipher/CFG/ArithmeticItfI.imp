@@ -1,0 +1,57 @@
+IMPLEMENTATION   ArithmeticItfI
+
+REFINES          ArithmeticItf
+
+IMPORTS
+
+  Arithmetic,
+  ArithmeticIo,
+  Itf_token_io(SCALAR),
+  basic_io,
+  file_dump,
+  Scalar_TYPE,
+  Bool_TYPE,
+  String_TYPE
+
+CONSTANTS
+
+  string1, string2, string3
+
+PROPERTIES
+
+  string1 = "  Input (NAT) Value for aa: " &
+  string2 = "  Input (NAT) Value for bb: " &
+  string3 = "  Value (NAT) returned in rr: "
+
+OPERATIONS
+
+  main =
+    VAR count,op IN
+      count := MaxScalar; op := Arithmetic_Menu_OP;
+      WHILE count /= 0 & op /= Quit_OP DO
+        CASE op OF
+          EITHER Arithmetic_Menu_OP THEN
+            NWL(1); Arithmetic_Menu; NWL(1)
+          OR exp_op_OP THEN
+            NWL(1);
+            VAR aaX , bbX , rrX IN
+              aaX <-- GET_PROMPT_NAT(string1);
+              bbX <-- GET_PROMPT_NAT(string2);
+              NWL(1);
+              rrX <-- exp_op(aaX , bbX);
+              PUT_STR(string3);
+              PUT_NBR(rrX);
+              NWL(1)
+            END;
+            NWL(1)
+          END
+        END;
+        op <-- Get_Arithmetic_Op; count := count - 1
+      VARIANT
+        count
+      INVARIANT
+        true
+      END
+    END
+
+END

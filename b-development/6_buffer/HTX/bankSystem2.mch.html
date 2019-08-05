@@ -1,0 +1,197 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of bankSystem2">
+  <TITLE>The bankSystem2 machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE>
+<A NAME="MACHINE"><B>MACHINE</B></A>           bankSystem2
+
+<A NAME="INCLUDES"><B>INCLUDES</B></A>
+	<A HREF="Globals.mch.html#MACHINE">Globals</A>
+
+<A NAME="SEES"><B>SEES</B></A>
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>         
+	accountNumber, 
+	accountBalance, totalBalance,
+	networkBalance, ATMBalance,
+	withdraw_flag, deposit_flag
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>
+/*
+The sets representing network and ATM are unreliable
+and at any time the sets may be substituted with {}.
+This should not cause any data from beinng lost.
+This specification we assume that the network set
+may be substituted with {} at any time, not the ATM.
+This will allow atm to request operations on bank, and
+bank to confirm or reject messages from ATM. */
+
+	accountNumber <: <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> &         
+
+/*The balance as it is stored in the bank */
+	accountBalance : accountNumber --&gt; NAT &
+
+/*a withdrawal or deposit is stored on the network, 
+and only one transaction for a given accountnumber may
+be on the network */
+	networkBalance : accountNumber --&gt; NAT &
+
+/*As for network */
+	ATMBalance : accountNumber --&gt; NAT &
+
+
+/* The answere balance, a virtual balance which is only updated
+   after a 'handshake' between the ATM and the bank */
+
+	totalBalance : accountNumber --&gt; NAT &
+
+  	withdraw_flag : NAT &
+	deposit_flag : NAT &
+
+/* No money is lost during a transaction */
+	!(aa).(aa : accountNumber =&gt;
+		totalBalance(aa) = accountBalance(aa) + ATMBalance(aa) )
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>
+	accountNumber, accountBalance, 
+	networkBalance, ATMBalance, totalBalance,
+	withdraw_flag, deposit_flag := {}, {}, {}, {}, {}, 0, 0
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+
+ accNr, rep <-- <A NAME="OPNAME!create_account">create_account</A> =
+	<B>IF</B> accountNumber /= <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> <B>THEN</B>
+		rep := TRUE ||
+		<B>ANY</B> acc
+		<B>WHERE</B> 
+			acc : <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> - accountNumber 
+		<B>THEN</B>
+			accNr := acc ||
+			accountNumber := accountNumber \/ {acc} ||
+			accountBalance(acc) := 0 ||
+
+			totalBalance(acc) := 0
+		<B>END</B>
+	<B>ELSE</B>	rep := FALSE ||
+		accNr := 0	
+	<B>END</B>;
+
+  newBalance, rep <-- <A NAME="OPNAME!bank_deposit">bank_deposit</A>(acc : accountNumber & amount : NAT1) =
+	<B>PRE</B>
+		deposit_flag = 2
+	<B>THEN</B>
+		<B>IF</B> accountBalance(acc) < <A HREF="Globals.mch.html#DEFINITIONS">MAXINT</A> - amount <B>THEN</B>
+			networkBalance := {acc} &lt;<| networkBalance ||
+			accountBalance(acc) := accountBalance(acc) + amount ||
+			totalBalance(acc) := totalBalance(acc) + amount ||
+			deposit_flag := 0 ||
+
+			newBalance := accountBalance(acc) + amount ||
+			rep := TRUE
+		<B>ELSE</B> 
+			rep := FALSE ||
+			newBalance := 0
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!deposit_to_network">deposit_to_network</A>(acc :accountNumber & amount : NAT1) =
+	<B>PRE</B>
+		acc /: dom(networkBalance) &
+		deposit_flag = 1
+	<B>THEN</B>
+		ATMBalance := {acc} &lt;<| ATMBalance ||
+		networkBalance(acc) := amount ||
+		deposit_flag := 2
+	<B>END</B>;
+
+  <A NAME="OPNAME!deposit_to_ATM">deposit_to_ATM</A>(acc :accountNumber & amount : NAT1) =
+	<B>PRE</B>
+		acc /: dom(ATMBalance) &
+		deposit_flag = 0
+	<B>THEN</B>
+		ATMBalance(acc) := amount ||
+		deposit_flag := 1
+	<B>END</B>;
+
+  ok <-- <A NAME="OPNAME!bank_withdraw">bank_withdraw</A>(acc :accountNumber & amount : NAT) =
+	<B>PRE</B>
+		acc /: dom(networkBalance) &
+		withdraw_flag = 0
+	<B>THEN</B>
+/* double check of amount as the amount requested
+for withdrawal may have been changed on the network, and
+also the server should always be in control */
+		<B>IF</B> amount <= accountBalance(acc) <B>THEN</B>
+			accountBalance(acc) := accountBalance(acc) - amount ||	
+			networkBalance(acc) := amount ||
+			withdraw_flag := 1 ||
+
+			ok := TRUE 
+		<B>ELSE</B>	ok := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!withdrawal_to_network">withdrawal_to_network</A>(acc :accountNumber & amount : NAT) =
+	<B>PRE</B>
+		acc /: dom(ATMBalance) &
+		withdraw_flag = 1
+	<B>THEN</B>
+		networkBalance := {acc} &lt;<| networkBalance ||
+		ATMBalance(acc) := amount ||
+		withdraw_flag := 2
+	<B>END</B>;
+
+  <A NAME="OPNAME!withdrawal_to_ATM">withdrawal_to_ATM</A>(acc :accountNumber & amount : NAT) =
+/*or money_to_customer */
+	<B>PRE</B>
+		withdraw_flag = 2
+	<B>THEN</B>
+/*Do not care who chechs the withdrawal against the amount to withdraw */	
+		<B>IF</B> amount <= totalBalance(acc) <B>THEN</B>
+			ATMBalance := {acc} &lt;<| ATMBalance ||
+			totalBalance(acc) := totalBalance(acc) - amount ||
+			withdraw_flag := 0
+		<B>END</B>
+	<B>END</B>;
+  
+  rr <-- <A NAME="OPNAME!isaccount">isaccount</A>(acc : <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A>) =
+	<B>BEGIN</B>
+		<B>IF</B> acc : accountNumber <B>THEN</B>
+			rr := TRUE
+		<B>ELSE</B>	rr := FALSE
+		<B>END</B>
+	<B>END</B>;
+		
+  bal <-- <A NAME="OPNAME!getbalance">getbalance</A>(acc : accountNumber) =
+	bal := accountBalance(acc)
+
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Thu Feb 20 16:44:51 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

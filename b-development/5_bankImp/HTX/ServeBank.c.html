@@ -1,0 +1,168 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ServeBank.c Code Module">
+  <TITLE>ServeBank.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "<A HREF="ServeBank.h.html#ServeBank.h">ServeBank.h</A>"
+
+<B>#include</B> "<A HREF="Bank.h.html#Bank.h">Bank.h</A>"
+<B>#include</B> "<A HREF="Bank_SocketServer.h.html#Bank_SocketServer.h">Bank_SocketServer.h</A>"
+<B>#include</B> "<A HREF="Cipher.h.html#Cipher.h">Cipher.h</A>"
+<B>#include</B> "<A HREF="publicDecrypt_Nvar.h.html#publicDecrypt_Nvar.h">publicDecrypt_Nvar.h</A>"
+
+<B>#include</B> "<A HREF="basic_io.h.html#basic_io.h">basic_io.h</A>"
+<B>#include</B> "<A HREF="file_dump.h.html#file_dump.h">file_dump.h</A>"
+<B>#include</B> "<A HREF="String_TYPE.h.html#String_TYPE.h">String_TYPE.h</A>"
+<B>#include</B> "<A HREF="Scalar_TYPE.h.html#Scalar_TYPE.h">Scalar_TYPE.h</A>"
+<B>#include</B> "<A HREF="Bool_TYPE.h.html#Bool_TYPE.h">Bool_TYPE.h</A>"
+
+<B>void</B>
+<A NAME="OPNAME!INI_ServeBank"><A HREF="ServeBankI.imp.html#IMPORTS">INI_ServeBank</A></A>()
+<B>{</B>
+  <A HREF="Bank.c.html#OPNAME!INI_Bank">INI_Bank</A>();
+  <A HREF="Bank_SocketServer.h.html#OPNAME!INI_Bank_SocketServer">INI_Bank_SocketServer</A>();
+  <A HREF="Cipher.c.html#OPNAME!INI_Cipher">INI_Cipher</A>();
+  <A HREF="publicDecrypt_Nvar.h.html#OPNAME!INI_publicDecrypt_Nvar">INI_publicDecrypt_Nvar</A>();
+  <A HREF="publicDecrypt_Nvar.h.html#OPNAME!publicDecrypt_STO_NVAR">publicDecrypt_STO_NVAR</A>(0);
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!startServer"><A HREF="ServeBankI.imp.html#OPNAME!startServer">startServer</A></A>(_ok)
+<B>int</B> *_ok;
+<B>{</B>
+  <B>int</B> xx;
+  <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"Server running.\n");
+  <A HREF="basic_io.c.html#OPNAME!FLSH">FLSH</A>();
+  <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_INIT">Bank_INIT</A>(&xx, (<B>int</B> *)"banklock",3200, (<B>int</B> *)"bankbuff");
+  <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_ACCEPT">Bank_ACCEPT</A>(_ok);
+  <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"connection Established.\n");
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!listenForUser"><A HREF="ServeBankI.imp.html#OPNAME!listenForUser">listenForUser</A></A>()
+<B>{</B>
+  <B>int</B> rep,pp,op;
+  <B>while</B> ( 1 == 1 ) <B>{</B>
+    <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\nWAITING HERE...\n");
+    <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_READ">Bank_READ</A>(&rep,&pp);
+    <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(&op,1);
+    <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"First tok is");
+    <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(op);
+    <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\n");
+    <B>if</B> ( op == 1 ) <B>{</B>
+      <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\nINSIDE <A HREF="Bank.c.html#OPNAME!create_account">create_account</A>\n");
+      <B>{</B>
+        <B>int</B> ret_a,ret_b,crypt_ret;
+        <A HREF="Bank.c.html#OPNAME!create_account">create_account</A>(&ret_a,&ret_b);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"calling create acc.\n");
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"account number is:");
+        <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(ret_a);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\n");
+        <A HREF="Cipher.c.html#OPNAME!encrypt_op">encrypt_op</A>(&crypt_ret,ret_a);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(crypt_ret,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_b,1);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"Going to write tok\n");
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_WRITE">Bank_WRITE</A>(&rep);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"have put str\n");
+      <B>}</B>
+    <B>}</B>;
+    <B>if</B> ( op == 2 ) <B>{</B>
+      <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\nINSIDE <A HREF="Bank.c.html#OPNAME!deposit">deposit</A>\n");
+      <B>{</B>
+        <B>int</B> in_a,in_b,ret_a,ret_b;
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(&in_a,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(&in_b,1);
+        <A HREF="Bank.c.html#OPNAME!deposit">deposit</A>(&ret_a,&ret_b,in_a,in_b);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"<A HREF="Bank.c.html#OPNAME!deposit">deposit</A> to accNr: ");
+        <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)" amount:");
+        <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_b);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\n");
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_b,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_WRITE">Bank_WRITE</A>(&rep);
+      <B>}</B>
+    <B>}</B>;
+    <B>if</B> ( op == 3 ) <B>{</B>
+      <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\nINSIDE <A HREF="Bank.c.html#OPNAME!withdraw">withdraw</A>\n");
+      <B>{</B>
+        <B>int</B> in_a,in_b,ret_a;
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(&in_a,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(&in_b,1);
+        <A HREF="Bank.c.html#OPNAME!withdraw">withdraw</A>(&ret_a,in_a,in_b);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"<A HREF="Bank.c.html#OPNAME!withdraw">withdraw</A> from accNr: ");
+        <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)" amount: ");
+        <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_b);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\n");
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_WRITE">Bank_WRITE</A>(&rep);
+      <B>}</B>
+    <B>}</B>;
+    <B>if</B> ( op == 4 ) <B>{</B>
+      <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\nINSIDE <A HREF="Bank.c.html#OPNAME!isaccount">isaccount</A>\n");
+      <B>{</B>
+        <B>int</B> in_a,ret_a;
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(&in_a,1);
+        <A HREF="Bank.c.html#OPNAME!isaccount">isaccount</A>(&ret_a,in_a);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"<A HREF="Bank.c.html#OPNAME!isaccount">isaccount</A> with accNr: ");
+        <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\n");
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_WRITE">Bank_WRITE</A>(&rep);
+      <B>}</B>
+    <B>}</B>;
+    <B>if</B> ( op == 5 ) <B>{</B>
+      <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\nINSIDE <A HREF="Bank.c.html#OPNAME!getbalance">getbalance</A>\n");
+      <B>{</B>
+        <B>int</B> in_a,ret_a;
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(&in_a,1);
+        <A HREF="Bank.c.html#OPNAME!getbalance">getbalance</A>(&ret_a,in_a);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"balance <B>for</B> accNr: ");
+        <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+        <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\n");
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+        <A HREF="Bank_SocketServer.c.html#OPNAME!Bank_WRITE">Bank_WRITE</A>(&rep);
+      <B>}</B>
+    <B>}</B>;
+    <B>if</B> ( rep == <A HREF="Bool_TYPE.h.html#SETS">FALSE</A> ) <B>{</B>
+      <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"could not send value\n");
+    <B>}</B>
+    <B>else</B> <B>{</B>
+      <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"AND returning values\n");
+    <B>}</B>;
+    op = 0;
+    <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"value of OP");
+    <A HREF="basic_io.c.html#OPNAME!PUT_NAT">PUT_NAT</A>(op);
+    <A HREF="basic_io.c.html#OPNAME!PUT_STR">PUT_STR</A>( (<B>int</B> *)"\n");
+  <B>}</B>
+<B>}</B>
+
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:16:54 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

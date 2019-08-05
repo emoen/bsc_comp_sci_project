@@ -1,0 +1,145 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Controller.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em Controller\/} ( {\em maxcontroller\/} )  \-\label{Controller}\index{Controller}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  USES
+%
+\bbnl
+{\bf USES} \+ \bbnl
+{\em Aircraft\/}\label{Aircraft}\index{Aircraft}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SETS
+%
+\bbnl
+{\bf SETS} \+ \bbnl
+{\em CONTROLLER\/}\label{CONTROLLER}\index{CONTROLLER}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PROPERTIES
+%
+\bbnl
+{\bf PROPERTIES} \+ \bbnl
+ {\sf card}$\;$( {\em CONTROLLER\/} )  $=$ {\em maxcontroller\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em controllers\/}\label{controllers}\index{controllers}  , {\em controls\/}\label{controls}\index{controls}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em controllers\/} $\subseteq$ {\em CONTROLLER\/} $\wedge$ \bnl
+{\em controls\/} $\in$ {\em controllers\/} $\fun$  $\finset$ ( {\em aircraft\/}\label{aircraft}\index{aircraft}  ) $\wedge$ \bnl
+$\forall$ ( {\em cc1\/} , {\em cc2\/} ) . ( {\em cc1\/} $\in$ {\em controllers\/} $\wedge$ \bnl
+{\em cc2\/} $\in$ {\em controllers\/} $\wedge$
+{\em cc1\/} $\neq$ {\em cc2\/} $\Rightarrow$ \bnl
+{\em controls\/} ( {\em cc1\/} )  $\cap$ {\em controls\/} ( {\em cc2\/} )  $=$  $\emptyset$  )
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em controllers\/} $:=$   $\emptyset$  \bparallel {\em controls\/} $:=$   $\emptyset$  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION create\_controller
+%
+{\em cc\/} $\longleftarrow$  {\bf { create\_controller}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em controllers\/} $\neq$ {\em CONTROLLER\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{ANY} \+{\em oo\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em oo\/} $\in$ {\em CONTROLLER\/} $-$ {\em controllers\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em controllers\/} $:=$  {\em controllers\/} $\cup$  \{ \+{\em oo\/} \- \}  \bparallel \bnl
+{\em cc\/} $:=$  {\em oo\/} \bparallel \bnl
+{\em controls\/} ( {\em oo\/} )  $:=$   $\emptyset$  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION hand\_over
+%
+{\bf { hand\_over}} ( {\em cc1\/} , {\em cc2\/} , {\em acft\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em cc1\/} $\in$ {\em controllers\/} $\wedge$
+{\em cc2\/} $\in$ {\em controllers\/} $\wedge$ \bnl
+{\em cc1\/} $\neq$ {\em cc2\/} $\wedge$ \bnl
+{\em acft\/} $\in$ {\em aircraft\/}\label{aircraft}\index{aircraft}  $\wedge$ \bnl
+{\em acft\/} $\in$ {\em controls\/} ( {\em cc1\/} )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em controls\/} $:=$  {\em controls\/} $<\kern-.65em\raisebox{.275ex}{$\scriptscriptstyle +$}\;$  \{ \+{\em cc1\/} $\mapsto$ {\em controls\/} ( {\em cc1\/} )  $-$  \{ \+{\em acft\/} \- \}  , \bnl
+{\em cc2\/} $\mapsto$  ( {\em controls\/} ( {\em cc2\/} )  $\cup$  \{ \+{\em acft\/} \- \}  )  \- \}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION add\_aircraft
+%
+{\bf { add\_aircraft}} ( {\em cc\/} , {\em acft\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em cc\/} $\in$ {\em controllers\/} $\wedge$ \bnl
+{\em acft\/} $\in$ {\em aircraft\/}\label{aircraft}\index{aircraft}  $\wedge$ \bnl
+$\neg$  ( {\em acft\/} $\in$  {\sf union}$\;$(  {\sf ran}$\;$( {\em controls\/} )  )  )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em controls\/} ( {\em cc\/} )  $:=$  {\em controls\/} ( {\em cc\/} )  $\cap$  \{ \+{\em acft\/} \- \}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Controller
+%
+\bxrefhead{Cross-references for Controller}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\bxrefline{{\em Aircraft}}{}{{\sc machine}}{\bbpageref{Aircraft}}
+\vskip 3.5ex

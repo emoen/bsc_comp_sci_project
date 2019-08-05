@@ -1,0 +1,38 @@
+MACHINE           
+	Client
+
+SEES
+	Bool_TYPE, CommsDefs
+
+VARIABLES
+	clientstate
+
+INVARIANT         
+	clientstate : STATE
+
+INITIALISATION    
+	clientstate := idle
+
+OPERATIONS
+		
+  cinit =
+	clientstate := idle;
+		
+  ok <-- client_con_reqest =
+	IF clientstate = idle THEN
+		clientstate := conpending ||
+		ok := TRUE
+	ELSE	ok := FALSE
+	END;
+	
+  ok <-- client_con_report(response : BOOL) =
+	IF clientstate = conpending THEN
+		IF response = TRUE THEN
+			clientstate := connected
+		ELSE	clientstate := idle 
+		END ||
+		ok := TRUE
+	ELSE	ok := FALSE
+	END
+
+END

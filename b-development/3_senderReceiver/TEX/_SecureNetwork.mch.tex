@@ -1,0 +1,88 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SecureNetwork.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \+ \bbnl
+{\em SecureNetwork\/} \-\label{SecureNetwork}\index{SecureNetwork}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  USES
+%
+\bbnl
+{\bf USES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SETS
+%
+\bbnl
+{\bf SETS} \+ \bbnl
+{\em MESSAGE\/}\label{MESSAGE}\index{MESSAGE}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em msg\/}\label{msg}\index{msg}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em msg\/} $\in$  {\sf seq}$\;$( {\em MESSAGE\/} )  $\wedge$ \bnl
+{\sf card}$\;$( {\em msg\/} )  $\leq$ {\em maxSize\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em msg\/} $:=$   $\emptyset$  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION receive
+%
+{\em mm\/} , {\em ok\/} $\longleftarrow$  {\bf { receive}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{IF} \+ {\sf card}$\;$( {\em msg\/} )  $>$ {\em 0\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em mm\/} $:=$   {\sf first}$\;$( {\em msg\/} )  \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION send
+%
+{\em ok\/} $\longleftarrow$  {\bf { send}} ( {\em mm\/} $\in$ {\em MESSAGE\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+ {\sf card}$\;$( {\em msg\/} )  $<$ {\em maxSize\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em msg\/} $:=$  {\em msg\/} $\leftarrow$ {\em mm\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\- \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DEFINITIONS
+%
+\bbnl
+{\bf DEFINITIONS} \+ \bbnl
+{\em maxSize\/}\label{maxSize}\index{maxSize}  $\;\;\defs\;\;$ {\em 100\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for SecureNetwork
+%
+\bxrefhead{Cross-references for SecureNetwork}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\vskip 3.5ex

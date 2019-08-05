@@ -1,0 +1,291 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(AIRCRAFT , STRINGS , AIRSPACE , CONTROLLER)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(card(AIRCRAFT) = maxaircraft & card(AIRCRAFT) : NAT1 & card(STRINGS) : NAT1 & card(AIRSPACE) = maxairspace & card(AIRSPACE) : NAT1 & card(CONTROLLER) = maxairspace*2 & card(CONTROLLER) : NAT1)
+;
+(
+(Aircraft(maxaircraft):(maxaircraft : NAT):((?),(?),(?)))
+,
+(Airspace(maxairspace):(maxairspace : NAT):((?),(?),(?)))
+,
+(Controller(maxairspace*2):(maxairspace*2 : NAT):((?),(?),(?)))
+)
+;
+(
+create_airspace,create_controller,id_of,create_aircraft
+)
+;
+(?)
+;
+(aircraft , flight_id , airspaces , maxholding , occupied_by , assigned , airport_zones , military_zones , city_regions , controllers , controls)
+;
+(!(acft , as).(acft : aircraft & as : airspaces & acft : occupied_by(as) => acft : controls(assigned(as))) & controls : controllers --> FIN(aircraft) & occupied_by : airspaces --> FIN(aircraft) & assigned : airspaces >-> controllers)
+;
+(!(acft , as).(acft : aircraft & as : airspaces & acft : occupied_by(as) => acft : controls(assigned(as))) & controls : controllers --> FIN(aircraft) & occupied_by : airspaces --> FIN(aircraft) & assigned : airspaces >-> controllers & maxaircraft : NAT1 & aircraft <: AIRCRAFT & flight_id : aircraft --> STRINGS & airspaces <: AIRSPACE & airport_zones <: airspaces & military_zones <: airspaces & city_regions <: airspaces & airport_zones \/ military_zones \/ city_regions = airspaces & airport_zones /\ military_zones = {} & airport_zones /\ city_regions = {} & military_zones /\ city_regions = {} & maxholding : airspaces --> NAT & !(as1 , as2).(as1 : airspaces & as2 : airspaces & not(as1 = as2) => occupied_by(as1) /\ occupied_by(as2) = {}) & !as.(as : airspaces => card(occupied_by(as)) <= maxholding(as)) & controllers <: CONTROLLER & !(cc1 , cc2).(cc1 : controllers & cc2 : controllers & not(cc1 = cc2) => controls(cc1) /\ controls(cc2) = {}))
+;
+(?)
+;
+(?)
+;
+(controllers , controls := {} , {} || airspaces , maxholding , occupied_by , assigned , city_regions , military_zones , airport_zones := {} , {} , {} , {} , {} , {} , {} || aircraft , flight_id := {} , {})
+;
+(hand_over_aircraft,aircraft_arrives)
+;
+(hand_over_aircraft , aircraft_arrives , create_aircraft , id_of , create_controller , create_airspace)
+;
+(ATCSystem(maxairspace , maxaircraft):(maxairspace : NAT & maxaircraft : NAT):(?))
+;
+(
+(
+ (hand_over_aircraft)
+;
+ (? , Mod_Op , Det_Op , hand_over_aircraft(as1_ , as2_ , acft_))
+;
+ (as1_ , as2_ , acft_)
+;
+ (?)
+;
+ (
+ (as1_ : airspaces & as2_ : airspaces & acft_ : aircraft & as1_ /= as2_ & acft_ : occupied_by(as1_) & card(occupied_by(as2_)) < maxholding(as2_))
+ |
+ (
+ (
+ (hand_over(assigned(as1_) , assigned(as2_) , acft_))
+ )
+ ||
+ (
+ (transfer_aircraft(as1_ , as2_ , acft_))
+ )
+ )
+ )
+;
+ (
+ (as1_ : airspaces & as2_ : airspaces & acft_ : aircraft & not(as1_ = as2_) & acft_ : occupied_by(as1_) & card(occupied_by(as2_)) < maxholding(as2_))
+ |
+ (
+ (
+ (hand_over(assigned(as1_) , assigned(as2_) , acft_))
+ )
+ ||
+ (
+ (transfer_aircraft(as1_ , as2_ , acft_))
+ )
+ )
+ )
+)
+,
+(
+ (aircraft_arrives)
+;
+ (? , Mod_Op , Det_Op , aircraft_arrives(as , acft))
+;
+ (as , acft)
+;
+ (?)
+;
+ (
+ (acft : aircraft & as : airspaces & acft /: union(ran(occupied_by)) & acft /: union(ran(controls)) & card(occupied_by(as)) < maxholding(as))
+ |
+ (
+ (
+ (do_aircraft_arrives(as , acft))
+ )
+ ||
+ (
+ (add_aircraft(assigned(as) , acft))
+ )
+ )
+ )
+;
+ (
+ (acft : aircraft & as : airspaces & not(acft : union(ran(occupied_by))) & not(acft : union(ran(controls))) & card(occupied_by(as)) < maxholding(as))
+ |
+ (
+ (
+ (do_aircraft_arrives(as , acft))
+ )
+ ||
+ (
+ (add_aircraft(assigned(as) , acft))
+ )
+ )
+ )
+)
+,
+(
+ (create_aircraft)
+;
+ (? , Mod_Op , NonDet_Op , (aa <-- create_aircraft(fid)))
+;
+ (fid)
+;
+ (aa)
+;
+ (
+ (fid : STRINGS & aircraft /= AIRCRAFT)
+ |
+ (
+ (ANY oo WHERE
+ oo : AIRCRAFT-aircraft
+ THEN
+ aa := oo ||
+ aircraft := aircraft \/ {oo} ||
+ flight_id(oo) := fid
+ END)
+ )
+ )
+;
+ (
+ (fid : STRINGS & not(aircraft = AIRCRAFT))
+ |
+ (
+ @(oo).
+ (
+ (
+ (oo : AIRCRAFT-aircraft)
+ )
+ ==>
+ (
+ (aa , aircraft , flight_id := oo , aircraft \/ {oo} , flight_id <+ {oo |-> fid})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (id_of)
+;
+ (? , Val_Op , Det_Op , (fid <-- id_of(aa)))
+;
+ (aa)
+;
+ (fid)
+;
+ (
+ (aa : aircraft)
+ |
+ (
+ (fid := flight_id(aa))
+ )
+ )
+;
+ (
+ (aa : aircraft)
+ |
+ (
+ (fid := flight_id(aa))
+ )
+ )
+)
+,
+(
+ (create_controller)
+;
+ (? , Mod_Op , NonDet_Op , (cc <-- create_controller))
+;
+ (?)
+;
+ (cc)
+;
+ (
+ (controllers /= CONTROLLER)
+ |
+ (
+ (ANY oo WHERE
+ oo : CONTROLLER-controllers
+ THEN
+ controllers := controllers \/ {oo} ||
+ cc := oo ||
+ controls(oo) := {}
+ END)
+ )
+ )
+;
+ (
+ (not(controllers = CONTROLLER))
+ |
+ (
+ @(oo).
+ (
+ (
+ (oo : CONTROLLER-controllers)
+ )
+ ==>
+ (
+ (controllers , cc , controls := controllers \/ {oo} , oo , controls <+ {oo |-> {}})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (create_airspace)
+;
+ (? , Mod_Op , NonDet_Op , (as <-- create_airspace(maxacft , cont)))
+;
+ (maxacft , cont)
+;
+ (as)
+;
+ (
+ (maxacft : NAT & cont : controllers & airspaces /= AIRSPACE)
+ |
+ (
+ (ANY oo WHERE
+ oo : AIRSPACE-airspaces
+ THEN
+ as := oo ||
+ maxholding(oo) := maxacft ||
+ occupied_by(oo) := {} ||
+ assigned(oo) := cont ||
+ airspaces := airspaces \/ {oo} ||
+ airport_zones := airport_zones \/ {oo}
+ END)
+ )
+ )
+;
+ (
+ (maxacft : NAT & cont : controllers & not(airspaces = AIRSPACE))
+ |
+ (
+ @(oo).
+ (
+ (
+ (oo : AIRSPACE-airspaces)
+ )
+ ==>
+ (
+ (as , maxholding , occupied_by , assigned , airspaces , airport_zones := oo , maxholding <+ {oo |-> maxacft} , occupied_by <+ {oo |-> {}} , assigned <+ {oo |-> cont} , airspaces \/ {oo} , airport_zones \/ {oo})
+ )
+ )
+ )
+ )
+)
+)

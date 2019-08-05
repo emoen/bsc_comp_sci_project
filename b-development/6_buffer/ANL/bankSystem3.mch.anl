@@ -1,0 +1,418 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts)
+;
+(?)
+;
+(maxAccounts = 6)
+;
+(
+(Globals(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(accountNumber , accountBalance , totalBalance , ATMData , networkData , transactionId , req_deposit , req_withdraw , confirm_deposit , confirm_withdrawal)
+;
+(accountNumber , accountBalance , totalBalance , ATMData , networkData , transactionId , req_deposit , req_withdraw , confirm_deposit , confirm_withdrawal)
+;
+(accountNumber <: 1..maxAccounts & accountBalance : accountNumber --> NAT & totalBalance : accountNumber --> NAT & ATMData : accountNumber --> NAT & networkData : accountNumber --> NAT & transactionId <: 1..100 & req_deposit : transactionId --> accountNumber*NAT & req_withdraw : transactionId --> accountNumber*NAT & confirm_deposit <: transactionId & confirm_withdrawal <: transactionId & !aa.(aa : accountNumber => totalBalance(aa) = accountBalance(aa)+ATMData(aa)))
+;
+(accountNumber <: 1..maxAccounts & accountBalance : accountNumber --> NAT & totalBalance : accountNumber --> NAT & ATMData : accountNumber --> NAT & networkData : accountNumber --> NAT & transactionId <: 1..100 & req_deposit : transactionId --> accountNumber*NAT & req_withdraw : transactionId --> accountNumber*NAT & confirm_deposit <: transactionId & confirm_withdrawal <: transactionId & !aa.(aa : accountNumber => totalBalance(aa) = accountBalance(aa)+ATMData(aa)))
+;
+(?)
+;
+(accountNumber , accountBalance , totalBalance , ATMData , networkData , transactionId , req_deposit , req_withdraw , confirm_deposit , confirm_withdrawal := {} , {} , {} , {} , {} , {} , {} , {} , {} , {})
+;
+(accountNumber , accountBalance , totalBalance , ATMData , networkData , transactionId , req_deposit , req_withdraw , confirm_deposit , confirm_withdrawal := {} , {} , {} , {} , {} , {} , {} , {} , {} , {})
+;
+(request_deposit,request_withdraw,ATM_deposit,Bank_deposit,ATM_withdraw,Bank_withdraw,network_goes_down,corrupt_network)
+;
+(request_deposit , request_withdraw , ATM_deposit , Bank_deposit , ATM_withdraw , Bank_withdraw , network_goes_down , corrupt_network)
+;
+(bankSystem3(?):(?):(?))
+;
+(
+(
+ (request_deposit)
+;
+ (? , Mod_Op , NonDet_Op , request_deposit(acc , amount))
+;
+ (acc , amount)
+;
+ (?)
+;
+ (
+ (acc : accountNumber & amount : NAT)
+ |
+ (
+ (BEGIN
+ ANY xx WHERE
+ xx : transactionId &
+ xx /: dom(req_deposit)
+ THEN
+ req_deposit := req_deposit \/ {xx |-> (acc |-> amount)}
+ END
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT)
+ |
+ (
+ @(xx).
+ (
+ (
+ (xx : transactionId & not(xx : dom(req_deposit)))
+ )
+ ==>
+ (
+ (req_deposit := req_deposit \/ {xx |-> (acc |-> amount)})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (request_withdraw)
+;
+ (? , Mod_Op , NonDet_Op , request_withdraw(acc , amount))
+;
+ (acc , amount)
+;
+ (?)
+;
+ (
+ (acc : accountNumber & amount : NAT)
+ |
+ (
+ (BEGIN
+ ANY xx WHERE
+ xx : transactionId &
+ xx /: dom(req_withdraw)
+ THEN
+ req_withdraw := req_withdraw \/ {xx |-> (acc |-> amount)}
+ END
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT)
+ |
+ (
+ @(xx).
+ (
+ (
+ (xx : transactionId & not(xx : dom(req_withdraw)))
+ )
+ ==>
+ (
+ (req_withdraw := req_withdraw \/ {xx |-> (acc |-> amount)})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (ATM_deposit)
+;
+ (? , Mod_Op , NonDet_Op , ATM_deposit)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ANY xx , yy , zz WHERE
+ xx : transactionId &
+ yy : accountNumber &
+ zz : NAT &
+ xx /: confirm_deposit &
+ yy |-> zz /: ATMData &
+ yy |-> zz /: networkData &
+ xx |-> (yy |-> zz) : req_deposit
+ THEN
+ networkData(yy) := zz ||
+ ATMData(yy) := zz ||
+ totalBalance(yy) := totalBalance(yy)+zz
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(xx , yy , zz).
+ (
+ (
+ (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & not(yy |-> zz : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_deposit)
+ )
+ ==>
+ (
+ (networkData , ATMData , totalBalance := networkData <+ {yy |-> zz} , ATMData <+ {yy |-> zz} , totalBalance <+ {yy |-> totalBalance(yy)+zz})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (Bank_deposit)
+;
+ (? , Mod_Op , NonDet_Op , Bank_deposit)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ANY xx , yy , zz WHERE
+ xx : transactionId &
+ yy : accountNumber &
+ zz : NAT &
+ xx /: confirm_deposit &
+ xx |-> yy : ATMData &
+ yy |-> zz : networkData &
+ xx |-> (yy |-> zz) : req_deposit &
+ ATMData(yy) = networkData(yy)
+ THEN
+ networkData := networkData-{yy |-> zz} ||
+ ATMData := ATMData-{yy |-> zz} ||
+ accountBalance(yy) := accountBalance(yy)+zz ||
+ confirm_deposit := confirm_deposit \/ {xx}
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(xx , yy , zz).
+ (
+ (
+ (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & xx |-> yy : ATMData & yy |-> zz : networkData & xx |-> (yy |-> zz) : req_deposit & ATMData(yy) = networkData(yy))
+ )
+ ==>
+ (
+ (networkData , ATMData , accountBalance , confirm_deposit := networkData-{yy |-> zz} , ATMData-{yy |-> zz} , accountBalance <+ {yy |-> accountBalance(yy)+zz} , confirm_deposit \/ {xx})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (ATM_withdraw)
+;
+ (? , Mod_Op , NonDet_Op , ATM_withdraw)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ANY xx , yy , zz WHERE
+ xx : transactionId &
+ yy : accountNumber &
+ zz : NAT &
+ xx /: confirm_withdrawal &
+ xx |-> yy /: ATMData &
+ yy |-> zz /: networkData &
+ xx |-> (yy |-> zz) : req_withdraw &
+ zz <= accountBalance(yy)
+ THEN
+ networkData(yy) := zz ||
+ ATMData(yy) := zz ||
+ totalBalance(yy) := totalBalance(yy)-zz
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(xx , yy , zz).
+ (
+ (
+ (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & not(xx |-> yy : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_withdraw & zz <= accountBalance(yy))
+ )
+ ==>
+ (
+ (networkData , ATMData , totalBalance := networkData <+ {yy |-> zz} , ATMData <+ {yy |-> zz} , totalBalance <+ {yy |-> totalBalance(yy)-zz})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (Bank_withdraw)
+;
+ (? , Mod_Op , NonDet_Op , Bank_withdraw)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ANY xx , yy , zz WHERE
+ xx : transactionId &
+ yy : accountNumber &
+ zz : NAT &
+ xx /: confirm_withdrawal &
+ xx |-> (yy |-> zz) : req_withdraw &
+ yy |-> zz : networkData &
+ zz <= accountBalance(yy) &
+ ATMData(yy) = networkData(yy)
+ THEN
+ networkData := networkData-{yy |-> zz} ||
+ ATMData := ATMData-{yy |-> zz} ||
+ accountBalance(yy) := accountBalance(yy)-zz ||
+ confirm_withdrawal := confirm_withdrawal \/ {xx}
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(xx , yy , zz).
+ (
+ (
+ (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & xx |-> (yy |-> zz) : req_withdraw & yy |-> zz : networkData & zz <= accountBalance(yy) & ATMData(yy) = networkData(yy))
+ )
+ ==>
+ (
+ (networkData , ATMData , accountBalance , confirm_withdrawal := networkData-{yy |-> zz} , ATMData-{yy |-> zz} , accountBalance <+ {yy |-> accountBalance(yy)-zz} , confirm_withdrawal \/ {xx})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (network_goes_down)
+;
+ (? , Mod_Op , Det_Op , network_goes_down)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (networkData := {})
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (networkData := {})
+ )
+ )
+)
+,
+(
+ (corrupt_network)
+;
+ (? , Mod_Op , NonDet_Op , corrupt_network)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ANY xx , vv WHERE
+ xx : accountNumber &
+ vv : NAT
+ THEN
+ networkData(xx) := networkData(xx)-vv
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(xx , vv).
+ (
+ (
+ (xx : accountNumber & vv : NAT)
+ )
+ ==>
+ (
+ (networkData := networkData <+ {xx |-> networkData(xx)-vv})
+ )
+ )
+ )
+ )
+)
+)

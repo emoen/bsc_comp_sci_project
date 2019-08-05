@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Controller">
+  <TITLE>The Controller machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           Controller(maxcontroller)
+
+<A NAME="USES"><B>USES</B></A> 
+	<A HREF="Aircraft.mch.html#MACHINE">Aircraft</A>
+
+<A NAME="SETS"><B>SETS</B></A>
+	CONTROLLER
+
+<A NAME="PROPERTIES"><B>PROPERTIES</B></A>
+	card(CONTROLLER) = maxcontroller
+	
+<A NAME="VARIABLES"><B>VARIABLES</B></A>   
+	controllers, controls
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>         
+  controllers &lt;: CONTROLLER &
+	controls : controllers --&gt; FIN(<A HREF="Aircraft.mch.html#INVARIANT">aircraft</A>) &    
+	!(cc1, cc2).(cc1 : controllers &
+		cc2 : controllers & cc1 /= cc2 =&gt;
+			controls(cc1) /\ controls(cc2) = {})
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>    
+	controllers := {} || controls := {}
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+	cc <-- <A NAME="OPNAME!create_controller">create_controller</A> =
+		<B>PRE</B>
+			controllers /= CONTROLLER
+		<B>THEN</B>
+			<B>ANY</B> oo
+			<B>WHERE</B>
+				oo : CONTROLLER - controllers
+			<B>THEN</B>
+				controllers := controllers \/ {oo} ||
+				cc := oo ||
+				controls(oo) := {}
+			<B>END</B>
+		<B>END</B>;
+		
+	<A NAME="OPNAME!hand_over">hand_over</A>(cc1, cc2, acft) =
+		<B>PRE</B>
+			cc1 : controllers & cc2 : controllers &
+			cc1 /= cc2 &
+			acft : <A HREF="Aircraft.mch.html#INVARIANT">aircraft</A> &
+			acft : controls(cc1)
+		<B>THEN</B>
+			controls := controls <+ {cc1 |-> (controls(cc1) - {acft}), 
+																cc2 |-&gt; (controls(cc2) \/ {acft}) }
+		<B>END</B>;
+		
+	<A NAME="OPNAME!add_aircraft">add_aircraft</A>(cc, acft) =
+		<B>PRE</B>
+			cc : controllers &
+			acft : <A HREF="Aircraft.mch.html#INVARIANT">aircraft</A> &
+			 not(acft : union(ran(controls)))
+		<B>THEN</B>
+			controls(cc) := controls(cc) /\ {acft}
+		<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb  7 15:49:10 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,237 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+,
+(CommsDefs(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(clientstate)
+;
+(clientstate)
+;
+(clientstate : STATE)
+;
+(clientstate : STATE)
+;
+(?)
+;
+(clientstate := idle)
+;
+(clientstate := idle)
+;
+(cinit,client_con_request,client_con_report,query_cstate)
+;
+(cinit , client_con_request , client_con_report , query_cstate)
+;
+(Client(?):(?):(?))
+;
+(
+(
+ (cinit)
+;
+ (? , Mod_Op , Det_Op , cinit)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (clientstate := idle)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (clientstate := idle)
+ )
+ )
+)
+,
+(
+ (client_con_request)
+;
+ (? , Mod_Op , Det_Op , (ok <-- client_con_request))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (IF clientstate = idle THEN
+ clientstate := conpending ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (clientstate = idle)
+ )
+ ==>
+ (
+ (clientstate , ok := conpending , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(clientstate = idle))
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (client_con_report)
+;
+ (? , Mod_Op , Det_Op , (ok <-- client_con_report(response)))
+;
+ (response)
+;
+ (ok)
+;
+ (
+ (response : BOOL)
+ |
+ (
+ (IF clientstate = conpending THEN
+ IF response = TRUE THEN
+ clientstate := connected
+ ELSE
+ clientstate := idle
+ END ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (response : BOOL)
+ |
+ (
+ (
+ (
+ (clientstate = conpending)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (response = TRUE)
+ )
+ ==>
+ (
+ (clientstate := connected)
+ )
+ )
+ []
+ (
+ (
+ (not(response = TRUE))
+ )
+ ==>
+ (
+ (clientstate := idle)
+ )
+ )
+ )
+ ||
+ (
+ (ok := TRUE)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(clientstate = conpending))
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (query_cstate)
+;
+ (? , Val_Op , Det_Op , (state <-- query_cstate))
+;
+ (?)
+;
+ (state)
+;
+ (
+ (true)
+ |
+ (
+ (state := clientstate)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (state := clientstate)
+ )
+ )
+)
+)

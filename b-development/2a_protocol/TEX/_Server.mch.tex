@@ -1,0 +1,108 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Server.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em Server\/} \-\label{Server}\index{Server}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  , {\em CommsDefs\/}\label{CommsDefs}\index{CommsDefs}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em sstate\/}\label{sstate}\index{sstate}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em sstate\/} $\in$ {\em STATE\/}\label{STATE}\index{STATE}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em sstate\/} $:=$  {\em idle\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION sinit
+%
+{\bf { sinit}}  \bhsp $\defs$ \+ \bnl
+{\em sstate\/} $:=$  {\em idle\/} \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION conin
+%
+{\em ok\/} $\longleftarrow$  {\bf { conin}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em sstate\/} $=$ {\em idle\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em sstate\/} $:=$  {\em conrequest\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION server\_con\_report
+%
+{\em msg\/} $\longleftarrow$  {\bf { server\_con\_report}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em sstate\/} $=$ {\em conrequest\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{ANY} \+{\em pp\/} \-\bnl
+\bOpnWord{WHERE} \+{\em pp\/} $\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+{\em pp\/} $=$ {\em TRUE\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em sstate\/} $:=$  {\em connected\/} \bparallel \bnl
+{\em msg\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em sstate\/} $:=$  {\em idle\/} \bparallel \bnl
+{\em msg\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Server
+%
+\bxrefhead{Cross-references for Server}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em CommsDefs}}{}{{\sc machine}}{\bbpageref{CommsDefs}}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vskip 3.5ex

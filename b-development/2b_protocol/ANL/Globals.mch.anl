@@ -1,0 +1,57 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(ACCOUNTNR , YESNO(yes , no))
+;
+(ACCOUNTNR , YESNO(yes , no))
+;
+(?)
+;
+(?)
+;
+(card(ACCOUNTNR) : NAT1)
+;
+(card(ACCOUNTNR) : NAT1)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(Globals(maxAccounts):(maxAccounts : NAT):(?))
+;
+(
+?
+)

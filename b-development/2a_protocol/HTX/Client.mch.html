@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Client">
+  <TITLE>The Client machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           
+	Client
+
+<A NAME="SEES"><B>SEES</B></A>
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>, <A HREF="CommsDefs.mch.html#MACHINE">CommsDefs</A>
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>
+	clientstate
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>         
+	clientstate : <A HREF="CommsDefs.mch.html#SETS">STATE</A>
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>    
+	clientstate := idle
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+		
+  <A NAME="OPNAME!cinit">cinit</A> =
+	clientstate := idle;
+		
+  ok <-- <A NAME="OPNAME!client_con_request">client_con_request</A> =
+	<B>IF</B> clientstate = idle <B>THEN</B>
+		clientstate := conpending ||
+		ok := TRUE
+	<B>ELSE</B>	ok := FALSE
+	<B>END</B>;
+	
+  ok <-- <A NAME="OPNAME!client_con_report">client_con_report</A>(response : <A HREF="Bool_TYPE.mch.html#SETS">BOOL</A>) =
+	<B>IF</B> clientstate = conpending <B>THEN</B>
+		<B>IF</B> response = TRUE <B>THEN</B>
+			clientstate := connected
+		<B>ELSE</B>	clientstate := idle 
+		<B>END</B> ||
+		ok := TRUE
+	<B>ELSE</B>	ok := FALSE
+	<B>END</B>
+
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Feb 26 23:51:00 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

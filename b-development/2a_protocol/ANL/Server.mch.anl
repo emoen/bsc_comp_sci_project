@@ -1,0 +1,217 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+,
+(CommsDefs(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(sstate)
+;
+(sstate)
+;
+(sstate : STATE)
+;
+(sstate : STATE)
+;
+(?)
+;
+(sstate := idle)
+;
+(sstate := idle)
+;
+(sinit,conin,server_con_report)
+;
+(sinit , conin , server_con_report)
+;
+(Server(?):(?):(?))
+;
+(
+(
+ (sinit)
+;
+ (? , Mod_Op , Det_Op , sinit)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (sstate := idle)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (sstate := idle)
+ )
+ )
+)
+,
+(
+ (conin)
+;
+ (? , Mod_Op , Det_Op , (ok <-- conin))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (IF sstate = idle THEN
+ sstate := conrequest ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (sstate = idle)
+ )
+ ==>
+ (
+ (sstate , ok := conrequest , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(sstate = idle))
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (server_con_report)
+;
+ (? , Mod_Op , NonDet_Op , (msg <-- server_con_report))
+;
+ (?)
+;
+ (msg)
+;
+ (
+ (true)
+ |
+ (
+ (IF sstate = conrequest THEN
+ ANY pp WHERE
+ pp : BOOL
+ THEN
+ IF pp = TRUE THEN
+ sstate := connected ||
+ msg := TRUE
+ ELSE
+ sstate := idle ||
+ msg := FALSE
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (sstate = conrequest)
+ )
+ ==>
+ (
+ @(pp).
+ (
+ (
+ (pp : BOOL)
+ )
+ ==>
+ (
+ (
+ (
+ (pp = TRUE)
+ )
+ ==>
+ (
+ (sstate , msg := connected , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(pp = TRUE))
+ )
+ ==>
+ (
+ (sstate , msg := idle , FALSE)
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(sstate = conrequest))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+)

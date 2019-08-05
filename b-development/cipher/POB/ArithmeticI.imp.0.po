@@ -1,0 +1,50 @@
+THEORY PropertiesX IS
+  ctx(ArithmeticI$1) => exp : NAT*NAT +-> NAT;
+  ctx(ArithmeticI$1) => !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0);
+  ctx(ArithmeticI$1) => prime <: NAT
+END
+&
+THEORY EnumerateX END
+&
+THEORY NotEqualX END
+&
+THEORY RewriteToFalseOrTrueX END
+&
+THEORY FwdContra0X END
+&
+THEORY FwdEqual1X END
+&
+THEORY ExpandHypX IS
+  pre(exp_op) => aa : NAT;
+  pre(exp_op) => bb : NAT;
+  inv(ArithmeticI$1) => inv(Arithmetic);
+  asn(ArithmeticI$1) => asn(Arithmetic)
+END
+&
+THEORY Initialisation
+END
+&
+THEORY exp_op IS
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(aa = 0) & ii : NAT & kk = exp(aa , bb-ii) & not(ii = 0) => ii-1 : NAT);
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(aa = 0) & ii : NAT & kk = exp(aa , bb-ii) & not(ii = 0) => kk*aa = exp(aa , bb-(ii-1)));
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(aa = 0) & ii : NAT & kk = exp(aa , bb-ii) & not(ii = 0) => ii-1 < ii);
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(aa = 0) & ii : NAT & kk = exp(aa , bb-ii) & ii = 0 => kk = exp(aa , bb));
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(aa = 0) => 1 = exp(aa , bb-bb));
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(bb = 0) & ii : NAT & kk = exp(aa , bb-ii) & not(ii = 0) => ii-1 : NAT);
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(bb = 0) & ii : NAT & kk = exp(aa , bb-ii) & not(ii = 0) => kk*aa = exp(aa , bb-(ii-1)));
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(bb = 0) & ii : NAT & kk = exp(aa , bb-ii) & not(ii = 0) => ii-1 < ii);
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(bb = 0) & ii : NAT & kk = exp(aa , bb-ii) & ii = 0 => kk = exp(aa , bb));
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (not(bb = 0) => 1 = exp(aa , bb-bb));
+  cst(ArithmeticI$1) & ctx(ArithmeticI$1) & inv(ArithmeticI$1) & asn(ArithmeticI$1) & pre(exp_op) => (aa = 0 & bb = 0 => rrZ = exp(aa , bb))
+END
+&
+THEORY Context IS
+  cst(ArithmeticI$1) => #prime.(prime <: NAT);
+  cst(ArithmeticI$1) => #exp.(exp : NAT*NAT +-> NAT & !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0))
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

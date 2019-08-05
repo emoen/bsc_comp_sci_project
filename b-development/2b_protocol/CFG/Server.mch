@@ -1,0 +1,75 @@
+
+MACHINE           
+	Server
+
+SEES
+	Bool_TYPE, CommsDefs, Globals
+
+INCLUDES
+	Bank(10)
+
+VARIABLES
+	sstate
+
+INVARIANT
+	sstate : STATE 
+
+INITIALISATION 
+	sstate := idle
+
+OPERATIONS
+
+sinit =
+	sstate := idle;
+
+	
+  ok <-- conin =
+	IF sstate = idle THEN
+		sstate := conrequest ||
+		ok := TRUE
+	ELSE	ok := FALSE
+	END;
+		
+  msg <-- server_con_report =
+	IF sstate = conrequest THEN
+		ANY pp
+		WHERE pp : BOOL THEN
+			IF pp = TRUE THEN
+				sstate := connected ||
+				msg := TRUE
+			ELSE
+				sstate := idle ||
+				msg := FALSE
+			END			
+		END
+	END;
+
+  ans <-- screate_acc =
+	PRE
+		sstate = connected
+	THEN
+		ans <-- create_acc
+	END;
+		
+  new <-- sdeposit(acc : NAT & amount : NAT) =
+	PRE
+		sstate = connected		
+	THEN
+		new <-- deposit(acc, amount)
+	END;
+		
+  ans <-- swithdraw(acc, amount) =
+	PRE
+		acc : NAT & amount : NAT &
+		sstate = connected			
+	THEN
+		ans <--	withdraw(acc, amount)
+	END;
+	
+  rr <-- sisaccount(acc:NAT) =
+	PRE
+		sstate = connected			
+	THEN
+		rr <-- isaccount(acc)
+	END
+END

@@ -1,0 +1,56 @@
+IMPLEMENTATION   ServeBankItfI
+
+REFINES          ServeBankItf
+
+IMPORTS
+
+  ServeBank,
+  ServeBankIo,
+  Itf_token_io(SCALAR),
+  basic_io,
+  file_dump,
+  Scalar_TYPE,
+  Bool_TYPE,
+  String_TYPE
+
+CONSTANTS
+
+  string1
+
+PROPERTIES
+
+  string1 = "  Value (BOOL) returned in ok: "
+
+OPERATIONS
+
+  main =
+    VAR count,op IN
+      count := MaxScalar; op := ServeBank_Menu_OP;
+      WHILE count /= 0 & op /= Quit_OP DO
+        CASE op OF
+          EITHER ServeBank_Menu_OP THEN
+            NWL(1); ServeBank_Menu; NWL(1)
+          OR startServer_OP THEN
+            NWL(1);
+            VAR okX IN
+              okX <-- startServer;
+              PUT_STR(string1);
+              PUT_BOOL(okX);
+              NWL(1)
+            END;
+            NWL(1)
+          OR listenForUser_OP THEN
+            NWL(1);
+            listenForUser;
+            NWL(1)
+          END
+        END;
+        op <-- Get_ServeBank_Op; count := count - 1
+      VARIANT
+        count
+      INVARIANT
+        true
+      END
+    END
+
+END

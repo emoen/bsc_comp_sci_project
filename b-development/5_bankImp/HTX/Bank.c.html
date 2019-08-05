@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Bank.c Code Module">
+  <TITLE>Bank.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "<A HREF="Bank.h.html#Bank.h">Bank.h</A>"
+
+<B>#include</B> "<A HREF="accNr_Narr.h.html#accNr_Narr.h">accNr_Narr.h</A>"
+<B>#include</B> "<A HREF="count_Nvar.h.html#count_Nvar.h">count_Nvar.h</A>"
+
+<B>#include</B> "<A HREF="Bool_TYPE.h.html#Bool_TYPE.h">Bool_TYPE.h</A>"
+
+<B>void</B>
+<A NAME="OPNAME!INI_Bank"><A HREF="BankI.imp.html#IMPORTS">INI_Bank</A></A>()
+<B>{</B>
+  <A HREF="accNr_Narr.h.html#OPNAME!INI_accNr_Narr">INI_accNr_Narr</A>();
+  <A HREF="count_Nvar.h.html#OPNAME!INI_count_Nvar">INI_count_Nvar</A>();
+  <A HREF="count_Nvar.h.html#OPNAME!count_STO_NVAR">count_STO_NVAR</A>(0);
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!create_account"><A HREF="BankI.imp.html#OPNAME!create_account">create_account</A></A>(_accNr , _rep)
+<B>int</B> *_accNr,*_rep;
+<B>{</B>
+  <B>int</B> ii,ok;
+  <A HREF="count_Nvar.h.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>(&ii);
+  ii = ii+1;
+  <B>if</B> ( ii &lt;= <A NAME="CONSTANTS!maxAccounts"><A HREF="BankI.imp.html#CONSTANTS">maxAccounts</A></A> ) <B>{</B>
+    <A HREF="accNr_Narr.h.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A>(ii,0);
+    <A HREF="count_Nvar.h.html#OPNAME!count_STO_NVAR">count_STO_NVAR</A>(ii);
+    *_accNr = ii;
+    *_rep = <A HREF="Bool_TYPE.h.html#SETS">TRUE</A>;
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    *_accNr = 0;
+    *_rep = <A HREF="Bool_TYPE.h.html#SETS">FALSE</A>;
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!deposit"><A HREF="BankI.imp.html#OPNAME!deposit">deposit</A></A>(_ok , _newBalance,_acc , _amount)
+<B>int</B> *_ok,*_newBalance,_acc,_amount;
+<B>{</B>
+  <B>int</B> ii;
+  <A HREF="count_Nvar.h.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>(&ii);
+  <B>if</B> ( _acc &lt;= ii && _acc &lt;= maxAccounts && _amount &gt; 0 ) <B>{</B>
+    <B>int</B> curBal;
+    <A HREF="accNr_Narr.h.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A>(&curBal,_acc);
+    *_newBalance = curBal+_amount;
+    <A HREF="accNr_Narr.h.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A>(_acc,*_newBalance);
+    *_ok = <A HREF="Bool_TYPE.h.html#SETS">TRUE</A>;
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    *_ok = <A HREF="Bool_TYPE.h.html#SETS">FALSE</A>;
+    *_newBalance = 0;
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!withdraw"><A HREF="BankI.imp.html#OPNAME!withdraw">withdraw</A></A>(_ok,_acc , _amount)
+<B>int</B> *_ok,_acc,_amount;
+<B>{</B>
+  <B>int</B> ii;
+  <A HREF="count_Nvar.h.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>(&ii);
+  <B>if</B> ( _acc &lt;= ii && _acc &lt;= maxAccounts && _amount &gt; 0 ) <B>{</B>
+    <B>int</B> curBal;
+    <A HREF="accNr_Narr.h.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A>(&curBal,_acc);
+    <B>if</B> ( curBal-_amount &gt;= 0 ) <B>{</B>
+      <A HREF="accNr_Narr.h.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A>(_acc,curBal-_amount);
+      *_ok = <A HREF="Bool_TYPE.h.html#SETS">TRUE</A>;
+    <B>}</B>
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    *_ok = <A HREF="Bool_TYPE.h.html#SETS">FALSE</A>;
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!isaccount"><A HREF="BankI.imp.html#OPNAME!isaccount">isaccount</A></A>(_rr,_acc)
+<B>int</B> *_rr,_acc;
+<B>{</B>
+  <B>int</B> ii;
+  <A HREF="count_Nvar.h.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>(&ii);
+  <B>if</B> ( _acc &lt;= ii ) <B>{</B>
+    *_rr = <A HREF="Bool_TYPE.h.html#SETS">TRUE</A>;
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    *_rr = <A HREF="Bool_TYPE.h.html#SETS">FALSE</A>;
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!getbalance"><A HREF="BankI.imp.html#OPNAME!getbalance">getbalance</A></A>(_bal,_acc)
+<B>int</B> *_bal,_acc;
+<B>{</B>
+  <B>int</B> ii;
+  <A HREF="count_Nvar.h.html#OPNAME!count_VAL_NVAR">count_VAL_NVAR</A>(&ii);
+  <B>if</B> ( _acc &lt;= ii ) <B>{</B>
+    <A HREF="accNr_Narr.h.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A>(_bal,_acc);
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    *_bal = 0;
+  <B>}</B>
+<B>}</B>
+
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:16:51 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

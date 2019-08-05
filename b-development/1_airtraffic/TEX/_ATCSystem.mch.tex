@@ -1,0 +1,149 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ATCSystem.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em ATCSystem\/} ( {\em maxairspace\/} , {\em maxaircraft\/} )  \-\label{ATCSystem}\index{ATCSystem}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  EXTENDS
+%
+\bbnl
+{\bf EXTENDS} \+ \bbnl
+{\em Aircraft\/}\label{Aircraft}\index{Aircraft}  ( {\em maxaircraft\/} )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \+ \bbnl
+{\em Airspace\/}\label{Airspace}\index{Airspace}  ( {\em maxairspace\/} )  , {\em Controller\/}\label{Controller}\index{Controller}  ( {\em maxairspace\/} $\times$ {\em 2\/} )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PROMOTES
+%
+\bbnl
+{\bf PROMOTES} \+ \bbnl
+{\em create\_controller\/}\label{create_controller}\index{create_controller}  , {\em create\_airspace\/}\label{create_airspace}\index{create_airspace}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+ $\forall$ ( {\em acft\/} , {\em as\/} ) . ( {\em acft\/} $\in$ {\em aircraft\/}\label{aircraft}\index{aircraft}  $\wedge$
+{\em as\/} $\in$ {\em airspaces\/}\label{airspaces}\index{airspaces}  $\wedge$ \bnl
+{\em acft\/} $\in$ {\em occupied\_by\/}\label{occupied_by}\index{occupied_by}  ( {\em as\/} )  $\Rightarrow$ \bnl
+{\em acft\/} $\in$ {\em controls\/}\label{controls}\index{controls}  ( {\em assigned\/}\label{assigned}\index{assigned}  ( {\em as\/} )  )  )
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\bxrefline{{\em airspaces}}{{\em Airspace}}{{\sc variables}}{\bbpageref{airspaces}}
+\bxrefline{{\em assigned}}{{\em Airspace}}{{\sc variables}}{\bbpageref{assigned}}
+\bxrefline{{\em controls}}{{\em Controller}}{{\sc variables}}{\bbpageref{controls}}
+\bxrefline{{\em occupied\_by}}{{\em Airspace}}{{\sc variables}}{\bbpageref{occupied_by}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION hand\_over\_aircraft
+%
+{\bf { hand\_over\_aircraft}} ( {\em as1\_\/} , {\em as2\_\/} , {\em acft\_\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em as1\_\/} $\in$ {\em airspaces\/}\label{airspaces}\index{airspaces}  $\wedge$
+{\em as2\_\/} $\in$ {\em airspaces\/}\label{airspaces}\index{airspaces}  $\wedge$ \bnl
+{\em acft\_\/} $\in$ {\em aircraft\/}\label{aircraft}\index{aircraft}  $\wedge$ \bnl
+{\em as1\_\/} $\neq$ {\em as2\_\/} $\wedge$ \bnl
+{\em acft\_\/} $\in$ {\em occupied\_by\/}\label{occupied_by}\index{occupied_by}  ( {\em as1\_\/} )  $\wedge$ \bnl
+{\sf card}$\;$( {\em occupied\_by\/}\label{occupied_by}\index{occupied_by}  ( {\em as2\_\/} )  )  $<$ {\em maxholding\/}\label{maxholding}\index{maxholding}  ( {\em as2\_\/} )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em hand\_over\/}\label{hand_over}\index{hand_over}  ( {\em assigned\/}\label{assigned}\index{assigned}  ( {\em as1\_\/} )  , {\em assigned\/}\label{assigned}\index{assigned}  ( {\em as2\_\/} )  , {\em acft\_\/} )  \bparallel \bnl
+{\em transfer\_aircraft\/}\label{transfer_aircraft}\index{transfer_aircraft}  ( {\em as1\_\/} , {\em as2\_\/} , {\em acft\_\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\bxrefline{{\em airspaces}}{{\em Airspace}}{{\sc variables}}{\bbpageref{airspaces}}
+\bxrefline{{\em assigned}}{{\em Airspace}}{{\sc variables}}{\bbpageref{assigned}}
+\bxrefline{{\em hand\_over}}{{\em Controller}}{{\sc operations}}{\bbpageref{hand_over}}
+\bxrefline{{\em maxholding}}{{\em Airspace}}{{\sc variables}}{\bbpageref{maxholding}}
+\bxrefline{{\em occupied\_by}}{{\em Airspace}}{{\sc variables}}{\bbpageref{occupied_by}}
+\bxrefline{{\em transfer\_aircraft}}{{\em Airspace}}{{\sc operations}}{\bbpageref{transfer_aircraft}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION aircraft\_arrives
+%
+{\bf { aircraft\_arrives}} ( {\em as\/} , {\em acft\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acft\/} $\in$ {\em aircraft\/}\label{aircraft}\index{aircraft}  $\wedge$ \bnl
+{\em as\/} $\in$ {\em airspaces\/}\label{airspaces}\index{airspaces}  $\wedge$ \bnl
+{\em acft\/} $\not\in$  {\sf union}$\;$(  {\sf ran}$\;$( {\em occupied\_by\/}\label{occupied_by}\index{occupied_by}  )  )  $\wedge$ \bnl
+{\em acft\/} $\not\in$  {\sf union}$\;$(  {\sf ran}$\;$( {\em controls\/}\label{controls}\index{controls}  )  )  $\wedge$ \bnl
+{\sf card}$\;$( {\em occupied\_by\/}\label{occupied_by}\index{occupied_by}  ( {\em as\/} )  )  $<$ {\em maxholding\/}\label{maxholding}\index{maxholding}  ( {\em as\/} )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em do\_aircraft\_arrives\/}\label{do_aircraft_arrives}\index{do_aircraft_arrives}  ( {\em as\/} , {\em acft\/} )  \bparallel \bnl
+{\em add\_aircraft\/}\label{add_aircraft}\index{add_aircraft}  ( {\em assigned\/}\label{assigned}\index{assigned}  ( {\em as\/} )  , {\em acft\/} )  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em add\_aircraft}}{{\em Controller}}{{\sc operations}}{\bbpageref{add_aircraft}}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\bxrefline{{\em airspaces}}{{\em Airspace}}{{\sc variables}}{\bbpageref{airspaces}}
+\bxrefline{{\em assigned}}{{\em Airspace}}{{\sc variables}}{\bbpageref{assigned}}
+\bxrefline{{\em controls}}{{\em Controller}}{{\sc variables}}{\bbpageref{controls}}
+\bxrefline{{\em do\_aircraft\_arrives}}{{\em Airspace}}{{\sc operations}}{\bbpageref{do_aircraft_arrives}}
+\bxrefline{{\em maxholding}}{{\em Airspace}}{{\sc variables}}{\bbpageref{maxholding}}
+\bxrefline{{\em occupied\_by}}{{\em Airspace}}{{\sc variables}}{\bbpageref{occupied_by}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for ATCSystem
+%
+\bxrefhead{Cross-references for ATCSystem}
+\bxrefline{{\em add\_aircraft}}{{\em Controller}}{{\sc operations}}{\bbpageref{add_aircraft}}
+\bxrefline{{\em aircraft}}{{\em Aircraft}}{{\sc variables}}{\bbpageref{aircraft}}
+\bxrefline{{\em Aircraft}}{}{{\sc machine}}{\bbpageref{Aircraft}}
+\bxrefline{{\em Airspace}}{}{{\sc machine}}{\bbpageref{Airspace}}
+\bxrefline{{\em airspaces}}{{\em Airspace}}{{\sc variables}}{\bbpageref{airspaces}}
+\bxrefline{{\em assigned}}{{\em Airspace}}{{\sc variables}}{\bbpageref{assigned}}
+\bxrefline{{\em Controller}}{}{{\sc machine}}{\bbpageref{Controller}}
+\bxrefline{{\em controls}}{{\em Controller}}{{\sc variables}}{\bbpageref{controls}}
+\bxrefline{{\em create\_airspace}}{{\em Airspace}}{{\sc operations}}{\bbpageref{create_airspace}}
+\bxrefline{{\em create\_controller}}{{\em Controller}}{{\sc operations}}{\bbpageref{create_controller}}
+\bxrefline{{\em do\_aircraft\_arrives}}{{\em Airspace}}{{\sc operations}}{\bbpageref{do_aircraft_arrives}}
+\bxrefline{{\em hand\_over}}{{\em Controller}}{{\sc operations}}{\bbpageref{hand_over}}
+\bxrefline{{\em maxholding}}{{\em Airspace}}{{\sc variables}}{\bbpageref{maxholding}}
+\bxrefline{{\em occupied\_by}}{{\em Airspace}}{{\sc variables}}{\bbpageref{occupied_by}}
+\bxrefline{{\em transfer\_aircraft}}{{\em Airspace}}{{\sc operations}}{\bbpageref{transfer_aircraft}}
+\vskip 3.5ex

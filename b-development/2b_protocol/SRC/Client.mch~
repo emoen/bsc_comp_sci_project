@@ -1,0 +1,32 @@
+MACHINE           
+	Client
+
+SEES
+	Bool_TYPE, CommsDefs, Globals
+	
+VARIABLES
+	cstate
+
+INVARIANT         
+	cstate : STATE
+
+INITIALISATION    
+	cstate := idle
+
+OPERATIONS
+		
+  cinit = cstate := idle;
+		
+  conrq =
+	IF cstate = idle THEN
+		cstate := conp
+	END;
+
+  concf(pp:BOOL) = 
+	IF cstate = conp THEN
+		cstate := connected
+	ELSE	cstate := idle
+	END;
+
+	state <-- query_cstate = state := cstate
+END

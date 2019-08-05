@@ -1,0 +1,67 @@
+THEORY PropertiesX IS
+  ctx(SecureNetwork) => card(MESSAGE) : NAT1;
+  ctx(SecureNetwork) => ctx(Bool_TYPE);
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE
+END
+&
+THEORY ExpandHypX IS
+  inv(SecureNetwork) => inv(Bool_TYPE);
+  inv(SecureNetwork) => msg : seq(MESSAGE);
+  inv(SecureNetwork) => card(msg) <= 100;
+  pre(send) => mm : MESSAGE
+END
+&
+THEORY Initialisation IS
+  cst(SecureNetwork) & ctx(SecureNetwork) => {} : seq(MESSAGE);
+  cst(SecureNetwork) & ctx(SecureNetwork) => card({}) <= 100
+END
+&
+THEORY receive
+END
+&
+THEORY send IS
+  cst(SecureNetwork) & ctx(SecureNetwork) & inv(SecureNetwork) & asn(SecureNetwork) & pre(send) => (card(msg) < 100 => msg <- mm : seq(MESSAGE));
+  cst(SecureNetwork) & ctx(SecureNetwork) & inv(SecureNetwork) & asn(SecureNetwork) & pre(send) => (card(msg) < 100 => card(msg <- mm) <= 100)
+END
+&
+THEORY Context IS
+  cst(SecureNetwork) => (ctx(Bool_TYPE) => #MESSAGE.(card(MESSAGE) : NAT1))
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

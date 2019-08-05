@@ -1,0 +1,18 @@
+REFINEMENT        
+	ExponentialCipherRef
+
+REFINES
+	Cipher
+	
+SEES
+	Arithmetic
+
+OPERATIONS
+
+  rr <-- encrypt_op(mm) =
+	rr := exp(mm, ee) mod nn;
+
+		
+  rr <-- decrypt_op(mm) =
+	rr := exp(mm, dd) mod nn 
+END

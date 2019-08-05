@@ -1,0 +1,474 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts)
+;
+(?)
+;
+(maxAccounts = 6)
+;
+(
+(Globals(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(accountNumber , accountBalance , totalBalance , networkBalance , ATMBalance , withdraw_flag , deposit_flag)
+;
+(accountNumber , accountBalance , totalBalance , networkBalance , ATMBalance , withdraw_flag , deposit_flag)
+;
+(accountNumber <: 1..maxAccounts & accountBalance : accountNumber --> NAT & networkBalance : accountNumber --> NAT & ATMBalance : accountNumber --> NAT & totalBalance : accountNumber --> NAT & withdraw_flag : NAT & deposit_flag : NAT & !aa.(aa : accountNumber => totalBalance(aa) = accountBalance(aa)+ATMBalance(aa)))
+;
+(accountNumber <: 1..maxAccounts & accountBalance : accountNumber --> NAT & networkBalance : accountNumber --> NAT & ATMBalance : accountNumber --> NAT & totalBalance : accountNumber --> NAT & withdraw_flag : NAT & deposit_flag : NAT & !aa.(aa : accountNumber => totalBalance(aa) = accountBalance(aa)+ATMBalance(aa)))
+;
+(?)
+;
+(accountNumber , accountBalance , networkBalance , ATMBalance , totalBalance , withdraw_flag , deposit_flag := {} , {} , {} , {} , {} , 0 , 0)
+;
+(accountNumber , accountBalance , networkBalance , ATMBalance , totalBalance , withdraw_flag , deposit_flag := {} , {} , {} , {} , {} , 0 , 0)
+;
+(create_account,bank_deposit,deposit_to_network,deposit_to_ATM,bank_withdraw,withdrawal_to_network,withdrawal_to_ATM,isaccount,getbalance)
+;
+(create_account , bank_deposit , deposit_to_network , deposit_to_ATM , bank_withdraw , withdrawal_to_network , withdrawal_to_ATM , isaccount , getbalance)
+;
+(bankSystem2(?):(?):(?))
+;
+(
+(
+ (create_account)
+;
+ (? , Mod_Op , NonDet_Op , (accNr , rep <-- create_account))
+;
+ (?)
+;
+ (accNr , rep)
+;
+ (
+ (true)
+ |
+ (
+ (IF accountNumber /= 1..maxAccounts THEN
+ rep := TRUE ||
+ ANY acc WHERE
+ acc : (1..maxAccounts)-accountNumber
+ THEN
+ accNr := acc ||
+ accountNumber := accountNumber \/ {acc} ||
+ accountBalance(acc) := 0 ||
+ totalBalance(acc) := 0
+ END
+ ELSE
+ rep := FALSE ||
+ accNr := 0
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (not(accountNumber = 1..maxAccounts))
+ )
+ ==>
+ (
+ (
+ (rep := TRUE)
+ )
+ ||
+ (
+ @(acc).
+ (
+ (
+ (acc : (1..maxAccounts)-accountNumber)
+ )
+ ==>
+ (
+ (accNr , accountNumber , accountBalance , totalBalance := acc , accountNumber \/ {acc} , accountBalance <+ {acc |-> 0} , totalBalance <+ {acc |-> 0})
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (accountNumber = 1..maxAccounts)
+ )
+ ==>
+ (
+ (rep , accNr := FALSE , 0)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (bank_deposit)
+;
+ (? , Mod_Op , Det_Op , (newBalance , rep <-- bank_deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (newBalance , rep)
+;
+ (
+ (acc : accountNumber & amount : NAT1 & deposit_flag = 2)
+ |
+ (
+ (IF accountBalance(acc) < 5000-amount THEN
+ networkBalance := {acc} <<| networkBalance ||
+ accountBalance(acc) := accountBalance(acc)+amount ||
+ totalBalance(acc) := totalBalance(acc)+amount ||
+ deposit_flag := 0 ||
+ newBalance := accountBalance(acc)+amount ||
+ rep := TRUE
+ ELSE
+ rep := FALSE ||
+ newBalance := 0
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1 & deposit_flag = 2)
+ |
+ (
+ (
+ (
+ (accountBalance(acc) < 5000-amount)
+ )
+ ==>
+ (
+ (networkBalance , accountBalance , totalBalance , deposit_flag , newBalance , rep := {acc} <<| networkBalance , accountBalance <+ {acc |-> accountBalance(acc)+amount} , totalBalance <+ {acc |-> totalBalance(acc)+amount} , 0 , accountBalance(acc)+amount , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (5000-amount <= accountBalance(acc))
+ )
+ ==>
+ (
+ (rep , newBalance := FALSE , 0)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (deposit_to_network)
+;
+ (? , Mod_Op , Det_Op , deposit_to_network(acc , amount))
+;
+ (acc , amount)
+;
+ (?)
+;
+ (
+ (acc : accountNumber & amount : NAT1 & acc /: dom(networkBalance) & deposit_flag = 1)
+ |
+ (
+ (
+ (
+ (ATMBalance := {acc} <<| ATMBalance)
+ )
+ ||
+ (
+ (networkBalance(acc) := amount)
+ )
+ )
+ ||
+ (
+ (deposit_flag := 2)
+ )
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1 & not(acc : dom(networkBalance)) & deposit_flag = 1)
+ |
+ (
+ (ATMBalance , networkBalance , deposit_flag := {acc} <<| ATMBalance , networkBalance <+ {acc |-> amount} , 2)
+ )
+ )
+)
+,
+(
+ (deposit_to_ATM)
+;
+ (? , Mod_Op , Det_Op , deposit_to_ATM(acc , amount))
+;
+ (acc , amount)
+;
+ (?)
+;
+ (
+ (acc : accountNumber & amount : NAT1 & acc /: dom(ATMBalance) & deposit_flag = 0)
+ |
+ (
+ (
+ (ATMBalance(acc) := amount)
+ )
+ ||
+ (
+ (deposit_flag := 1)
+ )
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1 & not(acc : dom(ATMBalance)) & deposit_flag = 0)
+ |
+ (
+ (ATMBalance , deposit_flag := ATMBalance <+ {acc |-> amount} , 1)
+ )
+ )
+)
+,
+(
+ (bank_withdraw)
+;
+ (? , Mod_Op , Det_Op , (ok <-- bank_withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok)
+;
+ (
+ (acc : accountNumber & amount : NAT & acc /: dom(networkBalance) & withdraw_flag = 0)
+ |
+ (
+ (IF amount <= accountBalance(acc) THEN
+ accountBalance(acc) := accountBalance(acc)-amount ||
+ networkBalance(acc) := amount ||
+ withdraw_flag := 1 ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT & not(acc : dom(networkBalance)) & withdraw_flag = 0)
+ |
+ (
+ (
+ (
+ (amount <= accountBalance(acc))
+ )
+ ==>
+ (
+ (accountBalance , networkBalance , withdraw_flag , ok := accountBalance <+ {acc |-> accountBalance(acc)-amount} , networkBalance <+ {acc |-> amount} , 1 , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (accountBalance(acc) < amount)
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (withdrawal_to_network)
+;
+ (? , Mod_Op , Det_Op , withdrawal_to_network(acc , amount))
+;
+ (acc , amount)
+;
+ (?)
+;
+ (
+ (acc : accountNumber & amount : NAT & acc /: dom(ATMBalance) & withdraw_flag = 1)
+ |
+ (
+ (
+ (
+ (networkBalance := {acc} <<| networkBalance)
+ )
+ ||
+ (
+ (ATMBalance(acc) := amount)
+ )
+ )
+ ||
+ (
+ (withdraw_flag := 2)
+ )
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT & not(acc : dom(ATMBalance)) & withdraw_flag = 1)
+ |
+ (
+ (networkBalance , ATMBalance , withdraw_flag := {acc} <<| networkBalance , ATMBalance <+ {acc |-> amount} , 2)
+ )
+ )
+)
+,
+(
+ (withdrawal_to_ATM)
+;
+ (? , Mod_Op , Det_Op , withdrawal_to_ATM(acc , amount))
+;
+ (acc , amount)
+;
+ (?)
+;
+ (
+ (acc : accountNumber & amount : NAT & withdraw_flag = 2)
+ |
+ (
+ (IF amount <= totalBalance(acc) THEN
+ ATMBalance := {acc} <<| ATMBalance ||
+ totalBalance(acc) := totalBalance(acc)-amount ||
+ withdraw_flag := 0
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT & withdraw_flag = 2)
+ |
+ (
+ (
+ (
+ (amount <= totalBalance(acc))
+ )
+ ==>
+ (
+ (ATMBalance , totalBalance , withdraw_flag := {acc} <<| ATMBalance , totalBalance <+ {acc |-> totalBalance(acc)-amount} , 0)
+ )
+ )
+ []
+ (
+ (
+ (totalBalance(acc) < amount)
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (isaccount)
+;
+ (? , Val_Op , Det_Op , (rr <-- isaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (acc : 1..maxAccounts)
+ |
+ (
+ (BEGIN
+ IF acc : accountNumber THEN
+ rr := TRUE
+ ELSE
+ rr := FALSE
+ END
+ END)
+ )
+ )
+;
+ (
+ (acc : 1..maxAccounts)
+ |
+ (
+ (
+ (
+ (acc : accountNumber)
+ )
+ ==>
+ (
+ (rr := TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(acc : accountNumber))
+ )
+ ==>
+ (
+ (rr := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (getbalance)
+;
+ (? , Val_Op , Det_Op , (bal <-- getbalance(acc)))
+;
+ (acc)
+;
+ (bal)
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (bal := accountBalance(acc))
+ )
+ )
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (bal := accountBalance(acc))
+ )
+ )
+)
+)

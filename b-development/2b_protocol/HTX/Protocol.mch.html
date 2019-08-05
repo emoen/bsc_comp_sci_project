@@ -1,0 +1,148 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Protocol">
+  <TITLE>The Protocol machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE>
+<A NAME="MACHINE"><B>MACHINE</B></A>           
+	Protocol
+
+<A NAME="SEES"><B>SEES</B></A> 
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>, <A HREF="CommsDefs.mch.html#MACHINE">CommsDefs</A>, <A HREF="Globals.mch.html#MACHINE">Globals</A>
+
+<A NAME="INCLUDES"><B>INCLUDES</B></A>
+	<A HREF="Client.mch.html#MACHINE">Client</A>, <A HREF="Server.mch.html#MACHINE">Server</A>,
+	client.<A HREF="Buffer.mch.html#MACHINE">Buffer</A>(<A HREF="CommsDefs.mch.html#SETS">MESSAGES</A>, <A HREF="CommsDefs.mch.html#CONSTANTS">buffsize</A>),
+	server.<A HREF="Buffer.mch.html#MACHINE">Buffer</A>(<A HREF="CommsDefs.mch.html#SETS">MESSAGES</A>, <A HREF="CommsDefs.mch.html#CONSTANTS">buffsize</A>)
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>         
+	p_state, report
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>
+	p_state : <A HREF="CommsDefs.mch.html#SETS">STATE</A> &
+	report : <A HREF="Bool_TYPE.mch.html#SETS">BOOL</A>
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>
+	p_state, report := idle, FALSE
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  <A NAME="OPNAME!pinit">pinit</A> =
+	<B>BEGIN</B>
+		p_state := idle ||
+		client.<A HREF="Buffer.mch.html#OPNAME!binit">binit</A> ||
+		server.<A HREF="Buffer.mch.html#OPNAME!binit">binit</A>
+	<B>END</B>;
+		
+/* request for server from client */
+  ok_protocol, ok_client, ok_buffer <-- <A NAME="OPNAME!pcon_request">pcon_request</A> = 
+	<B>IF</B> p_state = idle <B>THEN</B>
+		p_state := conpending ||
+		ok_protocol := TRUE ||
+		ok_client <-- <A HREF="Client.mch.html#OPNAME!client_con_request">client_con_request</A> ||
+		ok_buffer <-- client.<A HREF="Buffer.mch.html#OPNAME!add">add</A>(con)
+	<B>ELSE</B>	ok_protocol := FALSE
+	<B>END</B>;
+
+/* server receives request*/
+  ok_protocol, ok_server, ok_buffer &lt;-- pcon_in = 
+	IF p_state = conpending THEN
+		p_state := conrequest ||
+		ok_protocol := TRUE ||
+		ok_server &lt;-- conin ||
+		ok_buffer &lt;-- client.remove 
+	ELSE	ok_protocol := FALSE
+	END;
+
+/* server decides accepts/declines request */
+  ok_protocol, ok_server, ok_buffer <-- <A NAME="OPNAME!pcon_report">pcon_report</A> = 
+	<B>IF</B> p_state = conrequest <B>THEN</B>
+		p_state := have_report ||
+		report <-- <A HREF="Server.mch.html#OPNAME!server_con_report">server_con_report</A> ||
+		
+		ok_protocol := report ||
+		ok_server := report ||
+		<B>IF</B> report = TRUE <B>THEN</B>
+			ok_buffer <-- server.<A HREF="Buffer.mch.html#OPNAME!add">add</A>(true)
+		<B>ELSE</B> ok_buffer <-- server.<A HREF="Buffer.mch.html#OPNAME!add">add</A>(false) 
+		<B>END</B>
+	<B>ELSE</B>	ok_protocol := FALSE
+	<B>END</B>;
+	
+/* protocol replies to requset */
+  ok_protocol, ok_client, ok_buffer <-- <A NAME="OPNAME!pcon_give_report">pcon_give_report</A> = 
+	<B>BEGIN</B>
+		ok_client <-- <A HREF="Client.mch.html#OPNAME!client_con_report">client_con_report</A>(report) ||
+		<B>IF</B> p_state = have_report <B>THEN</B>
+			<B>IF</B> report = TRUE <B>THEN</B>
+				p_state := connected 
+			<B>ELSE</B>
+				<A HREF="Server.mch.html#OPNAME!sinit">sinit</A> ||
+				p_state := idle
+			<B>END</B> || 
+			ok_protocol := TRUE ||
+			ok_buffer <-- server.<A HREF="Buffer.mch.html#OPNAME!remove">remove</A>
+		<B>ELSE</B>	ok_protocol := FALSE
+		<B>END</B>
+	<B>END</B>;
+		
+  ps <-- <A NAME="OPNAME!prot_state">prot_state</A> =	
+	ps := p_state;
+			
+  aa <-- <A NAME="OPNAME!pcreate_acc">pcreate_acc</A> =
+	<B>PRE</B>
+		p_state = connected			
+	<B>THEN</B>
+		aa <-- <A HREF="Server.mch.html#OPNAME!screate_acc">screate_acc</A>
+	<B>END</B>;
+		
+  new <-- <A NAME="OPNAME!pdeposit">pdeposit</A>(acc: NAT & amount:NAT) =
+	<B>PRE</B>
+		p_state = connected		
+	<B>THEN</B>
+		new <-- <A HREF="Server.mch.html#OPNAME!sdeposit">sdeposit</A>(acc, amount)
+	<B>END</B>;
+		
+  ans <-- <A NAME="OPNAME!pwithdraw">pwithdraw</A>(acc:NAT1 & amount:NAT1) =
+	<B>PRE</B>
+		p_state = connected
+	<B>THEN</B>
+		ans <-- <A HREF="Server.mch.html#OPNAME!swithdraw">swithdraw</A>(acc, amount)
+	<B>END</B>;
+		
+  rr <-- <A NAME="OPNAME!pisaccount">pisaccount</A>(acc:NAT) =
+	<B>PRE</B>
+		p_state = connected			
+	<B>THEN</B>
+		rr <-- <A HREF="Server.mch.html#OPNAME!sisaccount">sisaccount</A>(acc)
+	<B>END</B>;
+
+  rr <-- <A NAME="OPNAME!query_pstate">query_pstate</A> = rr := p_state
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Mar  5 19:00:40 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

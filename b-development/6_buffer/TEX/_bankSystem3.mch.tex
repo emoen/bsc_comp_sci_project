@@ -1,0 +1,227 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  bankSystem3.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em bankSystem3\/} \-\label{bankSystem3}\index{bankSystem3}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \+ \bbnl
+{\em Globals\/}\label{Globals}\index{Globals}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em accountNumber\/}\label{accountNumber}\index{accountNumber}  , \bnl
+{\em accountBalance\/}\label{accountBalance}\index{accountBalance}  , {\em totalBalance\/}\label{totalBalance}\index{totalBalance}  , \bnl
+{\em ATMData\/}\label{ATMData}\index{ATMData}  , {\em networkData\/}\label{networkData}\index{networkData}  , \bnl
+{\em transactionId\/}\label{transactionId}\index{transactionId}  , \bnl
+{\em req\_deposit\/}\label{req_deposit}\index{req_deposit}  , \bnl
+{\em req\_withdraw\/}\label{req_withdraw}\index{req_withdraw}  , \bnl
+{\em confirm\_deposit\/}\label{confirm_deposit}\index{confirm_deposit}  , {\em confirm\_withdrawal\/}\label{confirm_withdrawal}\index{confirm_withdrawal}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em accountNumber\/} $\subseteq$ {\em ACCOUNTS\/}\label{ACCOUNTS}\index{ACCOUNTS}  $\wedge$ \bnl
+{\em accountBalance\/} $\in$ {\em accountNumber\/} $\fun$  $\nat$  $\wedge$ \bnl
+{\em totalBalance\/} $\in$ {\em accountNumber\/} $\fun$  $\nat$  $\wedge$ \bnl
+{\em ATMData\/} $\in$ {\em accountNumber\/} $\fun$  $\nat$  $\wedge$ \bnl
+{\em networkData\/} $\in$ {\em accountNumber\/} $\fun$  $\nat$  $\wedge$ \bnl
+{\em transactionId\/} $\subseteq$ {\em 1\/} $\upto$ {\em 100\/} $\wedge$ \bnl
+{\em req\_deposit\/} $\in$ {\em transactionId\/} $\fun$ {\em accountNumber\/} $\times$  $\nat$  $\wedge$ \bnl
+{\em req\_withdraw\/} $\in$ {\em transactionId\/} $\fun$ {\em accountNumber\/} $\times$  $\nat$  $\wedge$ \bnl
+{\em confirm\_transaction\/} $\subseteq$ {\em transactionId\/} $\wedge$ \bnl
+$\forall$ {\em aa\/} . ( {\em aa\/} $\in$ {\em accountNumber\/} $\Rightarrow$ \bnl
+{\em totalBalance\/} ( {\em aa\/} )  $=$ {\em accountBalance\/} ( {\em aa\/} )  $+$ {\em ATMData\/} ( {\em aa\/} )  )
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ACCOUNTS}}{{\em Globals}}{{\sc definitions}}{\bbpageref{ACCOUNTS}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em accountNumber\/} , \bnl
+{\em accountBalance\/} , {\em totalBalance\/} , \bnl
+{\em ATMData\/} , {\em networkData\/} , \bnl
+{\em transactionId\/} , \bnl
+{\em req\_deposit\/} , {\em req\_withdraw\/} , \bnl
+{\em confirm\_deposit\/} , {\em confirm\_withdrawal\/} $:=$   $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  ,  $\emptyset$  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION request\_deposit
+%
+{\bf { request\_deposit}} ( {\em acc\/} $\in$ {\em accountNumber\/} $\wedge$
+{\em amount\/} $\in$  $\nat$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em xx\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em xx\/} $\in$ {\em transactionId\/} $\wedge$ \bnl
+{\em xx\/} $\not\in$  {\sf dom}$\;$( {\em req\_deposit\/} )  $\wedge$ \bnl
+{\em xx\/} $\not\in$ {\em confirm\_transaction\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em req\_deposit\/} $:=$  {\em req\_deposit\/} $\cup$  \{ \+{\em xx\/} $\mapsto$  ( {\em acc\/} $\mapsto$ {\em amount\/} )  \- \}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION request\_withdraw
+%
+{\bf { request\_withdraw}} ( {\em acc\/} $\in$ {\em accountNumber\/} $\wedge$
+{\em amount\/} $\in$  $\nat$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em xx\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em xx\/} $\in$ {\em transactionId\/} $\wedge$ \bnl
+{\em xx\/} $\not\in$  {\sf dom}$\;$( {\em req\_withdraw\/} )  $\wedge$ \bnl
+{\em xx\/} $\not\in$ {\em confirm\_transaction\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em req\_withdraw\/} $:=$  {\em req\_withdraw\/} $\cup$  \{ \+{\em xx\/} $\mapsto$  ( {\em acc\/} $\mapsto$ {\em amount\/} )  \- \}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION ATM\_deposit
+%
+{\bf { ATM\_deposit}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em xx\/} , {\em yy\/} , {\em zz\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em xx\/} $\in$ {\em transactionId\/} $\wedge$ \bnl
+{\em yy\/} $\in$ {\em accountNumber\/} $\wedge$ \bnl
+{\em zz\/} $\in$  $\nat$  $\wedge$ \bnl
+{\em xx\/} $\not\in$ {\em confirm\_transaction\/} $\wedge$ \bnl
+{\em yy\/} $\mapsto$ {\em zz\/} $\not\in$ {\em ATMData\/} $\wedge$ \bnl
+{\em yy\/} $\mapsto$ {\em zz\/} $\not\in$ {\em networkData\/} $\wedge$ \bnl
+{\em xx\/} $\mapsto$  ( {\em yy\/} $\mapsto$ {\em zz\/} )  $\in$ {\em req\_deposit\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em networkData\/} ( {\em yy\/} )  $:=$  {\em zz\/} \bparallel \bnl
+{\em ATMData\/} ( {\em yy\/} )  $:=$  {\em zz\/} \bparallel \bnl
+{\em totalBalance\/} ( {\em yy\/} )  $:=$  {\em totalBalance\/} ( {\em yy\/} )  $+$ {\em zz\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION Bank\_deposit
+%
+{\bf { Bank\_deposit}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em xx\/} , {\em yy\/} , {\em zz\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em xx\/} $\in$ {\em transactionId\/} $\wedge$ \bnl
+{\em yy\/} $\in$ {\em accountNumber\/} $\wedge$ \bnl
+{\em zz\/} $\in$  $\nat$  $\wedge$ \bnl
+{\em xx\/} $\not\in$ {\em confirm\_transaction\/} $\wedge$ \bnl
+{\em xx\/} $\mapsto$ {\em yy\/} $\in$ {\em ATMData\/} $\wedge$ \bnl
+{\em yy\/} $\mapsto$ {\em zz\/} $\in$ {\em networkData\/} $\wedge$ \bnl
+{\em xx\/} $\mapsto$  ( {\em yy\/} $\mapsto$ {\em zz\/} )  $\in$ {\em req\_deposit\/} $\wedge$ \bnl
+{\em ATMData\/} ( {\em yy\/} )  $=$ {\em networkData\/} ( {\em yy\/} )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em networkData\/} $:=$  {\em networkData\/} $-$  \{ \+{\em yy\/} $\mapsto$ {\em zz\/} \- \}  \bparallel \bnl
+{\em ATMData\/} $:=$  {\em ATMData\/} $-$  \{ \+{\em yy\/} $\mapsto$ {\em zz\/} \- \}  \bparallel \bnl
+{\em accountBalance\/} ( {\em yy\/} )  $:=$  {\em accountBalance\/} ( {\em yy\/} )  $+$ {\em zz\/} \bparallel \bnl
+{\em confirm\_transaction\/} $:=$  {\em confirm\_transaction\/} $\cup$  \{ \+{\em xx\/} \- \}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION ATM\_withdraw
+%
+{\bf { ATM\_withdraw}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em xx\/} , {\em yy\/} , {\em zz\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em xx\/} $\in$ {\em transactionId\/} $\wedge$ \bnl
+{\em yy\/} $\in$ {\em accountNumber\/} $\wedge$ \bnl
+{\em zz\/} $\in$  $\nat$  $\wedge$ \bnl
+{\em xx\/} $\not\in$ {\em confirm\_transaction\/} $\wedge$ \bnl
+{\em xx\/} $\mapsto$ {\em yy\/} $\not\in$ {\em ATMData\/} $\wedge$ \bnl
+{\em yy\/} $\mapsto$ {\em zz\/} $\not\in$ {\em networkData\/} $\wedge$ \bnl
+{\em xx\/} $\mapsto$  ( {\em yy\/} $\mapsto$ {\em zz\/} )  $\in$ {\em req\_withdraw\/} $\wedge$ \bnl
+{\em zz\/} $\leq$ {\em accountBalance\/} ( {\em yy\/} )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em networkData\/} ( {\em yy\/} )  $:=$  {\em zz\/} \bparallel \bnl
+{\em ATMData\/} ( {\em yy\/} )  $:=$  {\em zz\/} \bparallel \bnl
+{\em totalBalance\/} ( {\em yy\/} )  $:=$  {\em totalBalance\/} ( {\em yy\/} )  $-$ {\em zz\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION Bank\_withdraw
+%
+{\bf { Bank\_withdraw}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em xx\/} , {\em yy\/} , {\em zz\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em xx\/} $\in$ {\em transactionId\/} $\wedge$ \bnl
+{\em yy\/} $\in$ {\em accountNumber\/} $\wedge$ \bnl
+{\em zz\/} $\in$  $\nat$  $\wedge$ \bnl
+{\em xx\/} $\not\in$ {\em confirm\_transaction\/} $\wedge$ \bnl
+{\em xx\/} $\mapsto$  ( {\em yy\/} $\mapsto$ {\em zz\/} )  $\in$ {\em req\_withdraw\/} $\wedge$ \bnl
+{\em yy\/} $\mapsto$ {\em zz\/} $\in$ {\em networkData\/} $\wedge$ \bnl
+{\em zz\/} $\leq$ {\em accountBalance\/} ( {\em yy\/} )  $\wedge$ \bnl
+{\em ATMData\/} ( {\em yy\/} )  $=$ {\em networkData\/} ( {\em yy\/} )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em networkData\/} $:=$  {\em networkData\/} $-$  \{ \+{\em yy\/} $\mapsto$ {\em zz\/} \- \}  \bparallel \bnl
+{\em ATMData\/} $:=$  {\em ATMData\/} $-$  \{ \+{\em yy\/} $\mapsto$ {\em zz\/} \- \}  \bparallel \bnl
+{\em accountBalance\/} ( {\em yy\/} )  $:=$  {\em accountBalance\/} ( {\em yy\/} )  $-$ {\em zz\/} \bparallel \bnl
+{\em confirm\_transaction\/} $:=$  {\em confirm\_transaction\/} $\cup$  \{ \+{\em xx\/} \- \}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION network\_goes\_down
+%
+{\bf { network\_goes\_down}}  \bhsp $\defs$ \+ \bnl
+{\em networkData\/} $:=$   $\emptyset$  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION corrupt\_network
+%
+{\bf { corrupt\_network}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{ANY} \+{\em xx\/} , {\em vv\/} \- \bhsp \bOpnWord{WHERE} \+\bnl
+{\em xx\/} $\in$ {\em accountNumber\/} $\wedge$ \bnl
+{\em xx\/} $\in$  {\sf dom}$\;$( {\em networkData\/} )  $\wedge$ \bnl
+{\em vv\/} $\in$  $\nat$  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em networkData\/} ( {\em xx\/} )  $:=$  {\em networkData\/} ( {\em xx\/} )  $-$ {\em vv\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\- \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for bankSystem3
+%
+\bxrefhead{Cross-references for bankSystem3}
+\bxrefline{{\em ACCOUNTS}}{{\em Globals}}{{\sc definitions}}{\bbpageref{ACCOUNTS}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em Globals}}{}{{\sc machine}}{\bbpageref{Globals}}
+\vskip 3.5ex

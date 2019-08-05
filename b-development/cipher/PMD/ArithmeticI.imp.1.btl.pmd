@@ -1,0 +1,11 @@
+PROOFMETHOD ArithmeticI.imp.2.btl IS
+
+  THEORY BToolUsersTheory IS
+    aa : NAT  => exp(aa , b)*aa == exp(aa , b+1);
+    aa : NAT1  => 1 == exp(aa , 0)
+  END
+  &
+  THEORY FwdBToolUsersTheory
+  END
+
+END

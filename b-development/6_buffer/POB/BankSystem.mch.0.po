@@ -1,0 +1,158 @@
+THEORY PropertiesX IS
+  ctx(BankSystem) => maxAccounts = 6;
+  ctx(BankSystem) => ctx(Bool_TYPE);
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE
+END
+&
+THEORY ExpandHypX IS
+  inv(BankSystem) => inv(Bool_TYPE);
+  inv(BankSystem) => accountNumber <: 1..maxAccounts;
+  inv(BankSystem) => accountBalance : accountNumber --> NAT;
+  inv(BankSystem) => networkAccount : iseq(accountNumber);
+  inv(BankSystem) => networkBalance : accountNumber --> NAT;
+  inv(BankSystem) => ran(networkAccount) = dom(networkBalance);
+  inv(BankSystem) => ATMAccount : iseq(accountNumber);
+  inv(BankSystem) => ATMBalance : accountNumber --> NAT;
+  inv(BankSystem) => ran(ATMAccount) = dom(ATMBalance);
+  inv(BankSystem) => totalBalance : accountNumber --> NAT;
+  inv(BankSystem) => !aa.(aa : accountNumber => totalBalance(aa) = accountBalance(aa)+networkBalance(aa)+ATMBalance(aa));
+  pre(bank_deposit) => acc : accountNumber;
+  pre(bank_deposit) => amount : NAT1;
+  pre(deposit_to_network) => acc : accountNumber;
+  pre(deposit_to_network) => amount : NAT1;
+  pre(deposit_to_network) => not(acc : ran(networkAccount));
+  pre(deposit_to_network) => not(acc : dom(networkBalance));
+  pre(deposit_to_ATM) => acc : accountNumber;
+  pre(deposit_to_ATM) => amount : NAT1;
+  pre(deposit_to_ATM) => not(acc : ran(ATMAccount));
+  pre(deposit_to_ATM) => not(acc : dom(ATMBalance));
+  pre(bank_withdraw) => acc : accountNumber;
+  pre(bank_withdraw) => amount : NAT;
+  pre(bank_withdraw) => not(acc : ran(networkAccount));
+  pre(bank_withdraw) => not(acc : dom(networkBalance));
+  pre(withdrawal_to_network) => acc : accountNumber;
+  pre(withdrawal_to_network) => amount : NAT;
+  pre(withdrawal_to_network) => not(acc : ran(ATMAccount));
+  pre(withdrawal_to_network) => not(acc : dom(ATMBalance));
+  pre(withdrawal_to_ATM) => acc : accountNumber;
+  pre(withdrawal_to_ATM) => amount : NAT;
+  pre(isaccount) => acc : 1..maxAccounts;
+  pre(getbalance) => acc : accountNumber
+END
+&
+THEORY Initialisation IS
+  cst(BankSystem) & ctx(BankSystem) => {} <: 1..maxAccounts;
+  cst(BankSystem) & ctx(BankSystem) => {} : {} --> NAT;
+  cst(BankSystem) & ctx(BankSystem) => <> : iseq({});
+  cst(BankSystem) & ctx(BankSystem) => ran(<>) = dom({})
+END
+&
+THEORY create_account IS
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => accountNumber \/ {acc} <: 1..maxAccounts);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => accountBalance <+ {acc |-> 0} : accountNumber \/ {acc} --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => networkAccount : iseq(accountNumber \/ {acc}));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => networkBalance : accountNumber \/ {acc} --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => ATMAccount : iseq(accountNumber \/ {acc}));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => ATMBalance : accountNumber \/ {acc} --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => totalBalance <+ {acc |-> 0} : accountNumber \/ {acc} --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber & aa : accountNumber \/ {acc} => (totalBalance <+ {acc |-> 0})(aa) = (accountBalance <+ {acc |-> 0})(aa)+networkBalance(aa)+ATMBalance(aa))
+END
+&
+THEORY bank_deposit IS
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_deposit) => (accountBalance(acc) < 5000-amount => accountBalance <+ {acc |-> accountBalance(acc)+amount} : accountNumber --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_deposit) => (accountBalance(acc) < 5000-amount => networkAccount /|\ networkAccount~(acc)-1 ^ networkAccount \|/ networkAccount~(acc) : iseq(accountNumber));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_deposit) => (accountBalance(acc) < 5000-amount => {acc} <<| networkBalance : accountNumber --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_deposit) => (accountBalance(acc) < 5000-amount => ran(networkAccount /|\ networkAccount~(acc)-1 ^ networkAccount \|/ networkAccount~(acc)) = dom({acc} <<| networkBalance));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_deposit) => (accountBalance(acc) < 5000-amount => totalBalance <+ {acc |-> totalBalance(acc)+amount} : accountNumber --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_deposit) => (accountBalance(acc) < 5000-amount & aa : accountNumber => (totalBalance <+ {acc |-> totalBalance(acc)+amount})(aa) = (accountBalance <+ {acc |-> accountBalance(acc)+amount})(aa)+({acc} <<| networkBalance)(aa)+ATMBalance(aa))
+END
+&
+THEORY deposit_to_network IS
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_network) => networkAccount <- acc : iseq(accountNumber);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_network) => networkBalance <+ {acc |-> amount} : accountNumber --> NAT;
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_network) => ran(networkAccount <- acc) = dom(networkBalance <+ {acc |-> amount});
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_network) => ATMAccount /|\ ATMAccount~(acc)-1 ^ ATMAccount \|/ ATMAccount~(acc) : iseq(accountNumber);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_network) => {acc} <<| ATMBalance : accountNumber --> NAT;
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_network) => ran(ATMAccount /|\ ATMAccount~(acc)-1 ^ ATMAccount \|/ ATMAccount~(acc)) = dom({acc} <<| ATMBalance);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_network) => (aa : accountNumber => totalBalance(aa) = accountBalance(aa)+(networkBalance <+ {acc |-> amount})(aa)+({acc} <<| ATMBalance)(aa))
+END
+&
+THEORY deposit_to_ATM IS
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_ATM) => ATMAccount <- acc : iseq(accountNumber);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_ATM) => ATMBalance <+ {acc |-> amount} : accountNumber --> NAT;
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_ATM) => ran(ATMAccount <- acc) = dom(ATMBalance <+ {acc |-> amount});
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(deposit_to_ATM) => (aa : accountNumber => totalBalance(aa) = accountBalance(aa)+networkBalance(aa)+(ATMBalance <+ {acc |-> amount})(aa))
+END
+&
+THEORY bank_withdraw IS
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_withdraw) => (amount <= accountBalance(acc) => accountBalance <+ {acc |-> accountBalance(acc)-amount} : accountNumber --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_withdraw) => (amount <= accountBalance(acc) => networkAccount <- acc : iseq(accountNumber));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_withdraw) => (amount <= accountBalance(acc) => networkBalance <+ {acc |-> amount} : accountNumber --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_withdraw) => (amount <= accountBalance(acc) => ran(networkAccount <- acc) = dom(networkBalance <+ {acc |-> amount}));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(bank_withdraw) => (amount <= accountBalance(acc) & aa : accountNumber => totalBalance(aa) = (accountBalance <+ {acc |-> accountBalance(acc)-amount})(aa)+(networkBalance <+ {acc |-> amount})(aa)+ATMBalance(aa))
+END
+&
+THEORY withdrawal_to_network IS
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_network) => networkAccount /|\ networkBalance~(acc)-1 ^ networkBalance \|/ networkBalance~(acc) : iseq(accountNumber);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_network) => {acc} <<| networkBalance : accountNumber --> NAT;
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_network) => ran(networkAccount /|\ networkBalance~(acc)-1 ^ networkBalance \|/ networkBalance~(acc)) = dom({acc} <<| networkBalance);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_network) => ATMAccount <- acc : iseq(accountNumber);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_network) => ATMBalance <+ {acc |-> amount} : accountNumber --> NAT;
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_network) => ran(ATMAccount <- acc) = dom(ATMBalance <+ {acc |-> amount});
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_network) => (aa : accountNumber => totalBalance(aa) = accountBalance(aa)+({acc} <<| networkBalance)(aa)+(ATMBalance <+ {acc |-> amount})(aa))
+END
+&
+THEORY withdrawal_to_ATM IS
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_ATM) => (amount <= totalBalance(acc) => ATMAccount /|\ ATMBalance~(acc)-1 ^ ATMBalance \|/ ATMBalance~(acc) : iseq(accountNumber));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_ATM) => (amount <= totalBalance(acc) => {acc} <<| ATMBalance : accountNumber --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_ATM) => (amount <= totalBalance(acc) => ran(ATMAccount /|\ ATMBalance~(acc)-1 ^ ATMBalance \|/ ATMBalance~(acc)) = dom({acc} <<| ATMBalance));
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_ATM) => (amount <= totalBalance(acc) => totalBalance <+ {acc |-> totalBalance(acc)-amount} : accountNumber --> NAT);
+  cst(BankSystem) & ctx(BankSystem) & inv(BankSystem) & asn(BankSystem) & pre(withdrawal_to_ATM) => (amount <= totalBalance(acc) & aa : accountNumber => (totalBalance <+ {acc |-> totalBalance(acc)-amount})(aa) = accountBalance(aa)+networkBalance(aa)+({acc} <<| ATMBalance)(aa))
+END
+&
+THEORY isaccount
+END
+&
+THEORY getbalance
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

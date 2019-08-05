@@ -1,0 +1,312 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Protocol.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \+ \bbnl
+{\em Protocol\/} \-\label{Protocol}\index{Protocol}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  , {\em CommsDefs\/}\label{CommsDefs}\index{CommsDefs}  , {\em Globals\/}\label{Globals}\index{Globals}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \+ \bbnl
+{\em Client\/}\label{Client}\index{Client}  , {\em Server\/}\label{Server}\index{Server}  , \bnl
+{\em client\/} . {\em Buffer\/}\label{Buffer}\index{Buffer}  ( {\em MESSAGES\/}\label{MESSAGES}\index{MESSAGES}  , {\em buffsize\/}\label{buffsize}\index{buffsize}  )  , \bnl
+{\em server\/} . {\em Buffer\/}\label{Buffer}\index{Buffer}  ( {\em MESSAGES\/}\label{MESSAGES}\index{MESSAGES}  , {\em buffsize\/}\label{buffsize}\index{buffsize}  )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em p\_state\/}\label{p_state}\index{p_state}  , {\em report\/}\label{report}\index{report}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em p\_state\/} $\in$ {\em STATE\/}\label{STATE}\index{STATE}  $\wedge$ \bnl
+{\em report\/} $\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em p\_state\/} , {\em report\/} $:=$  {\em idle\/} , {\em FALSE\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pinit
+%
+{\bf { pinit}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+{\em p\_state\/} $:=$  {\em idle\/} \bparallel \bnl
+{\em client\/} . {\em binit\/}\label{binit}\index{binit}  \bparallel \bnl
+{\em server\/} . {\em binit\/}\label{binit}\index{binit}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em binit}}{{\em Buffer}}{{\sc operations}}{\bbpageref{binit}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pcon\_request
+%
+{\em ok\_protocol\/} , {\em ok\_client\/} , {\em ok\_buffer\/} $\longleftarrow$  {\bf { pcon\_request}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em p\_state\/} $=$ {\em idle\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em p\_state\/} $:=$  {\em conpending\/} \bparallel \bnl
+{\em ok\_protocol\/} $:=$  {\em TRUE\/} \bparallel \bnl
+{\em ok\_client\/} $\longleftarrow$ {\em client\_con\_request\/}\label{client_con_request}\index{client_con_request}  \bparallel \bnl
+{\em ok\_buffer\/} $\longleftarrow$ {\em client\/} . {\em add\/}\label{add}\index{add}  ( {\em con\/} )  \-\bnl
+\bOpnWord{ELSE} \+{\em ok\_protocol\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em add}}{{\em Buffer}}{{\sc operations}}{\bbpageref{add}}
+\bxrefline{{\em client\_con\_request}}{{\em Client}}{{\sc operations}}{\bbpageref{client_con_request}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pcon\_in
+%
+{\em ok\_protocol\/} , {\em ok\_server\/} , {\em ok\_buffer\/} $\longleftarrow$  {\bf { pcon\_in}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em p\_state\/} $=$ {\em conpending\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em p\_state\/} $:=$  {\em conrequest\/} \bparallel \bnl
+{\em ok\_protocol\/} $:=$  {\em TRUE\/} \bparallel \bnl
+{\em ok\_server\/} $\longleftarrow$ {\em conin\/}\label{conin}\index{conin}  \bparallel \bnl
+{\em ok\_buffer\/} $\longleftarrow$ {\em client\/} . {\em remove\/}\label{remove}\index{remove}  \-\bnl
+\bOpnWord{ELSE} \+{\em ok\_protocol\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em conin}}{{\em Server}}{{\sc operations}}{\bbpageref{conin}}
+\bxrefline{{\em remove}}{{\em Buffer}}{{\sc operations}}{\bbpageref{remove}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pcon\_report
+%
+{\em ok\_protocol\/} , {\em ok\_server\/} , {\em ok\_buffer\/} $\longleftarrow$  {\bf { pcon\_report}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em p\_state\/} $=$ {\em conrequest\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em p\_state\/} $:=$  {\em have\_report\/} \bparallel \bnl
+{\em report\/} $\longleftarrow$ {\em server\_con\_report\/}\label{server_con_report}\index{server_con_report}  \bparallel \bnl
+{\em ok\_protocol\/} $:=$  {\em report\/} \bparallel \bnl
+{\em ok\_server\/} $:=$  {\em report\/} \bparallel \bnl
+\bOpnWord{IF} \+{\em report\/} $=$ {\em TRUE\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ok\_buffer\/} $\longleftarrow$ {\em server\/} . {\em add\/}\label{add}\index{add}  ( {\em true\/} )  \-\bnl
+\bOpnWord{ELSE} \+{\em ok\_buffer\/} $\longleftarrow$ {\em server\/} . {\em add\/}\label{add}\index{add}  ( {\em false\/} )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{ELSE} \+{\em ok\_protocol\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em add}}{{\em Buffer}}{{\sc operations}}{\bbpageref{add}}
+\bxrefline{{\em server\_con\_report}}{{\em Server}}{{\sc operations}}{\bbpageref{server_con_report}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pcon\_give\_report
+%
+{\em ok\_protocol\/} , {\em ok\_client\/} , {\em ok\_buffer\/} $\longleftarrow$  {\bf { pcon\_give\_report}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+{\em ok\_client\/} $\longleftarrow$ {\em client\_con\_report\/}\label{client_con_report}\index{client_con_report}  ( {\em report\/} )  \bparallel \bnl
+\bOpnWord{IF} \+{\em p\_state\/} $=$ {\em have\_report\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+{\em report\/} $=$ {\em TRUE\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em p\_state\/} $:=$  {\em connected\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em sinit\/}\label{sinit}\index{sinit}  \bparallel \bnl
+{\em p\_state\/} $:=$  {\em idle\/} \-\bnl
+\bOpnWord{END}  \bparallel \bnl
+{\em ok\_protocol\/} $:=$  {\em TRUE\/} \bparallel \bnl
+{\em ok\_buffer\/} $\longleftarrow$ {\em server\/} . {\em remove\/}\label{remove}\index{remove}  \-\bnl
+\bOpnWord{ELSE} \+{\em ok\_protocol\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em client\_con\_report}}{{\em Client}}{{\sc operations}}{\bbpageref{client_con_report}}
+\bxrefline{{\em remove}}{{\em Buffer}}{{\sc operations}}{\bbpageref{remove}}
+\bxrefline{{\em sinit}}{{\em Server}}{{\sc operations}}{\bbpageref{sinit}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION prot\_state
+%
+{\em ps\/} $\longleftarrow$  {\bf { prot\_state}}  \bhsp $\defs$ \+ \bnl
+{\em ps\/} $:=$  {\em p\_state\/} \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pcreate\_acc
+%
+{\em aa\/} $\longleftarrow$  {\bf { pcreate\_acc}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em p\_state\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em aa\/} $\longleftarrow$ {\em screate\_acc\/}\label{screate_acc}\index{screate_acc}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em screate\_acc}}{{\em Server}}{{\sc operations}}{\bbpageref{screate_acc}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pdeposit
+%
+{\em new\/} $\longleftarrow$  {\bf { pdeposit}} ( {\em acc\/} $\in$  $\nat$  $\wedge$
+{\em amount\/} $\in$  $\nat$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em p\_state\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em new\/} $\longleftarrow$ {\em sdeposit\/}\label{sdeposit}\index{sdeposit}  ( {\em acc\/} , {\em amount\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em sdeposit}}{{\em Server}}{{\sc operations}}{\bbpageref{sdeposit}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pwithdraw
+%
+{\em ans\/} $\longleftarrow$  {\bf { pwithdraw}} ( {\em acc\/} $\in$  $\nat\bsub{1}$  $\wedge$
+{\em amount\/} $\in$  $\nat\bsub{1}$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em p\_state\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em ans\/} $\longleftarrow$ {\em swithdraw\/}\label{swithdraw}\index{swithdraw}  ( {\em acc\/} , {\em amount\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em swithdraw}}{{\em Server}}{{\sc operations}}{\bbpageref{swithdraw}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION pisaccount
+%
+{\em rr\/} $\longleftarrow$  {\bf { pisaccount}} ( {\em acc\/} $\in$  $\nat$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em p\_state\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em rr\/} $\longleftarrow$ {\em sisaccount\/}\label{sisaccount}\index{sisaccount}  ( {\em acc\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em sisaccount}}{{\em Server}}{{\sc operations}}{\bbpageref{sisaccount}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION query\_pstate
+%
+{\em rr\/} $\longleftarrow$  {\bf { query\_pstate}}  \bhsp $\defs$ \bhsp \+{\em rr\/} $:=$  {\em p\_state\/} \-\- \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Protocol
+%
+\bxrefhead{Cross-references for Protocol}
+\bxrefline{{\em add}}{{\em Buffer}}{{\sc operations}}{\bbpageref{add}}
+\bxrefline{{\em binit}}{{\em Buffer}}{{\sc operations}}{\bbpageref{binit}}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em Buffer}}{}{{\sc machine}}{\bbpageref{Buffer}}
+\bxrefline{{\em buffsize}}{{\em CommsDefs}}{{\sc constants}}{\bbpageref{buffsize}}
+\bxrefline{{\em Client}}{}{{\sc machine}}{\bbpageref{Client}}
+\bxrefline{{\em client\_con\_report}}{{\em Client}}{{\sc operations}}{\bbpageref{client_con_report}}
+\bxrefline{{\em client\_con\_request}}{{\em Client}}{{\sc operations}}{\bbpageref{client_con_request}}
+\bxrefline{{\em CommsDefs}}{}{{\sc machine}}{\bbpageref{CommsDefs}}
+\bxrefline{{\em conin}}{{\em Server}}{{\sc operations}}{\bbpageref{conin}}
+\bxrefline{{\em Globals}}{}{{\sc machine}}{\bbpageref{Globals}}
+\bxrefline{{\em MESSAGES}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{MESSAGES}}
+\bxrefline{{\em remove}}{{\em Buffer}}{{\sc operations}}{\bbpageref{remove}}
+\bxrefline{{\em screate\_acc}}{{\em Server}}{{\sc operations}}{\bbpageref{screate_acc}}
+\bxrefline{{\em sdeposit}}{{\em Server}}{{\sc operations}}{\bbpageref{sdeposit}}
+\bxrefline{{\em Server}}{}{{\sc machine}}{\bbpageref{Server}}
+\bxrefline{{\em server\_con\_report}}{{\em Server}}{{\sc operations}}{\bbpageref{server_con_report}}
+\bxrefline{{\em sinit}}{{\em Server}}{{\sc operations}}{\bbpageref{sinit}}
+\bxrefline{{\em sisaccount}}{{\em Server}}{{\sc operations}}{\bbpageref{sisaccount}}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\bxrefline{{\em swithdraw}}{{\em Server}}{{\sc operations}}{\bbpageref{swithdraw}}
+\vskip 3.5ex

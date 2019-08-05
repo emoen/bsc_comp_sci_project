@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of BankSystem">
+  <TITLE>The BankSystem machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           BankSystem
+
+<A NAME="INCLUDES"><B>INCLUDES</B></A>
+	<A HREF="Globals.mch.html#MACHINE">Globals</A>
+
+<A NAME="SEES"><B>SEES</B></A>
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>         
+	accountBalance, totalBalance,
+	networkBalance, networkAccount,
+	ATMBalance, ATMAccount,
+	accountNumber
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>
+	accountNumber <: <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> &         
+
+/*The balance as it is stored in the bank */
+	accountBalance : accountNumber --&gt; NAT &
+
+/*There may be some balance in the network */
+	networkAccount : iseq(accountNumber) &
+	networkBalance : accountNumber --&gt; NAT &
+	ran(networkAccount) = dom(networkBalance) & 
+
+
+/*There may be some balance in the ATM machine */
+	ATMAccount : iseq(accountNumber) &
+	ATMBalance : accountNumber --&gt; NAT &
+	ran(ATMAccount) = dom(ATMBalance) &
+
+/* The answere balance, a virtual balance which is only updated
+	after a 'handshake' between the ATM and the bank */
+	totalBalance : accountNumber --&gt; NAT &
+
+/* No money is lost during a transaction */
+	!(aa).(aa : accountNumber =&gt;
+		totalBalance(aa) = accountBalance(aa) 
+			+ networkBalance(aa) + ATMBalance(aa) )
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>
+	accountNumber, accountBalance, 
+	networkAccount, networkBalance,
+	ATMAccount, ATMBalance, totalBalance := {}, {}, <>, {}, <>, {}, {}
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+
+ accNr, rep <-- <A NAME="OPNAME!create_account">create_account</A> =
+	<B>IF</B> accountNumber /= <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> <B>THEN</B>
+		rep := TRUE ||
+		<B>ANY</B> acc
+		<B>WHERE</B> 
+			acc : <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> - accountNumber 
+		<B>THEN</B>
+			accNr := acc ||
+			accountNumber := accountNumber \/ {acc} ||
+			accountBalance(acc) := 0 ||
+
+			totalBalance(acc) := 0
+		<B>END</B>
+	<B>ELSE</B>	rep := FALSE ||
+		accNr := 0	
+	<B>END</B>;
+
+  newBalance, rep <-- <A NAME="OPNAME!bank_deposit">bank_deposit</A>(acc : accountNumber & amount : NAT1) =
+	<B>IF</B> accountBalance(acc) < <A HREF="Globals.mch.html#DEFINITIONS">MAXINT</A> - amount <B>THEN</B>
+		networkBalance := {acc} &lt;<| networkBalance ||
+		networkAccount := networkAccount /|\ (networkAccount~(acc)-1) ^
+					networkAccount \|/ networkAccount~(acc) ||
+
+		accountBalance(acc) := accountBalance(acc) + amount ||
+
+		totalBalance(acc) := totalBalance(acc) + amount ||
+
+		newBalance := accountBalance(acc) + amount ||
+		rep := TRUE
+	<B>ELSE</B> 
+		rep := FALSE ||
+		newBalance := 0
+	<B>END</B>;
+
+  <A NAME="OPNAME!deposit_to_network">deposit_to_network</A>(acc :accountNumber & amount : NAT1) =
+	<B>PRE</B>
+		acc /: ran(networkAccount) &
+		acc /: dom(networkBalance) 
+	<B>THEN</B>
+		ATMBalance := {acc} &lt;<| ATMBalance ||
+		ATMAccount := ATMAccount /|\ (ATMAccount~(acc)-1) ^
+					ATMAccount \|/ ATMAccount~(acc) ||
+		networkBalance(acc) := amount ||
+		networkAccount := networkAccount &lt;- acc
+	<B>END</B>;
+
+  <A NAME="OPNAME!deposit_to_ATM">deposit_to_ATM</A>(acc :accountNumber & amount : NAT1) =
+	<B>PRE</B>
+		acc /: ran(ATMAccount) &
+		acc /: dom(ATMBalance) 
+	<B>THEN</B>
+		ATMBalance(acc) := amount ||
+		ATMAccount := ATMAccount &lt;- acc
+	<B>END</B>;
+
+  ok <-- <A NAME="OPNAME!bank_withdraw">bank_withdraw</A>(acc :accountNumber & amount : NAT) =
+	<B>PRE</B>
+		acc /: ran(networkAccount) &
+		acc /: dom(networkBalance)
+	<B>THEN</B>
+		<B>IF</B> amount <= accountBalance(acc) <B>THEN</B>
+			accountBalance(acc) := accountBalance(acc) - amount ||
+	
+			networkBalance(acc) := amount ||
+			networkAccount := networkAccount &lt;- acc ||
+
+			ok := TRUE 
+		<B>ELSE</B>	ok := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!withdrawal_to_network">withdrawal_to_network</A>(acc :accountNumber & amount : NAT) =
+	<B>PRE</B>
+		acc /: ran(ATMAccount) &
+		acc /: dom(ATMBalance)
+	<B>THEN</B>
+		networkBalance := {acc} &lt;<| networkBalance ||
+		networkAccount := networkAccount /|\ (networkBalance~(acc)-1) ^
+					networkBalance \|/ networkBalance~(acc) ||
+
+		ATMBalance(acc) := amount ||
+		ATMAccount := ATMAccount &lt;- acc
+	<B>END</B>;
+
+  <A NAME="OPNAME!withdrawal_to_ATM">withdrawal_to_ATM</A>(acc :accountNumber & amount : NAT) =
+	<B>BEGIN</B>
+/*or money_to_customer*/
+		<B>IF</B> amount <= totalBalance(acc) <B>THEN</B>
+			ATMBalance := {acc} &lt;<| ATMBalance ||
+			ATMAccount := ATMAccount /|\ (ATMBalance~(acc)-1) ^
+						ATMBalance \|/ ATMBalance~(acc) ||		
+
+			totalBalance(acc) := totalBalance(acc) - amount
+		<B>END</B>
+	<B>END</B>;
+  
+  rr <-- <A NAME="OPNAME!isaccount">isaccount</A>(acc : <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A>) =
+	<B>BEGIN</B>
+		<B>IF</B> acc : accountNumber <B>THEN</B>
+			rr := TRUE
+		<B>ELSE</B>	rr := FALSE
+		<B>END</B>
+	<B>END</B>;
+		
+  bal <-- <A NAME="OPNAME!getbalance">getbalance</A>(acc : accountNumber) =
+	bal := accountBalance(acc)
+
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Feb 19 13:10:46 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

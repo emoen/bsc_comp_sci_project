@@ -1,0 +1,514 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ATM_SocketClient.c Code Module">
+  <TITLE>ATM_SocketClient.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "String_TYPE.h"
+
+<B>#include</B> "Bool_TYPE.h"
+
+<B>#include</B> "ATM_SocketClient.h"
+
+<B>#define</B> Get4byteNum \
+    ( ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr     ] * 16777216 ) + \
+      ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr + 1 ] *    65536 ) + \
+      ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr + 2 ] *      256 ) + \
+      ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr + 3 ] ) )
+
+<B>#define</B> Get3byteNum \
+    ( ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr     ] *    65536 ) + \
+      ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr + 1 ] *      256 ) + \
+      ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr + 2 ] ) )
+
+<B>#define</B> Get2byteNum \
+    ( ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr     ] * 256 ) + \
+      ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr + 1 ] ) )
+
+<B>#define</B> Get1byteNum \
+    ( ( <B>unsigned</B> <B>char</B> ) _in_buf [ _in_buf_ptr ] )
+
+
+
+<B>#define</B> Put4byteNum(n) \
+    _out_buf [ _out_buf_ptr     ] = ( <B>unsigned</B> <B>char</B> ) ( (n) / 16777216 ); \
+    _out_buf [ _out_buf_ptr + 1 ] = ( <B>unsigned</B> <B>char</B> ) ( ((n) % 16777216) / 65536 ); \
+    _out_buf [ _out_buf_ptr + 2 ] = ( <B>unsigned</B> <B>char</B> ) ( ((n) % 65536)    / 256 ); \
+    _out_buf [ _out_buf_ptr + 3 ] = ( <B>unsigned</B> <B>char</B> ) ( (n) % 256 )
+
+<B>#define</B> Put3byteNum(n) \
+    _out_buf [ _out_buf_ptr     ] = ( <B>unsigned</B> <B>char</B> ) ( ((n) % 16777216) / 65536 ); \
+    _out_buf [ _out_buf_ptr + 1 ] = ( <B>unsigned</B> <B>char</B> ) ( ((n) % 65536)    / 256 ); \
+    _out_buf [ _out_buf_ptr + 2 ] = ( <B>unsigned</B> <B>char</B> ) ( (n) % 256 )
+
+<B>#define</B> Put2byteNum(n) \
+    _out_buf [ _out_buf_ptr     ] = ( <B>unsigned</B> <B>char</B> ) ( ((n) % 65536)    / 256 ); \
+    _out_buf [ _out_buf_ptr + 1 ] = ( <B>unsigned</B> <B>char</B> ) ( (n) % 256 )
+
+<B>#define</B> Put1byteNum(n) \
+    _out_buf [ _out_buf_ptr     ] = ( <B>unsigned</B> <B>char</B> ) ( (n) % 256 )
+
+
+<B>int</B> slave_sock;
+<B>char</B> serv_addr [ 20 ];
+<B>int</B> serv_port;
+
+
+<B>#define</B> doOutRealloc(n,s) \
+ \
+<B>{</B> \
+  <B>char</B> * _prev_out_buf   = _out_buf; \
+  <B>int</B> _prev_out_buf_size = _out_buf_size; \
+  _out_buf_size = (n); \
+  _out_buf = ( <B>char</B> * ) realloc ( ( <B>char</B> * ) _out_buf, \
+                                              ( _out_buf_size * <B>sizeof</B> ( <B>char</B> ) ) ); \
+  <B>if</B> ( _out_buf == NULL ) <B>{</B> \
+    <B>printf</B> ( "\n  %s: out_buf malloc (%d) failure\n", s, _out_buf_size ); \
+    _out_buf = _prev_out_buf; \
+    _out_buf_size = _prev_out_buf_size; \
+    * _rep = FALSE; \
+    <B>return</B>; \
+  <B>}</B> \
+<B>}</B>
+
+<B>#define</B> doInRealloc(n,s) \
+ \
+<B>{</B> \
+  <B>char</B> * _prev_in_buf   = _in_buf; \
+  <B>int</B> _prev_in_buf_size = _in_buf_size; \
+  _in_buf_size = (n); \
+  _in_buf = ( <B>char</B> * ) realloc ( ( <B>char</B> * ) _in_buf, \
+                                              ( _in_buf_size * <B>sizeof</B> ( <B>char</B> ) ) ); \
+  <B>if</B> ( _in_buf == NULL ) <B>{</B> \
+    <B>printf</B> ( "\n  %s: in_buf malloc (%d) failure\n", s, _in_buf_size ); \
+    _in_buf = _prev_in_buf; \
+    _in_buf_size = _prev_in_buf_size; \
+    * _rep = FALSE; \
+    <B>return</B>; \
+  <B>}</B> \
+<B>}</B>
+
+
+<B>void</B>
+<A NAME="OPNAME!ATM_INIT"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_INIT">ATM_INIT</A></A> ( <B>int</B> * _rep, <B>void</B> * _ipaddress, <B>int</B> _port )
+<B>{</B>
+  static <B>int</B>          init_done = 0;
+  <B>int</B> i                         = 0;
+
+  /***
+  check not already initialised
+  ***/
+  <B>if</B> ( init_done ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_INIT: already initialised\n" );
+    * _rep = FALSE;
+    <B>return</B>;
+  <B>}</B>
+
+  init_done = 1;
+
+  <B>while</B> ( ( ( ( <B>char</B> * ) _ipaddress ) [ i ] != '\0' ) && ( i &lt; 15 ) ) <B>{</B>
+    serv_addr [ i ] = ( ( <B>char</B> * ) _ipaddress ) [ i ];
+    i++;
+  <B>}</B>
+  serv_addr [ i ] = '\0';
+  serv_port = _port;
+
+  /***
+  perform malloc <B>for</B> _out_buf & _in_buf
+  ***/
+<B>#ifdef</B> TEST_FLAG
+    <B>printf</B> ( "ATM_INIT: _in_buf malloc (%d)\n", _in_buf_size );
+<B>#endif</B>
+  _in_buf = ( <B>char</B> * ) malloc ( _in_buf_size * <B>sizeof</B> ( <B>char</B> ) );
+  <B>if</B> ( _in_buf == NULL ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_INIT: in_buf malloc (%d) failure\n", _in_buf_size );
+    * _rep = FALSE;
+    <B>return</B>;    
+  <B>}</B>
+<B>#ifdef</B> TEST_FLAG
+    <B>printf</B> ( "ATM_INIT: _out_buf malloc (%d)\n", _out_buf_size );
+<B>#endif</B>
+  _out_buf = ( <B>char</B> * ) malloc ( _out_buf_size * <B>sizeof</B> ( <B>char</B> ) );
+  <B>if</B> ( _out_buf == NULL ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_INIT: in_buf malloc (%d) failure\n", _out_buf_size );
+    * _rep = FALSE;
+    <B>return</B>;    
+  <B>}</B>
+  * _rep = TRUE;
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_CONNECT"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_CONNECT">ATM_CONNECT</A></A> ( <B>int</B> * _rep )
+<B>{</B>
+  <B>int</B> on = 1;
+  struct sockaddr_in s_client;
+  <B>int</B> connected, connect_count;
+
+  <B>if</B> ( ( slave_sock = socket ( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) == -1 ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_CONNECT: socket failed - errno %d\n", errno );
+    * _rep = FALSE;
+    <B>return</B>;
+  <B>}</B>
+
+  <B>if</B> ( ( setsockopt ( slave_sock, SOL_SOCKET, SO_REUSEADDR,
+		      ( <B>char</B> * ) &on, <B>sizeof</B> ( on ) ) ) == -1 ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_CONNECT: setsockopt failed - errno %d\n", errno );
+    * _rep = FALSE;
+    <B>return</B>;
+  <B>}</B>
+
+  memset ( ( <B>char</B> * ) &s_client, 0, <B>sizeof</B> ( s_client ) );
+  s_client.sin_family = AF_INET;
+  s_client.sin_port = htons ( serv_port );
+  <B>if</B> ( ( s_client.sin_addr.s_addr = inet_addr ( serv_addr ) ) == INADDR_NONE ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_CONNECT: inet_addr failed - errno %d\n", errno );
+    * _rep = FALSE;
+    <B>return</B>;
+  <B>}</B>
+
+  connected = 0;
+  connect_count = 0;
+  <B>while</B> ( ( connect_count &lt; 10 ) && ( ! connected ) ) <B>{</B>
+    <B>if</B> ( connect ( slave_sock, ( struct sockaddr * ) &s_client,
+                                            <B>sizeof</B> ( s_client ) ) == 0 ) <B>{</B>
+      connected = 1;
+    <B>}</B>
+    <B>else</B> <B>{</B>
+      connect_count++;
+      sleep ( 1 );
+    <B>}</B>
+  <B>}</B>
+
+  <B>if</B> ( ! connected ) <B>{</B>
+   <B>printf</B> ( "\n  ATM_CONNECT: connect failed - errno %d\n", errno );
+   * _rep = FALSE;
+    <B>return</B>;
+  <B>}</B>
+  * _rep =TRUE;
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_WRITE"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_WRITE">ATM_WRITE</A></A> ( <B>int</B> * _rep )
+<B>{</B>
+  <B>int</B> write_len;
+  <B>int</B> out_buf_ptr0 = _out_buf_ptr - 4;
+
+  _out_buf_ptr = 0;
+  Put4byteNum(out_buf_ptr0);
+  write_len = write ( slave_sock, _out_buf, out_buf_ptr0 + 4 );
+  <B>if</B> ( write_len != out_buf_ptr0 + 4 ) <B>{</B>
+   <B>printf</B> ( "\n  ATM_WRITE: write error\n  `write' returned %d not %d\n",
+                                                                    write_len, out_buf_ptr0 );
+   * _rep = FALSE;
+  <B>}</B>
+  <B>else</B> <B>{</B>
+   * _rep = TRUE;
+  <B>}</B>
+  _out_buf_ptr = 4;
+
+<B>#ifdef</B> TEST_FLAG
+<B>{</B>
+  <B>int</B> n; <B>printf</B> ( "ATM_WRITE (%d including 1st four length bytes):\n    `", write_len );
+  <B>for</B> ( n = 0 ; n &lt; write_len ; n++ ) <B>{</B> <B>printf</B> ( "%3d ", ( <B>unsigned</B> <B>char</B> ) _out_buf [ n ] ); <B>}</B> <B>printf</B> ( "'\n    `" );
+<B>}</B>
+<B>#endif</B>
+
+  /***
+  check _in_buf_size/_out_buf_size are default
+  ***/
+  <B>if</B> ( _in_buf_size != ATM_SocketClientP2 ) <B>{</B>
+<B>#ifdef</B> TEST_FLAG
+  <B>printf</B> ( "ATM_WRITE: _in_buf realloc (%d -&gt; %d)\n", _in_buf_size, ATM_SocketClientP2 );
+<B>#endif</B>
+    doInRealloc ( ATM_SocketClientP2, "ATM_WRITE" );
+  <B>}</B>
+  <B>if</B> ( _out_buf_size != ATM_SocketClientP3 ) <B>{</B>
+<B>#ifdef</B> TEST_FLAG
+  <B>printf</B> ( "ATM_WRITE: _out_buf realloc (%d -&gt; %d)\n", _out_buf_size, ATM_SocketClientP3 );
+<B>#endif</B>
+    doOutRealloc ( ATM_SocketClientP3, "ATM_WRITE" );
+  <B>}</B>
+
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_READ"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_READ">ATM_READ</A></A> ( <B>int</B> * _rep, <B>int</B> * _pp )
+<B>{</B>
+  <B>int</B> read_len, tot_read_len, in_buf_len_available;
+  <B>char</B> * _in_buf_sock_ptr;
+
+  * _pp = 0;
+  * _rep = FALSE;
+
+  read_len = read ( slave_sock, _in_buf, 4 );
+
+  <B>if</B> ( read_len != 4 ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_READ: read error 1\n  `read' returned %d not 4\n", read_len);
+    <B>return</B>;
+  <B>}</B>
+  _in_buf_ptr = 0;
+  _in_buf_len = Get4byteNum;
+
+  /***
+  perform realloc <B>if</B> necessary
+  ***/
+  <B>if</B> ( _in_buf_len &gt; _in_buf_size ) <B>{</B>
+<B>#ifdef</B> TEST_FLAG
+  <B>printf</B> ( "ATM_READ: _in_buf realloc (%d -&gt; %d)\n", _in_buf_size, _in_buf_len );
+<B>#endif</B>
+    doInRealloc ( _in_buf_len, "ATM_READ" );
+  <B>}</B>
+
+  /***
+  read may come in many pieces
+  ***/
+  _in_buf_sock_ptr =_in_buf;
+  in_buf_len_available = _in_buf_size;
+  tot_read_len = 0;
+  <B>while</B> ( ( tot_read_len &lt; _in_buf_len ) && ( in_buf_len_available &gt; 0 ) ) <B>{</B>
+    read_len =  read ( slave_sock, _in_buf_sock_ptr, in_buf_len_available );
+    <B>if</B> ( read_len == 0 ) <B>break</B>;
+    <B>if</B> ( read_len &lt; 0 ) <B>{</B>
+      <B>if</B> ( errno != EINTR ) <B>break</B>;
+    <B>}</B>
+    tot_read_len += read_len;
+    _in_buf_sock_ptr += read_len;
+    in_buf_len_available -= read_len;
+  <B>}</B>
+
+  <B>if</B> ( tot_read_len != _in_buf_len ) <B>{</B>
+     <B>printf</B> ( "\n  SSTLSocket_READ: read error 3\n  `read' returned %d not %d\n",
+                                                       tot_read_len, _in_buf_len );
+     <B>return</B>;
+  <B>}</B>
+
+  * _pp = tot_read_len;
+  * _rep = TRUE;
+
+<B>#ifdef</B> TEST_FLAG
+<B>{</B>
+  <B>int</B> n; <B>printf</B> ( "_in_buf (%d):\n    `", _in_buf_len );
+  <B>for</B> ( n = 0 ; n &lt; _in_buf_len ; n++ ) <B>{</B> <B>printf</B> ( "%3d ", ( <B>unsigned</B> <B>char</B> ) _in_buf [ n ] ); <B>}</B> <B>printf</B> ( "'\n" );
+<B>}</B>
+<B>#endif</B>
+
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_CLOSE"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_CLOSE">ATM_CLOSE</A></A> ( <B>int</B> * _rep )
+<B>{</B>
+  <B>if</B> ( close ( slave_sock ) == -1 ) <B>{</B>
+    <B>printf</B> ( "\n  ATM_CLOSE: close failed - errno %d\n", errno );
+    * _rep = FALSE;
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    * _rep = TRUE;
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_GET_TOK"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A></A> ( <B>int</B> * _tok, <B>int</B> _toksize )
+<B>{</B>
+  <B>if</B> ( _in_buf_ptr + _toksize &lt;= _in_buf_size ) <B>{</B>
+    <B>switch</B> ( _toksize ) <B>{</B>
+    <B>case</B> 1:
+      * _tok = Get1byteNum;
+      <B>break</B>;
+    <B>case</B> 2:
+      * _tok = Get2byteNum;
+      <B>break</B>;
+    <B>case</B> 3:
+      * _tok = Get3byteNum;
+      <B>break</B>;
+    <B>case</B> 4:
+      * _tok = Get4byteNum;
+      <B>break</B>;
+    <B>}</B>
+    _in_buf_ptr += _toksize;
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    * _tok = 1;
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_GET_STR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_STR">ATM_GET_STR</A></A> ( <B>int</B> * _ss )
+<B>{</B>
+  <B>char</B> *s = ( <B>char</B> * ) _ss;
+  <B>int</B> i = 0;
+
+  <B>if</B> ( _in_buf_ptr + 2 &lt;= _in_buf_size ) <B>{</B>
+    <B>int</B> ss_len = Get2byteNum;
+    _in_buf_ptr += 2;
+    <B>while</B> ( ( ss_len ) && ( _in_buf_ptr &lt;= _in_buf_size ) ) <B>{</B>
+      <B>if</B> ( i &lt; 1000 )  <B>{</B> s [ i++ ] = _in_buf [ _in_buf_ptr ]; <B>}</B>
+      <B>if</B> ( i == 1000 ) <B>{</B>
+        <B>printf</B> ( "\n  ATM_GET_STR: truncating to 1000 characters\n" );
+        s [ i++ ] = '\0';
+      <B>}</B>
+      ss_len--;
+      _in_buf_ptr++;
+    <B>}</B>
+    <B>if</B> ( ss_len ) <B>{</B>
+      <B>printf</B> ( "\n  ATM_GET_STR: failed - length exceeds input buffer\n" );
+    <B>}</B>
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    <B>printf</B> ( "\n  ATM_GET_STR: failed - length exceeds input buffer\n" );
+    s [ 0 ] = '\0';
+  <B>}</B>
+<B>}</B>
+
+
+<B>void</B>
+<A NAME="OPNAME!ATM_GET_FIL"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_FIL">ATM_GET_FIL</A></A> ( <B>int</B> * _rep, <B>int</B> * _filesize, <B>int</B> * _filename )
+<B>{</B>
+  * _filesize = 0;
+  <B>if</B> ( _in_buf_ptr + 4 &lt;= _in_buf_size ) <B>{</B>
+    <B>FILE</B> * fileptr;
+    <B>int</B> ss_len = Get4byteNum;
+    _in_buf_ptr += 4;
+
+    * _filesize = ss_len;
+    fileptr = <B>fopen</B> ( ( <B>char</B> * ) _filename, "w" );
+    <B>if</B> ( fileptr == NULL ) <B>{</B> 
+      <B>printf</B> ( "\n  ATM_GET_FIL(%s): failed - errno %d\n",
+                                                    ( <B>char</B> * ) _filename, errno );
+      *_rep = FALSE;
+      <B>return</B>;
+    <B>}</B>
+
+    *_rep = TRUE;
+    <B>while</B> ( ( ss_len ) && ( _in_buf_ptr &lt;= _in_buf_size ) ) <B>{</B>
+      putc ( _in_buf [ _in_buf_ptr ], fileptr );
+      ss_len--;
+      _in_buf_ptr++;
+    <B>}</B>
+    <B>if</B> ( <B>fclose</B> ( fileptr ) ) <B>{</B>
+      <B>printf</B> ( "\n  ATM_GET_FIL(%s): failed - errno %d\n",
+                                                    ( <B>char</B> * ) _filename, errno );
+      *_rep = FALSE;
+    <B>}</B>
+    <B>else</B> <B>if</B> ( ss_len ) <B>{</B>
+      <B>printf</B> ( "\n  ATM_GET_FIL(%s): failed - file exceeds input buffer\n",
+                                                            ( <B>char</B> * ) _filename );
+      *_rep = FALSE;
+    <B>}</B>
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    <B>printf</B> ( "\n  ATM_GET_FIL(%s): failed - file exceeds input buffer\n",
+                                                            ( <B>char</B> * ) _filename );
+    *_rep = FALSE;
+  <B>}</B>
+<B>}</B>
+
+
+/*  <B>for</B> more effecient code 
+<B>void</B>
+ATM_GET_PTR_STR ( <B>int</B> * _ss )
+<B>{</B>
+  <B>int</B> ss_len = Get2byteNum;
+
+  _in_buf_ptr += 2 ;
+  _ss  = (<B>int</B> *) &(_in_buf [ _in_buf_ptr ]) ;
+  _in_buf_ptr += ss_len;
+<B>}</B>
+*/
+
+<B>void</B>
+<A NAME="OPNAME!ATM_PUT_TOK"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A></A> ( <B>int</B> _tok, <B>int</B> _toksize )
+<B>{</B>
+  <B>if</B> ( ( _out_buf_ptr + _toksize ) &lt;=  ATM_SocketClientP3 ) <B>{</B>
+    <B>switch</B> ( _toksize ) <B>{</B>
+    <B>case</B> 1:
+      Put1byteNum ( _tok );
+      <B>break</B>;
+    <B>case</B> 2:
+      Put2byteNum ( _tok );
+      <B>break</B>;
+    <B>case</B> 3:
+      Put3byteNum ( _tok );
+      <B>break</B>;
+    <B>case</B> 4:
+      Put4byteNum ( _tok );
+      <B>break</B>;
+    <B>}</B>
+    _out_buf_ptr += _toksize;
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_PUT_STR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_STR">ATM_PUT_STR</A></A> ( <B>int</B> * _ss )
+<B>{</B>
+  <B>char</B> *s = (<B>char</B> *)_ss;
+  <B>int</B> ss_len;
+  <B>int</B> i = 0;
+  ss_len = <B>strlen</B> ( s );
+
+  <B>if</B> ( (_out_buf_ptr + ss_len + 3 ) &lt; ATM_SocketClientP3  ) <B>{</B>
+    Put2byteNum ( ss_len + 1 );
+    _out_buf_ptr += 2;
+    <B>while</B> ( ss_len ) <B>{</B>
+      _out_buf [ _out_buf_ptr++ ] = s [ i++ ];
+      ss_len--;
+    <B>}</B>
+    _out_buf [ _out_buf_ptr++ ] = '\0';
+  <B>}</B>
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_GET_IN_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_IN_PTR">ATM_GET_IN_PTR</A></A> ( <B>int</B> * _ptr )
+<B>{</B>
+  * _ptr = _in_buf_ptr;
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_SET_IN_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_SET_IN_PTR">ATM_SET_IN_PTR</A></A> ( <B>int</B> _ptr )
+<B>{</B>
+  _in_buf_ptr = _ptr;
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_GET_OUT_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_OUT_PTR">ATM_GET_OUT_PTR</A></A> ( <B>int</B> * _ptr )
+<B>{</B>
+  * _ptr = _out_buf_ptr - 4;
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_GET_OUT_SIZE"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_OUT_SIZE">ATM_GET_OUT_SIZE</A></A> ( <B>int</B> * _sz )
+<B>{</B>
+  * _sz = _out_buf_size;
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!ATM_SET_OUT_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_SET_OUT_PTR">ATM_SET_OUT_PTR</A></A> ( <B>int</B> _ptr )
+<B>{</B>
+  _out_buf_ptr = _ptr + 4;
+<B>}</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:12:56 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,11 @@
+THEORY sdeposit IS
+1;1
+END
+&
+THEORY swithdraw IS
+1;1
+END
+&
+THEORY Constraints IS
+0
+END

@@ -1,0 +1,558 @@
+(
+ (?)
+ ;
+ (
+ (
+ (maxParams == 100),
+ (maxReq == 33)
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11),
+ (RES == accountNumber , account := {} , {}),
+ (maxParams == 100),
+ (maxReq == 33)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts)
+;
+(?)
+;
+(maxAccounts = 6)
+;
+(
+(Bank(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(ff , creq)
+;
+(ff , creq , account , accountNumber)
+;
+(ff : seq(NAT) & creq : seq(NAT) & size(ff) <= 100)
+;
+(ff : seq(NAT) & creq : seq(NAT) & size(ff) <= 100 & accountNumber <: 1..maxAccounts & account : accountNumber --> NAT & dom(account) = accountNumber)
+;
+(?)
+;
+(creq , ff := <> , <>)
+;
+(accountNumber , account := {} , {} || creq , ff := <> , <>)
+;
+(ATM_create_account,ATM_deposit,ATM_withdraw,ATM_isaccount,ATM_getbalance,check_clientreq)
+;
+(ATM_create_account , ATM_deposit , ATM_withdraw , ATM_isaccount , ATM_getbalance , check_clientreq)
+;
+(NetworkedBank(?):(?):(?))
+;
+(
+(
+ (ATM_create_account)
+;
+ (? , Mod_Op , Det_Op , (status <-- ATM_create_account))
+;
+ (?)
+;
+ (status)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ creq := creq <- 1 ||
+ status := TRUE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (creq , status := creq <- 1 , TRUE)
+ )
+ )
+)
+,
+(
+ (ATM_deposit)
+;
+ (? , Mod_Op , Det_Op , (status <-- ATM_deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (status)
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (IF size(ff) <= 98 & size(ff) < 33 THEN
+ creq := creq <- 2 ||
+ ff := ff <+ {card(ff)+1 |-> acc , card(ff)+2 |-> amount} ||
+ status := TRUE
+ ELSE
+ status := FALSE
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (
+ (
+ (size(ff) <= 98 & size(ff) < 33)
+ )
+ ==>
+ (
+ (creq , ff , status := creq <- 2 , ff <+ {card(ff)+1 |-> acc , card(ff)+2 |-> amount} , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(size(ff) <= 98 & size(ff) < 33))
+ )
+ ==>
+ (
+ (status := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (ATM_withdraw)
+;
+ (? , Mod_Op , Det_Op , (status <-- ATM_withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (status)
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (IF size(ff) <= 98 & size(ff) < 33 THEN
+ creq := creq <- 3 ||
+ ff := ff ^ [acc , amount] ||
+ status := TRUE
+ ELSE
+ status := FALSE
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (
+ (
+ (size(ff) <= 98 & size(ff) < 33)
+ )
+ ==>
+ (
+ (creq , ff , status := creq <- 3 , ff ^ [acc , amount] , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(size(ff) <= 98 & size(ff) < 33))
+ )
+ ==>
+ (
+ (status := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (ATM_isaccount)
+;
+ (? , Mod_Op , Det_Op , (status <-- ATM_isaccount(acc)))
+;
+ (acc)
+;
+ (status)
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (IF size(ff) <= 98 & size(ff) < 33 THEN
+ creq := creq <- 4 ||
+ ff := ff ^ [acc] ||
+ status := TRUE
+ ELSE
+ status := FALSE
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (
+ (
+ (size(ff) <= 98 & size(ff) < 33)
+ )
+ ==>
+ (
+ (creq , ff , status := creq <- 4 , ff ^ [acc] , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(size(ff) <= 98 & size(ff) < 33))
+ )
+ ==>
+ (
+ (status := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (ATM_getbalance)
+;
+ (? , Mod_Op , Det_Op , (status <-- ATM_getbalance(acc)))
+;
+ (acc)
+;
+ (status)
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (IF size(ff) <= 98 & size(ff) < 33 THEN
+ creq := creq <- 5 ||
+ ff := ff ^ [acc] ||
+ status := TRUE
+ ELSE
+ status := FALSE
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (
+ (
+ (size(ff) <= 98 & size(ff) < 33)
+ )
+ ==>
+ (
+ (creq , ff , status := creq <- 5 , ff ^ [acc] , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(size(ff) <= 98 & size(ff) < 33))
+ )
+ ==>
+ (
+ (status := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (check_clientreq)
+;
+ (? , Mod_Op , NonDet_Op , (num , ok , op <-- check_clientreq))
+;
+ (?)
+;
+ (num , ok , op)
+;
+ (
+ (true)
+ |
+ (
+ (IF card(creq) > 0 THEN
+ VAR aa , bb IN
+ IF last(creq) = 1 THEN
+ creq := front(creq) ||
+ num , ok <-- create_account ||
+ op := 1
+ ELSE
+ IF last(creq) = 2 THEN
+ creq := front(creq) ||
+ aa := ff(card(ff)-1) ||
+ bb := ff(card(ff)) ||
+ ff := ff /|\ card(ff)-2 ||
+ ok , num <-- deposit(aa , bb) ||
+ op := 2
+ ELSE
+ IF last(creq) = 3 THEN
+ creq := front(creq) ||
+ aa := ff(card(ff)-1) ||
+ bb := ff(card(ff)) ||
+ ff := ff /|\ card(ff)-2 ||
+ ok <-- withdraw(aa , bb) ||
+ num := 0 ||
+ op := 3
+ ELSE
+ IF last(creq) = 4 THEN
+ creq := front(creq) ||
+ aa := ff(card(ff)) ||
+ ff := tail(ff) ||
+ ok <-- isaccount(aa) ||
+ num := 0 ||
+ op := 4
+ ELSE
+ IF last(creq) = 5 THEN
+ creq := front(creq) ||
+ aa := ff(card(ff)) ||
+ ff := tail(ff) ||
+ num <-- getbalance(aa) ||
+ ok := FALSE ||
+ op := 5
+ END
+ END
+ END
+ END
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (0 < card(creq))
+ )
+ ==>
+ (
+ @(aa , bb).
+ (
+ (
+ (
+ (last(creq) = 1)
+ )
+ ==>
+ (
+ (
+ (
+ (creq := front(creq))
+ )
+ ||
+ (
+ (num , ok <-- create_account)
+ )
+ )
+ ||
+ (
+ (op := 1)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(last(creq) = 1))
+ )
+ ==>
+ (
+ (
+ (
+ (last(creq) = 2)
+ )
+ ==>
+ (
+ (
+ (
+ (creq , aa , bb , ff := front(creq) , ff(card(ff)-1) , ff(card(ff)) , ff /|\ card(ff)-2)
+ )
+ ||
+ (
+ (ok , num <-- deposit(aa , bb))
+ )
+ )
+ ||
+ (
+ (op := 2)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(last(creq) = 2))
+ )
+ ==>
+ (
+ (
+ (
+ (last(creq) = 3)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (creq , aa , bb , ff := front(creq) , ff(card(ff)-1) , ff(card(ff)) , ff /|\ card(ff)-2)
+ )
+ ||
+ (
+ (ok <-- withdraw(aa , bb))
+ )
+ )
+ ||
+ (
+ (num := 0)
+ )
+ )
+ ||
+ (
+ (op := 3)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(last(creq) = 3))
+ )
+ ==>
+ (
+ (
+ (
+ (last(creq) = 4)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (creq , aa , ff := front(creq) , ff(card(ff)) , tail(ff))
+ )
+ ||
+ (
+ (ok <-- isaccount(aa))
+ )
+ )
+ ||
+ (
+ (num := 0)
+ )
+ )
+ ||
+ (
+ (op := 4)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(last(creq) = 4))
+ )
+ ==>
+ (
+ (
+ (
+ (last(creq) = 5)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (creq , aa , ff := front(creq) , ff(card(ff)) , tail(ff))
+ )
+ ||
+ (
+ (num <-- getbalance(aa))
+ )
+ )
+ ||
+ (
+ (ok := FALSE)
+ )
+ )
+ ||
+ (
+ (op := 5)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(last(creq) = 5))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (card(creq) <= 0)
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+)

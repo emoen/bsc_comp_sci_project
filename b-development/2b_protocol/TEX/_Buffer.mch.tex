@@ -1,0 +1,100 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Buffer.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em Buffer\/} ( {\em ITEM\/} , {\em maxsize\/} )  \-\label{Buffer}\index{Buffer}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em contents\/}\label{contents}\index{contents}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em contents\/} $\in$  {\sf seq}$\;$( {\em ITEM\/} )  $\wedge$ \bnl
+{\sf size}$\;$( {\em contents\/} )  $\leq$ {\em maxsize\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em contents\/} $:=$   $\char91$ $\char93$  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION binit
+%
+{\bf { binit}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+{\em contents\/} $:=$   $\char91$ $\char93$  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION add
+%
+{\em ok\/} $\longleftarrow$  {\bf { add}} ( {\em ee\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em ee\/} $\in$ {\em ITEM\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+ {\sf size}$\;$( {\em contents\/} )  $<$ {\em maxsize\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em contents\/} $:=$  {\em contents\/} $\leftarrow$ {\em ee\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION initial
+%
+{\em ok\/} , {\em oo\/} $\longleftarrow$  {\bf { initial}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em contents\/} $\neq$  $\char91$ $\char93$  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em oo\/} $:=$   {\sf first}$\;$( {\em contents\/} )  \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em oo\/} $:\in$ {\em ITEM\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION remove
+%
+{\em ok\/} $\longleftarrow$  {\bf { remove}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em contents\/} $\neq$  $\char91$ $\char93$  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em contents\/} $:=$   {\sf tail}$\;$( {\em contents\/} )  \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\- \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Buffer
+%
+\bxrefhead{Cross-references for Buffer}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\vskip 3.5ex

@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ATM">
+  <TITLE>The ATM machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           ATM
+	
+<A NAME="SEES"><B>SEES</B></A>
+	<A HREF="CommsDefs.mch.html#MACHINE">CommsDefs</A>, <A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>, <A HREF="Globals.mch.html#MACHINE">Globals</A>
+ /*, Client*/
+
+INCLUDES
+	Protocol
+
+VARIABLES
+	atm_state
+
+INVARIANT
+	atm_state : STATE
+
+INITIALISATION
+	atm_state := idle
+
+OPERATIONS
+	get_protocol_state =
+/*we realy want to query client state but must do it at the procotol
+because of SEES and INCLUDES constraints */
+		atm_state <-- <A HREF="Protocol.mch.html#OPNAME!query_pstate">query_pstate</A>;
+
+	ans <-- <A NAME="OPNAME!deposit">deposit</A>(acc : NAT & amount : NAT1) =
+		<B>IF</B> atm_state = connected <B>THEN</B>
+			ans <-- <A HREF="Protocol.mch.html#OPNAME!pwithdraw">pwithdraw</A>(acc, amount)
+		<B>END</B>;
+
+	ans <-- <A NAME="OPNAME!withdraw">withdraw</A>(acc:NAT & amount:NAT1) =
+		<B>IF</B> atm_state = connected <B>THEN</B>	
+			ans <-- <A HREF="Protocol.mch.html#OPNAME!pwithdraw">pwithdraw</A>(acc, amount)
+		<B>END</B>;
+		
+	aa <-- <A NAME="OPNAME!create_acc">create_acc</A> =
+		<B>IF</B> atm_state = connected <B>THEN</B>
+			aa <-- <A HREF="Protocol.mch.html#OPNAME!pcreate_acc">pcreate_acc</A>
+		<B>END</B>;
+	
+	rr <-- <A NAME="OPNAME!isaccount">isaccount</A>(acc:NAT) =
+		<B>IF</B> atm_state = connected <B>THEN</B>
+			rr <-- <A HREF="Protocol.mch.html#OPNAME!pisaccount">pisaccount</A>(acc)	
+		<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Mar  5 19:03:33 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

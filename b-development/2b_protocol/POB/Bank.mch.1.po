@@ -1,0 +1,19 @@
+THEORY Initialisation IS
+0;0
+END
+&
+THEORY create_acc IS
+0;1
+END
+&
+THEORY deposit IS
+1
+END
+&
+THEORY withdraw IS
+1
+END
+&
+THEORY Constraints IS
+0
+END

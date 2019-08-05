@@ -1,0 +1,19 @@
+THEORY pcreate_acc IS
+1
+END
+&
+THEORY pdeposit IS
+1;1;1
+END
+&
+THEORY pwithdraw IS
+0;0;1;1
+END
+&
+THEORY pisaccount IS
+1
+END
+&
+THEORY Constraints IS
+0;0
+END

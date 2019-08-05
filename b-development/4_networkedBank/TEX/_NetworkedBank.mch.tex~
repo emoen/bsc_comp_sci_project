@@ -1,0 +1,249 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  NetworkedBank.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em NetworkedBank\/} \-\label{NetworkedBank}\index{NetworkedBank}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \bhsp{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \bhsp{\em Bank\/}\label{Bank}\index{Bank}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em ff\/}\label{ff}\index{ff}  , {\em creq\/}\label{creq}\index{creq}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em ff\/} $\in$  {\sf seq}$\;$(  $\nat$  )  $\wedge$ \bnl
+{\em creq\/} $\in$  {\sf seq}$\;$(  $\nat$  )  $\wedge$ \bnl
+{\sf size}$\;$( {\em ff\/} )  $\leq$ {\em maxParams\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em creq\/} , {\em ff\/} $:=$   $\char91$ $\char93$  ,  $\char91$ $\char93$  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION ATM\_create\_account
+%
+{\em status\/} $\longleftarrow$  {\bf { ATM\_create\_account}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+{\em creq\/} $:=$  {\em creq\/} $\leftarrow$ {\em 1\/} \bparallel \bnl
+{\em status\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION ATM\_deposit
+%
+{\em status\/} $\longleftarrow$  {\bf { ATM\_deposit}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em accountNumber\/}\label{accountNumber}\index{accountNumber}  $\wedge$ \bnl
+{\em amount\/} $\in$  $\nat\bsub{1}$  \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+ {\sf size}$\;$( {\em ff\/} )  $\leq$ {\em maxParams\/} $-$ {\em 2\/} $\wedge$
+{\sf size}$\;$( {\em ff\/} )  $<$ {\em maxReq\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$  {\em creq\/} $\leftarrow$ {\em 2\/} \bparallel \bnl
+{\em ff\/} $:=$  {\em ff\/} $<\kern-.65em\raisebox{.275ex}{$\scriptscriptstyle +$}\;$  \{ \+ {\sf card}$\;$( {\em ff\/} )  $+$ {\em 1\/} $\mapsto$ {\em acc\/} ,  {\sf card}$\;$( {\em ff\/} )  $+$ {\em 2\/} $\mapsto$ {\em amount\/} \- \}  \bparallel \bnl
+{\em status\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em status\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accountNumber}}{{\em Bank}}{{\sc variables}}{\bbpageref{accountNumber}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION ATM\_withdraw
+%
+{\em status\/} $\longleftarrow$  {\bf { ATM\_withdraw}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em accountNumber\/}\label{accountNumber}\index{accountNumber}  $\wedge$ \bnl
+{\em amount\/} $\in$  $\nat\bsub{1}$  \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+ {\sf size}$\;$( {\em ff\/} )  $\leq$ {\em maxParams\/} $-$ {\em 2\/} $\wedge$
+{\sf size}$\;$( {\em ff\/} )  $<$ {\em maxReq\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$  {\em creq\/} $\leftarrow$ {\em 3\/} \bparallel \bnl
+{\em ff\/} $:=$  {\em ff\/} $\cat$  $\char91$ {\em acc\/} , {\em amount\/} $\char93$  \bparallel \bnl
+{\em status\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em status\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accountNumber}}{{\em Bank}}{{\sc variables}}{\bbpageref{accountNumber}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION ATM\_isaccount
+%
+{\em status\/} $\longleftarrow$  {\bf { ATM\_isaccount}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em accountNumber\/}\label{accountNumber}\index{accountNumber}  \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+ {\sf size}$\;$( {\em ff\/} )  $\leq$ {\em maxParams\/} $-$ {\em 2\/} $\wedge$
+{\sf size}$\;$( {\em ff\/} )  $<$ {\em maxReq\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$  {\em creq\/} $\leftarrow$ {\em 4\/} \bparallel \bnl
+{\em ff\/} $:=$  {\em ff\/} $\cat$  $\char91$ {\em acc\/} $\char93$  \bparallel \bnl
+{\em status\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em status\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accountNumber}}{{\em Bank}}{{\sc variables}}{\bbpageref{accountNumber}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION ATM\_getbalance
+%
+{\em status\/} $\longleftarrow$  {\bf { ATM\_getbalance}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em accountNumber\/}\label{accountNumber}\index{accountNumber}  \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+ {\sf size}$\;$( {\em ff\/} )  $\leq$ {\em maxParams\/} $-$ {\em 2\/} $\wedge$
+{\sf size}$\;$( {\em ff\/} )  $<$ {\em maxReq\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$  {\em creq\/} $\leftarrow$ {\em 5\/} \bparallel \bnl
+{\em ff\/} $:=$  {\em ff\/} $\cat$  $\char91$ {\em acc\/} $\char93$  \bparallel \bnl
+{\em status\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em status\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accountNumber}}{{\em Bank}}{{\sc variables}}{\bbpageref{accountNumber}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION check\_clientreq
+%
+{\em num\/} , {\em ok\/} , {\em op\/} $\longleftarrow$  {\bf { check\_clientreq}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+ {\sf card}$\;$( {\em creq\/} )  $>$ {\em 0\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{VAR} \+{\em aa\/} , {\em bb\/} \- \bhsp \bOpnWord{IN} \+\bnl
+\bOpnWord{IF} \+ {\sf last}$\;$( {\em creq\/} )  $=$ {\em 1\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$   {\sf front}$\;$( {\em creq\/} )  \bparallel \bnl
+{\em num\/} , {\em ok\/} $\longleftarrow$ {\em create\_account\/}\label{create_account}\index{create_account}  \bparallel \bnl
+{\em op\/} $:=$  {\em 1\/} \-\bnl
+\bOpnWord{ELSE} \+ \bOpnWord{IF} \+ {\sf last}$\;$( {\em creq\/} )  $=$ {\em 2\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$   {\sf front}$\;$( {\em creq\/} )  \bparallel \bnl
+{\em aa\/} $:=$  {\em ff\/} (  {\sf card}$\;$( {\em ff\/} )  $-$ {\em 1\/} )  \bparallel \bnl
+{\em bb\/} $:=$  {\em ff\/} (  {\sf card}$\;$( {\em ff\/} )  )  \bparallel \bnl
+{\em ff\/} $:=$  {\em ff\/} $\uparrow$  {\sf card}$\;$( {\em ff\/} )  $-$ {\em 2\/} \bparallel \bnl
+{\em ok\/} , {\em num\/} $\longleftarrow$ {\em deposit\/}\label{deposit}\index{deposit}  ( {\em aa\/} , {\em bb\/} )  \bparallel \bnl
+{\em op\/} $:=$  {\em 2\/} \-\bnl
+\bOpnWord{ELSE} \+ \bOpnWord{IF} \+ {\sf last}$\;$( {\em creq\/} )  $=$ {\em 3\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$   {\sf front}$\;$( {\em creq\/} )  \bparallel \bnl
+{\em aa\/} $:=$  {\em ff\/} (  {\sf card}$\;$( {\em ff\/} )  $-$ {\em 1\/} )  \bparallel \bnl
+{\em bb\/} $:=$  {\em ff\/} (  {\sf card}$\;$( {\em ff\/} )  )  \bparallel \bnl
+{\em ff\/} $:=$  {\em ff\/} $\uparrow$  {\sf card}$\;$( {\em ff\/} )  $-$ {\em 2\/} \bparallel \bnl
+{\em ok\/} $\longleftarrow$ {\em withdraw\/}\label{withdraw}\index{withdraw}  ( {\em aa\/} , {\em bb\/} )  \bparallel \bnl
+{\em num\/} $:=$  {\em 0\/} \bparallel \bnl
+{\em op\/} $:=$  {\em 3\/} \-\bnl
+\bOpnWord{ELSE} \+ \bOpnWord{IF} \+ {\sf last}$\;$( {\em creq\/} )  $=$ {\em 4\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$   {\sf front}$\;$( {\em creq\/} )  \bparallel \bnl
+{\em aa\/} $:=$  {\em ff\/} (  {\sf card}$\;$( {\em ff\/} )  )  \bparallel \bnl
+{\em ff\/} $:=$   {\sf tail}$\;$( {\em ff\/} )  \bparallel \bnl
+{\em ok\/} $\longleftarrow$ {\em isaccount\/}\label{isaccount}\index{isaccount}  ( {\em aa\/} )  \bparallel \bnl
+{\em num\/} $:=$  {\em 0\/} \bparallel \bnl
+{\em op\/} $:=$  {\em 4\/} \-\bnl
+\bOpnWord{ELSE} \+ \bOpnWord{IF} \+ {\sf last}$\;$( {\em creq\/} )  $=$ {\em 5\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em creq\/} $:=$   {\sf front}$\;$( {\em creq\/} )  \bparallel \bnl
+{\em aa\/} $:=$  {\em ff\/} (  {\sf card}$\;$( {\em ff\/} )  )  \bparallel \bnl
+{\em ff\/} $:=$   {\sf tail}$\;$( {\em ff\/} )  \bparallel \bnl
+{\em num\/} $\longleftarrow$ {\em getbalance\/}\label{getbalance}\index{getbalance}  ( {\em aa\/} )  \bparallel \bnl
+{\em ok\/} $:=$  {\em FALSE\/} \bparallel \bnl
+{\em op\/} $:=$  {\em 5\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em create\_account}}{{\em Bank}}{{\sc operations}}{\bbpageref{create_account}}
+\bxrefline{{\em deposit}}{{\em Bank}}{{\sc operations}}{\bbpageref{deposit}}
+\bxrefline{{\em getbalance}}{{\em Bank}}{{\sc operations}}{\bbpageref{getbalance}}
+\bxrefline{{\em isaccount}}{{\em Bank}}{{\sc operations}}{\bbpageref{isaccount}}
+\bxrefline{{\em withdraw}}{{\em Bank}}{{\sc operations}}{\bbpageref{withdraw}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DEFINITIONS
+%
+\bbnl
+{\bf DEFINITIONS} \+ \bbnl
+{\em maxParams\/}\label{maxParams}\index{maxParams}  $\;\;\defs\;\;$ {\em 100\/} \bStatementSemiColon \bnl
+{\em maxReq\/}\label{maxReq}\index{maxReq}  $\;\;\defs\;\;$ {\em 33\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for NetworkedBank
+%
+\bxrefhead{Cross-references for NetworkedBank}
+\bxrefline{{\em accountNumber}}{{\em Bank}}{{\sc variables}}{\bbpageref{accountNumber}}
+\bxrefline{{\em Bank}}{}{{\sc machine}}{\bbpageref{Bank}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em create\_account}}{{\em Bank}}{{\sc operations}}{\bbpageref{create_account}}
+\bxrefline{{\em deposit}}{{\em Bank}}{{\sc operations}}{\bbpageref{deposit}}
+\bxrefline{{\em getbalance}}{{\em Bank}}{{\sc operations}}{\bbpageref{getbalance}}
+\bxrefline{{\em isaccount}}{{\em Bank}}{{\sc operations}}{\bbpageref{isaccount}}
+\bxrefline{{\em withdraw}}{{\em Bank}}{{\sc operations}}{\bbpageref{withdraw}}
+\vskip 3.5ex

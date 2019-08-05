@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of publicDecrypt_Nvar.h Code Module">
+  <TITLE>publicDecrypt_Nvar.h Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>extern</B> <B>int</B> publicDecrypt_NvarP1;
+<B>extern</B> <B>int</B> publicDecrypt_Nscv;
+
+<B>#define</B> <A NAME="OPNAME!INI_publicDecrypt_Nvar"><A HREF="publicDecrypt_Nvar.mch.html">INI_publicDecrypt_Nvar</A></A>()   {publicDecrypt_Nscv = 0;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_VAL_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_VAL_NVAR">publicDecrypt_VAL_NVAR</A></A>(uu) {*(uu) = publicDecrypt_Nscv;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_STO_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_STO_NVAR">publicDecrypt_STO_NVAR</A></A>(vv) {publicDecrypt_Nscv = vv;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_MIN_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_MIN_NVAR">publicDecrypt_MIN_NVAR</A></A>(uu,vv) {if( publicDecrypt_Nscv&lt;=vv )<B>{</B> *(uu) = publicDecrypt_Nscv ;}else{ *(uu) = vv ;<B>}</B>;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_MAX_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_MAX_NVAR">publicDecrypt_MAX_NVAR</A></A>(uu,vv) {if( publicDecrypt_Nscv&gt;=vv )<B>{</B> *(uu) = publicDecrypt_Nscv ;}else{ *(uu) = vv ;<B>}</B>;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_PRE_INC_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_PRE_INC_NVAR">publicDecrypt_PRE_INC_NVAR</A></A>(bb)   {*(bb) = \
+                    ((publicDecrypt_Nscv &lt; publicDecrypt_NvarP1)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_INC_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_INC_NVAR">publicDecrypt_INC_NVAR</A></A>()   {publicDecrypt_Nscv = publicDecrypt_Nscv+1;<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_PRE_DEC_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_PRE_DEC_NVAR">publicDecrypt_PRE_DEC_NVAR</A></A>(bb)  {*(bb) = ((publicDecrypt_Nscv &gt; 0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_DEC_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_DEC_NVAR">publicDecrypt_DEC_NVAR</A></A>()  {publicDecrypt_Nscv = publicDecrypt_Nscv-1;<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_PRE_ADD_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_PRE_ADD_NVAR">publicDecrypt_PRE_ADD_NVAR</A></A>(bb,vv) {*(bb) = \
+                   ((vv&lt;=publicDecrypt_NvarP1-publicDecrypt_Nscv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_ADD_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_ADD_NVAR">publicDecrypt_ADD_NVAR</A></A>(vv) {publicDecrypt_Nscv = publicDecrypt_Nscv+(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_PRE_SUB_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_PRE_SUB_NVAR">publicDecrypt_PRE_SUB_NVAR</A></A>(bb,vv) {*(bb) = ((vv&lt;=publicDecrypt_Nscv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_SUB_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_SUB_NVAR">publicDecrypt_SUB_NVAR</A></A>(vv) {publicDecrypt_Nscv = publicDecrypt_Nscv-(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_PRE_MUL_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_PRE_MUL_NVAR">publicDecrypt_PRE_MUL_NVAR</A></A>(bb,vv) {*(bb) = \
+                    ( (publicDecrypt_Nscv!=0) ? ((vv&lt;=publicDecrypt_NvarP1/publicDecrypt_Nscv)!=0) : 1) ;<B>}</B> 
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_MUL_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_MUL_NVAR">publicDecrypt_MUL_NVAR</A></A>(vv) {publicDecrypt_Nscv = publicDecrypt_Nscv*(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_PRE_DIV_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_PRE_DIV_NVAR">publicDecrypt_PRE_DIV_NVAR</A></A>(bb,vv) {*(bb) = ((vv&gt;0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_DIV_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_DIV_NVAR">publicDecrypt_DIV_NVAR</A></A>(vv) {publicDecrypt_Nscv = publicDecrypt_Nscv/(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_PRE_MOD_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_PRE_MOD_NVAR">publicDecrypt_PRE_MOD_NVAR</A></A>(bb,vv) {*(bb) = ((vv&gt;0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_MOD_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_MOD_NVAR">publicDecrypt_MOD_NVAR</A></A>(vv) {publicDecrypt_Nscv = publicDecrypt_Nscv-(vv)*(publicDecrypt_Nscv/(vv));<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_EQL_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_EQL_NVAR">publicDecrypt_EQL_NVAR</A></A>(bb,vv) {*(bb) = ((publicDecrypt_Nscv==vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_NEQ_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_NEQ_NVAR">publicDecrypt_NEQ_NVAR</A></A>(bb,vv) {*(bb) = ((publicDecrypt_Nscv!=vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_GTR_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_GTR_NVAR">publicDecrypt_GTR_NVAR</A></A>(bb,vv) {*(bb) = ((publicDecrypt_Nscv&gt; vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_GEQ_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_GEQ_NVAR">publicDecrypt_GEQ_NVAR</A></A>(bb,vv) {*(bb) = ((publicDecrypt_Nscv&gt;=vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_SMR_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_SMR_NVAR">publicDecrypt_SMR_NVAR</A></A>(bb,vv) {*(bb) = ((publicDecrypt_Nscv&lt; vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!publicDecrypt_LEQ_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_LEQ_NVAR">publicDecrypt_LEQ_NVAR</A></A>(bb,vv) {*(bb) = ((publicDecrypt_Nscv&lt;=vv)!=0);<B>}</B>
+
+<B>void</B> <A NAME="OPNAME!publicDecrypt_SAV_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_SAV_NVAR">publicDecrypt_SAV_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!publicDecrypt_SAVN_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_SAVN_NVAR">publicDecrypt_SAVN_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!publicDecrypt_RST_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_RST_NVAR">publicDecrypt_RST_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!publicDecrypt_RSTN_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_RSTN_NVAR">publicDecrypt_RSTN_NVAR</A></A>();
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:01 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

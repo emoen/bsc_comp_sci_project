@@ -1,0 +1,187 @@
+IMPLEMENTATION    ATMI
+
+REFINES           ATM
+
+SEES              
+	basic_io,
+	file_dump,
+	String_TYPE,
+	Scalar_TYPE, 
+	Bool_TYPE
+
+DEFINITIONS
+	res == con_STO_NVAR(0)
+
+IMPORTS           
+	ATM_SocketClient(SCALAR \/ BOOL, 10, 10),
+	con_Nvar(1),			/** a flag that says if connected */
+	Cipher(ee_cli, dd_cli, nn)
+
+INITIALISATION    
+	res
+
+OPERATIONS
+
+  connecting = 
+	BEGIN
+		VAR xx IN
+			PUT_STR("ATM connecion to server...\n");
+			FLSH;
+			xx <-- ATM_INIT("127.0.0.1", 3200);
+			xx <-- ATM_CONNECT; 
+			IF xx = TRUE THEN
+				con_STO_NVAR(1)
+			ELSE
+				PUT_STR("can not connect...")
+			END
+		END
+	END;
+
+  ok <-- shut_down =
+	BEGIN
+		res;
+		ok <-- ATM_CLOSE
+	END;
+
+  accNr , rep <-- create_account = 
+/**
+	requests for create_account on Bank
+	by sending the number '1'
+	The reply is encrypted do demonstrate use
+	of the Cipher development
+*/
+	BEGIN
+		VAR con_status, pp, encrypt_accNr IN
+			con_status <-- con_VAL_NVAR;
+			IF con_status = 1 THEN
+
+/**
+There is no documentation in the specification
+which describes what toksize is!
+All we know is it has function identifier
+ATM_PUT_TOK(tok : TOK & toksize : 1..4 )
+*/
+
+				ATM_PUT_TOK(1, 1);
+				rep <-- ATM_WRITE;
+				PUT_STR("requesting 'create_account'\n")	
+			ELSE
+				PUT_STR("No connection to server\n")
+			END;
+			rep, pp <-- ATM_READ;
+			encrypt_accNr <-- ATM_GET_TOK(1);
+			PUT_STR("encrypted account number is:\n");
+			PUT_NAT(encrypt_accNr);
+			PUT_STR("\n");
+
+/*decrypt accountNumber*/
+			accNr <-- decrypt_op(encrypt_accNr);
+			rep <-- ATM_GET_TOK(1);
+			PUT_STR("Your new account has Account Number: ");
+			PUT_NAT(accNr);
+			PUT_STR(" ");
+			PUT_NAT(encrypt_accNr);
+			PUT_STR("\n")
+		END
+	END;
+
+  ok, newBalance <-- deposit(acc, amount) = 
+/**
+	requests deposit on Bank
+	by sending the number '2', parameters acc, and amount
+	Write to buffer, read reply and return new balance
+*/
+	BEGIN
+		IF acc < maxAccounts & amount < MAXINT THEN
+			VAR con_status, pp, rep IN
+				con_status <-- con_VAL_NVAR;
+				IF con_status = 1 THEN
+/*ATM_PUT(TOK, NAT)*/
+					ATM_PUT_TOK(2, 1);
+					ATM_PUT_TOK(acc, 1);
+					ATM_PUT_TOK(amount, 1);
+					rep <-- ATM_WRITE;
+					rep, pp <-- ATM_READ;
+					ok <-- ATM_GET_TOK(1);
+					newBalance <-- ATM_GET_TOK(1);
+					PUT_STR("New balance is: ");
+					PUT_NAT(newBalance);
+					PUT_STR("\n")
+				END
+			END
+		END
+	END;
+
+  ok <-- withdraw(acc, amount) =
+/**
+	requests withdraw on Bank
+	by sending the number '3', parameters acc, and amount,
+	then read the status of the transaction request
+*/
+	BEGIN
+		IF acc < maxAccounts & amount < MAXINT THEN
+			VAR con_status, pp, rep IN
+				con_status <-- con_VAL_NVAR;
+				IF con_status = 1 THEN
+					ATM_PUT_TOK(3, 1);
+					ATM_PUT_TOK(acc, 1);
+					ATM_PUT_TOK(amount, 1);
+					rep <-- ATM_WRITE;
+					rep, pp <-- ATM_READ;
+					ok <-- ATM_GET_TOK(1);
+					PUT_STR("Status of withdrawal: ");
+					PUT_BOOL(ok);
+					PUT_STR("\n")
+				END
+			END
+		END
+	END;
+
+  rr <-- isaccount(acc) =
+/**
+	requests isaccount on Bank
+	by sending the number '4', parameter acc
+	then return the answere
+*/
+	BEGIN
+		IF acc < maxAccounts THEN
+			VAR con_status, pp, rep IN
+				con_status <-- con_VAL_NVAR;
+				IF con_status = 1 THEN
+					ATM_PUT_TOK(4, 1);
+					ATM_PUT_TOK(acc, 1);
+					rep <-- ATM_WRITE;
+					rep, pp <-- ATM_READ;
+					rr <-- ATM_GET_TOK(1);
+					PUT_STR("Status of account Number: ");
+					PUT_BOOL(rr);
+					PUT_STR("\n")
+				END
+			END
+		END
+	END;
+
+  bal <-- getbalance(acc) =
+/**
+	request getbalance on Bank
+	by sending the number '5' and parameter acc
+	then retun answere
+*/
+	BEGIN
+		IF acc < maxAccounts THEN
+			VAR con_status, pp, rep IN
+				con_status <-- con_VAL_NVAR;
+				IF con_status = 1 THEN
+					ATM_PUT_TOK(5, 1);
+					ATM_PUT_TOK(acc, 1);
+					rep <-- ATM_WRITE;
+					rep, pp <-- ATM_READ;
+					bal <-- ATM_GET_TOK(1);
+					PUT_STR("balance is: ");
+					PUT_NAT(bal);
+					PUT_STR("\n")
+				END
+			END
+		END
+	END
+END

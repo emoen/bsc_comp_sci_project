@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Globals">
+  <TITLE>The Globals machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           Globals
+
+<A NAME="CONSTANTS"><B>CONSTANTS</B></A>
+	maxAccounts
+
+<A NAME="PROPERTIES"><B>PROPERTIES</B></A>
+/*because of the constraints of decrypt_op in
+Cipher.mch maxAccounts must be less than n-1 =&gt; mxA &lt; 7
+*/
+	maxAccounts = 6
+/*maxAccounts should be in the range 0..4096. How do i express that?*/
+
+<A NAME="DEFINITIONS"><B>DEFINITIONS</B></A>
+	ACCOUNTS == 1 .. maxAccounts;
+	MAXINT == 5000; /*There may not be an account with more than 5000 on it!*/
+
+/*Because Cipher can not be given in-parametres at runtime
+I will have to define all cipher keys in this machine and so
+jeperdising the securinty */
+
+	ee_ser == 5;
+	dd_ser == 17;
+	nn == 7;
+	ee_cli == 9;
+	dd_cli == 11
+
+/* matching pairs {5, 11, 7} and {9, 17, 7}*/
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Feb 19 12:43:24 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,87 @@
+THEORY PropertiesX IS
+  ctx(Bank) => maxAccounts = 6;
+  ctx(Bank) => ctx(Bool_TYPE);
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE
+END
+&
+THEORY ExpandHypX IS
+  inv(Bank) => inv(Bool_TYPE);
+  inv(Bank) => accountNumber <: 1..maxAccounts;
+  inv(Bank) => account : accountNumber --> NAT;
+  inv(Bank) => dom(account) = accountNumber;
+  pre(deposit) => acc : accountNumber;
+  pre(deposit) => amount : NAT1;
+  pre(withdraw) => acc : accountNumber;
+  pre(withdraw) => amount : NAT;
+  pre(isaccount) => acc : 1..maxAccounts;
+  pre(getbalance) => acc : accountNumber
+END
+&
+THEORY Initialisation IS
+  cst(Bank) & ctx(Bank) => {} <: 1..maxAccounts;
+  cst(Bank) & ctx(Bank) => {} : {} --> NAT;
+  cst(Bank) & ctx(Bank) => dom({}) = {}
+END
+&
+THEORY create_account IS
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => accountNumber \/ {acc} <: 1..maxAccounts);
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => account <+ {acc |-> 0} : accountNumber \/ {acc} --> NAT);
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(create_account) => (not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => dom(account <+ {acc |-> 0}) = accountNumber \/ {acc})
+END
+&
+THEORY deposit IS
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(deposit) => (account(acc) < 5000-amount => account <+ {acc |-> account(acc)+amount} : accountNumber --> NAT);
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(deposit) => (account(acc) < 5000-amount => dom(account <+ {acc |-> account(acc)+amount}) = accountNumber)
+END
+&
+THEORY withdraw IS
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(withdraw) => (amount <= account(acc) => account <+ {acc |-> account(acc)-amount} : accountNumber --> NAT);
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(withdraw) => (amount <= account(acc) => dom(account <+ {acc |-> account(acc)-amount}) = accountNumber)
+END
+&
+THEORY isaccount
+END
+&
+THEORY getbalance
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

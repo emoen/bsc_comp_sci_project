@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Itf_token_io.c Code Module">
+  <TITLE>Itf_token_io.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "Itf_token_io.h"
+
+<B>#ifndef</B> _BT_Motif
+
+<B>void</B>
+<B>#ifdef</B> _BT_ANSIC
+<A NAME="OPNAME!Itf_GET_ACT_TOK"><A HREF="Itf_token_io.mch.html#OPNAME!Itf_GET_ACT_TOK">Itf_GET_ACT_TOK</A></A>( <B>int</B> * t, <B>char</B> * * T )
+<B>#else</B>
+Itf_GET_ACT_TOK( t, T )
+<B>int</B> * t;
+<B>char</B> * * T;
+<B>#endif</B>
+<B>{</B>
+  <B>int</B> n,i,j;
+  <B>char</B> u [ 50 ];
+  <B>int</B> done = 0;
+  <B>if</B> ( T [ 0 ] [ 0 ] != '\0' )  <B>{</B> 
+      GET_NAT ( &n );
+  <B>}</B>
+  <B>else</B> <B>{</B>
+    i = 1;
+    <B>while</B>( T [ i ] [ 0 ] != '_' ) i++;
+    j = 0;
+    <B>while</B> ( T [ i ] [ j + 1 ] != '\0' && j &lt; 50 ) <B>{</B>
+      u [ j ] = T [ i ] [ j + 1 ];
+     j++;
+    <B>}</B>
+    u [ j ] = '\0';
+    <B>while</B>( ! done ) <B>{</B>
+      i = 1;
+      <B>printf</B>( "\n" );
+      <B>while</B>( T [ i ] [ 0 ] != '_' )<B>{</B>
+        BLK ( 8 ); PUT_STR ( u ); PUT_STR ( "." );
+        PUT_NAT_PAD ( i, 4 ); PUT_STR ( T [ i ] ); NWL ( 1 );
+        i++;
+      <B>}</B>
+      BLK ( 4 ); PUT_STR ( u ); PUT_STR ( " value " );
+      PUT_STR ( " (1.." ); PUT_NAT ( i - 1 ); PUT_STR ( "): "); FLSH ();
+      GET_NAT ( &n );
+      <B>if</B>   ( n &gt;= 1 && n &lt;= i - 1 ) <B>{</B> done = 1; <B>}</B>
+      <B>else</B>                          <B>{</B> BLK(15); PUT_STR (" Bad input!" ); <B>}</B>
+    <B>}</B>
+  <B>}</B>
+  *t = n; 
+<B>}</B>
+
+<B>#endif</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:16:15 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

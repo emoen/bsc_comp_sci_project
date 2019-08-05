@@ -1,0 +1,204 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Server.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \+ \bbnl
+{\em Server\/} \-\label{Server}\index{Server}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  , {\em CommsDefs\/}\label{CommsDefs}\index{CommsDefs}  , {\em Globals\/}\label{Globals}\index{Globals}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \+ \bbnl
+{\em Bank\/}\label{Bank}\index{Bank}  ( {\em 10\/} )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em sstate\/}\label{sstate}\index{sstate}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em sstate\/} $\in$ {\em STATE\/}\label{STATE}\index{STATE}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em sstate\/} $:=$  {\em idle\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION sinit
+%
+{\bf { sinit}}  \bhsp $\defs$ \+ \bnl
+{\em sstate\/} $:=$  {\em idle\/} \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION conin
+%
+{\em ok\/} $\longleftarrow$  {\bf { conin}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em sstate\/} $=$ {\em idle\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em sstate\/} $:=$  {\em conrequest\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION server\_con\_report
+%
+{\em msg\/} $\longleftarrow$  {\bf { server\_con\_report}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em sstate\/} $=$ {\em conrequest\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{ANY} \+{\em pp\/} \-\bnl
+\bOpnWord{WHERE} \+{\em pp\/} $\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+{\em pp\/} $=$ {\em TRUE\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em sstate\/} $:=$  {\em connected\/} \bparallel \bnl
+{\em msg\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em sstate\/} $:=$  {\em idle\/} \bparallel \bnl
+{\em msg\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION screate\_acc
+%
+{\em ans\/} $\longleftarrow$  {\bf { screate\_acc}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em sstate\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em ans\/} $\longleftarrow$ {\em create\_acc\/}\label{create_acc}\index{create_acc}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em create\_acc}}{{\em Bank}}{{\sc operations}}{\bbpageref{create_acc}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION sdeposit
+%
+{\em new\/} $\longleftarrow$  {\bf { sdeposit}} ( {\em acc\/} $\in$  $\nat$  $\wedge$
+{\em amount\/} $\in$  $\nat$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em sstate\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em new\/} $\longleftarrow$ {\em deposit\/}\label{deposit}\index{deposit}  ( {\em acc\/} , {\em amount\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em deposit}}{{\em Bank}}{{\sc operations}}{\bbpageref{deposit}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION swithdraw
+%
+{\em ans\/} $\longleftarrow$  {\bf { swithdraw}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$  $\nat$  $\wedge$
+{\em amount\/} $\in$  $\nat$  $\wedge$ \bnl
+{\em sstate\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em ans\/} $\longleftarrow$ {\em withdraw\/}\label{withdraw}\index{withdraw}  ( {\em acc\/} , {\em amount\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em withdraw}}{{\em Bank}}{{\sc operations}}{\bbpageref{withdraw}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION sisaccount
+%
+{\em rr\/} $\longleftarrow$  {\bf { sisaccount}} ( {\em acc\/} $\in$  $\nat$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em sstate\/} $=$ {\em connected\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em rr\/} $\longleftarrow$ {\em isaccount\/}\label{isaccount}\index{isaccount}  ( {\em acc\/} )  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em isaccount}}{{\em Bank}}{{\sc operations}}{\bbpageref{isaccount}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Server
+%
+\bxrefhead{Cross-references for Server}
+\bxrefline{{\em Bank}}{}{{\sc machine}}{\bbpageref{Bank}}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em CommsDefs}}{}{{\sc machine}}{\bbpageref{CommsDefs}}
+\bxrefline{{\em create\_acc}}{{\em Bank}}{{\sc operations}}{\bbpageref{create_acc}}
+\bxrefline{{\em deposit}}{{\em Bank}}{{\sc operations}}{\bbpageref{deposit}}
+\bxrefline{{\em Globals}}{}{{\sc machine}}{\bbpageref{Globals}}
+\bxrefline{{\em isaccount}}{{\em Bank}}{{\sc operations}}{\bbpageref{isaccount}}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\bxrefline{{\em withdraw}}{{\em Bank}}{{\sc operations}}{\bbpageref{withdraw}}
+\vskip 3.5ex

@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Arithmetic.c Code Module">
+  <TITLE>Arithmetic.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "<A HREF="Arithmetic.h.html#Arithmetic.h">Arithmetic.h</A>"
+
+<B>void</B>
+<A NAME="OPNAME!INI_Arithmetic"><A HREF="ArithmeticI.imp.html#IMPORTS">INI_Arithmetic</A></A>()
+<B>{</B>
+  ;
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!exp_op"><A HREF="ArithmeticI.imp.html#OPNAME!exp_op">exp_op</A></A>(_rr,_aa , _bb)
+<B>int</B> *_rr,_aa,_bb;
+<B>{</B>
+  <B>if</B> ( _aa != 0 || _bb != 0 ) <B>{</B>
+    <B>int</B> ii,kk;
+    ii = _bb;
+    kk = 1;
+    <B>while</B> ( ii != 0 ) <B>{</B>
+      kk = kk*_aa;
+      ii = ii-1;
+    <B>}</B>;
+    *_rr = kk;
+  <B>}</B>
+<B>}</B>
+
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Sun Mar  2 22:06:51 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

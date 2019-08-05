@@ -1,0 +1,817 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(count_Nvar)
+;
+(count_Nvar)
+;
+(count_Nvar : 0..maxint)
+;
+(count_Nvar : 0..maxint)
+;
+(?)
+;
+(count_Nvar := 0)
+;
+(count_Nvar := 0)
+;
+(count_VAL_NVAR,count_STO_NVAR,count_MIN_NVAR,count_MAX_NVAR,count_PRE_INC_NVAR,count_INC_NVAR,count_PRE_DEC_NVAR,count_DEC_NVAR,count_PRE_ADD_NVAR,count_ADD_NVAR,count_PRE_MUL_NVAR,count_MUL_NVAR,count_PRE_SUB_NVAR,count_SUB_NVAR,count_PRE_DIV_NVAR,count_DIV_NVAR,count_PRE_MOD_NVAR,count_MOD_NVAR,count_EQL_NVAR,count_NEQ_NVAR,count_GTR_NVAR,count_GEQ_NVAR,count_SMR_NVAR,count_LEQ_NVAR,count_SAV_NVAR,count_RST_NVAR,count_SAVN_NVAR,count_RSTN_NVAR)
+;
+(count_VAL_NVAR , count_STO_NVAR , count_MIN_NVAR , count_MAX_NVAR , count_PRE_INC_NVAR , count_INC_NVAR , count_PRE_DEC_NVAR , count_DEC_NVAR , count_PRE_ADD_NVAR , count_ADD_NVAR , count_PRE_MUL_NVAR , count_MUL_NVAR , count_PRE_SUB_NVAR , count_SUB_NVAR , count_PRE_DIV_NVAR , count_DIV_NVAR , count_PRE_MOD_NVAR , count_MOD_NVAR , count_EQL_NVAR , count_NEQ_NVAR , count_GTR_NVAR , count_GEQ_NVAR , count_SMR_NVAR , count_LEQ_NVAR , count_SAV_NVAR , count_RST_NVAR , count_SAVN_NVAR , count_RSTN_NVAR)
+;
+(count_Nvar(maxint):(maxint <= 2147483646 & maxint : NAT):(?))
+;
+(
+(
+ (count_VAL_NVAR)
+;
+ (? , Val_Op , Det_Op , (vv <-- count_VAL_NVAR))
+;
+ (?)
+;
+ (vv)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ vv := count_Nvar
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (vv := count_Nvar)
+ )
+ )
+)
+,
+(
+ (count_STO_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_STO_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (count_Nvar := vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (count_Nvar := vv)
+ )
+ )
+)
+,
+(
+ (count_MIN_NVAR)
+;
+ (? , Val_Op , Det_Op , (uu <-- count_MIN_NVAR(vv)))
+;
+ (vv)
+;
+ (uu)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := min({count_Nvar , vv}))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := min({count_Nvar , vv}))
+ )
+ )
+)
+,
+(
+ (count_MAX_NVAR)
+;
+ (? , Val_Op , Det_Op , (uu <-- count_MAX_NVAR(vv)))
+;
+ (vv)
+;
+ (uu)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := max({count_Nvar , vv}))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := max({count_Nvar , vv}))
+ )
+ )
+)
+,
+(
+ (count_PRE_INC_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_PRE_INC_NVAR))
+;
+ (?)
+;
+ (bb)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ bb := bool(count_Nvar < maxint)
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (bb := bool(count_Nvar < maxint))
+ )
+ )
+)
+,
+(
+ (count_INC_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_INC_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (count_Nvar+1 : 0..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar+1)
+ )
+ )
+;
+ (
+ (count_Nvar+1 : 0..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar+1)
+ )
+ )
+)
+,
+(
+ (count_PRE_DEC_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_PRE_DEC_NVAR))
+;
+ (?)
+;
+ (bb)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ bb := bool(count_Nvar > 0)
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (bb := bool(0 < count_Nvar))
+ )
+ )
+)
+,
+(
+ (count_DEC_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_DEC_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (count_Nvar : 1..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar-1)
+ )
+ )
+;
+ (
+ (count_Nvar : 1..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar-1)
+ )
+ )
+)
+,
+(
+ (count_PRE_ADD_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_PRE_ADD_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar+vv <= maxint))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar+vv <= maxint))
+ )
+ )
+)
+,
+(
+ (count_ADD_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_ADD_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint & count_Nvar+vv <= maxint)
+ |
+ (
+ (count_Nvar := count_Nvar+vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint & count_Nvar+vv <= maxint)
+ |
+ (
+ (count_Nvar := count_Nvar+vv)
+ )
+ )
+)
+,
+(
+ (count_PRE_MUL_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_PRE_MUL_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar*vv <= maxint))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar*vv <= maxint))
+ )
+ )
+)
+,
+(
+ (count_MUL_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_MUL_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint & count_Nvar*vv <= maxint)
+ |
+ (
+ (count_Nvar := count_Nvar*vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint & count_Nvar*vv <= maxint)
+ |
+ (
+ (count_Nvar := count_Nvar*vv)
+ )
+ )
+)
+,
+(
+ (count_PRE_SUB_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_PRE_SUB_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar-vv >= 0))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(0 <= count_Nvar-vv))
+ )
+ )
+)
+,
+(
+ (count_SUB_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_SUB_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint & count_Nvar-vv >= 0)
+ |
+ (
+ (count_Nvar := count_Nvar-vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint & 0 <= count_Nvar-vv)
+ |
+ (
+ (count_Nvar := count_Nvar-vv)
+ )
+ )
+)
+,
+(
+ (count_PRE_DIV_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_PRE_DIV_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv > 0))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(0 < vv))
+ )
+ )
+)
+,
+(
+ (count_DIV_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_DIV_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar/vv)
+ )
+ )
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar/vv)
+ )
+ )
+)
+,
+(
+ (count_PRE_MOD_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_PRE_MOD_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv > 0))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(0 < vv))
+ )
+ )
+)
+,
+(
+ (count_MOD_NVAR)
+;
+ (? , Mod_Op , Det_Op , count_MOD_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar-vv*(count_Nvar/vv))
+ )
+ )
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (count_Nvar := count_Nvar-vv*(count_Nvar/vv))
+ )
+ )
+)
+,
+(
+ (count_EQL_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_EQL_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar = vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar = vv))
+ )
+ )
+)
+,
+(
+ (count_NEQ_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_NEQ_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar /= vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(not(count_Nvar = vv)))
+ )
+ )
+)
+,
+(
+ (count_GTR_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_GTR_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar > vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv < count_Nvar))
+ )
+ )
+)
+,
+(
+ (count_GEQ_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_GEQ_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar >= vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv <= count_Nvar))
+ )
+ )
+)
+,
+(
+ (count_SMR_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_SMR_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar < vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar < vv))
+ )
+ )
+)
+,
+(
+ (count_LEQ_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- count_LEQ_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar <= vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(count_Nvar <= vv))
+ )
+ )
+)
+,
+(
+ (count_SAV_NVAR)
+;
+ (? , Val_Op , Det_Op , count_SAV_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+)
+,
+(
+ (count_RST_NVAR)
+;
+ (? , Mod_Op , NonDet_Op , count_RST_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ count_Nvar :: 0..maxint
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(count_Nvarx).
+ (
+ (
+ (count_Nvarx : 0..maxint)
+ )
+ ==>
+ (
+ (count_Nvar := count_Nvarx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (count_SAVN_NVAR)
+;
+ (? , Val_Op , Det_Op , count_SAVN_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+)
+,
+(
+ (count_RSTN_NVAR)
+;
+ (? , Mod_Op , NonDet_Op , count_RSTN_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ count_Nvar :: 0..maxint
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(count_Nvarx).
+ (
+ (
+ (count_Nvarx : 0..maxint)
+ )
+ ==>
+ (
+ (count_Nvar := count_Nvarx)
+ )
+ )
+ )
+ )
+)
+)

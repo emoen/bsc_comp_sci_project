@@ -1,0 +1,256 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (MaxScalar == 2147483646)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(ServeBank_Ops(ServeBank_Menu_OP , startServer_OP , listenForUser_OP , Quit_OP) , SCALAR , BOOL(FALSE , TRUE) , CHAR , STRING)
+;
+(string1)
+;
+(string1)
+;
+(string1 = " Value (BOOL) returned in ok: ")
+;
+(string1 = " Value (BOOL) returned in ok: " & SCALAR = 0..2147483646 & card(SCALAR) = 2147483647 & card(SCALAR) : NAT1 & STRING = {ss | ss : seq(CHAR) & size(ss) <= 1000} & card(CHAR) : NAT1 & card(STRING) : NAT1)
+;
+(
+(ServeBank(?):(?):((?),(?),(?)))
+,
+(ServeBankIo(?):(?):((?),(?),(?)))
+,
+(Itf_token_io(SCALAR):(card(SCALAR) : NAT1):((?),(?),(?)))
+,
+(basic_io(?):(?):((?),(?),(?)))
+,
+(file_dump(?):(?):((?),(?),(?)))
+,
+(Scalar_TYPE(?):(?):((?),(?),(?)))
+,
+(Bool_TYPE(?):(?):((?),(?),(?)))
+,
+(String_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(main)
+;
+(main)
+;
+(ServeBankItfI(?):(?):(ServeBankItf))
+;
+(
+(
+ (main)
+;
+ (? , Val_Op , NonDet_Op , main)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (VAR count , op IN
+ count := 2147483646;
+ op := ServeBank_Menu_OP;
+ WHILE count /= 0 & op /= Quit_OP DO
+ CASE op OF
+ EITHER ServeBank_Menu_OP THEN
+ NWL(1);
+ ServeBank_Menu;
+ NWL(1)
+ OR
+ startServer_OP
+ THEN
+ NWL(1);
+ VAR okX IN
+ okX <-- startServer;
+ PUT_STR(string1);
+ PUT_BOOL(okX);
+ NWL(1)
+ END;
+ NWL(1)
+ OR
+ listenForUser_OP
+ THEN
+ NWL(1);
+ listenForUser;
+ NWL(1)
+ END
+ END;
+ op <-- Get_ServeBank_Op;
+ count := count-1
+ VARIANT
+ count
+ INVARIANT
+ true
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(count , op).
+ (
+ (
+ (
+ (count := 2147483646)
+ )
+ ;
+ (
+ (op := ServeBank_Menu_OP)
+ )
+ )
+ ;
+ (
+ WHILE
+ (not(count = 0) & not(op = Quit_OP))
+ DO
+ (
+ (
+ (
+ (
+ (
+ (
+ (op : {ServeBank_Menu_OP})
+ )
+ ==>
+ (
+ (
+ (
+ (NWL(1))
+ )
+ ;
+ (
+ (ServeBank_Menu)
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+ []
+ (
+ (
+ (op : {startServer_OP})
+ )
+ ==>
+ (
+ (
+ (
+ (NWL(1))
+ )
+ ;
+ (
+ @(okX).
+ (
+ (
+ (
+ (
+ (okX <-- startServer)
+ )
+ ;
+ (
+ (PUT_STR(string1))
+ )
+ )
+ ;
+ (
+ (PUT_BOOL(okX))
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (op : {listenForUser_OP})
+ )
+ ==>
+ (
+ (
+ (
+ (NWL(1))
+ )
+ ;
+ (
+ (listenForUser)
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+ )
+ ;
+ (
+ (op <-- Get_ServeBank_Op)
+ )
+ )
+ ;
+ (
+ (count := count-1)
+ )
+ )
+ INVARIANT
+ (true)
+ VARIANT
+ (count)
+ END
+ )
+ )
+ )
+ )
+)
+)

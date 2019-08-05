@@ -1,0 +1,7 @@
+THEORY Initialisation IS
+1
+END
+&
+THEORY can_do_receive IS
+0
+END

@@ -1,0 +1,91 @@
+IMPLEMENTATION    BankI
+
+REFINES           Bank
+
+SEES	Bool_TYPE
+
+IMPORTS   
+	accNr_Narr(MAXINT, maxAccounts),
+	count_Nvar(maxAccounts)
+
+INITIALISATION  
+	count_STO_NVAR(0)
+
+OPERATIONS
+
+  accNr, rep <-- create_account =
+	VAR ii, ok IN
+		ii <-- count_VAL_NVAR;
+		ii := ii + 1;
+		IF ii <= maxAccounts THEN
+			accNr_STO_NARR(ii, 0);
+			count_STO_NVAR(ii);
+			accNr := ii;
+			rep := TRUE
+		ELSE
+			accNr := 0;
+			rep := FALSE
+		END
+	END;
+
+
+  ok, newBalance <-- deposit(acc, amount) = 
+	BEGIN
+		VAR ii IN
+			ii <-- count_VAL_NVAR;
+			IF acc <= ii & acc <= maxAccounts & amount > 0 THEN
+				VAR curBal IN
+					curBal <-- accNr_VAL_NARR(acc);
+					newBalance := curBal + amount;
+					accNr_STO_NARR(acc, newBalance);
+					ok := TRUE
+				END
+			ELSE
+				ok := FALSE;
+				newBalance := 0
+			END
+		END
+	END;
+
+  ok <-- withdraw(acc, amount) = 	
+	BEGIN
+		VAR ii IN
+			ii <-- count_VAL_NVAR;
+			IF acc <= ii & acc <= maxAccounts & amount > 0 THEN
+				VAR curBal IN
+					curBal <-- accNr_VAL_NARR(acc);
+					IF curBal - amount >= 0 THEN
+						accNr_STO_NARR(acc, curBal - amount);
+						ok := TRUE
+					END
+				END
+			ELSE
+				ok := FALSE
+			END
+		END
+	END;
+
+  rr <--isaccount(acc) = 
+	BEGIN
+		VAR ii IN
+			ii <-- count_VAL_NVAR;
+			IF acc <= ii THEN
+				rr := TRUE
+			ELSE
+				rr := FALSE
+			END
+		END
+	END;
+
+  bal <-- getbalance(acc) = 
+	BEGIN
+		VAR ii IN
+			ii <-- count_VAL_NVAR;
+			IF acc <= ii THEN
+				bal <-- accNr_VAL_NARR(acc)
+			ELSE
+				bal := 0
+			END
+		END
+	END
+END

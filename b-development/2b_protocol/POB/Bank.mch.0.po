@@ -1,0 +1,80 @@
+THEORY PropertiesX IS
+  ctx(Bank) => ctx(Globals);
+  ctx(Globals) => card(ACCOUNTNR) : NAT1;
+  ctx(Globals) => YESNO = {yes , no};
+  ctx(Globals) => card(YESNO) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Globals)) => YESNO == {yes , no}
+END
+&
+THEORY NotEqualX IS
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => not(yes = no);
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => not(no = yes)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => yes = no == false;
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => no = yes == false
+END
+&
+THEORY FwdContra0X IS
+  no = yes & ctx(Globals) => bfalse;
+  x = no & x = yes & ctx(Globals) => bfalse;
+  x = no & y = x & y = yes & ctx(Globals) => bfalse;
+  x = yes & x = no & ctx(Globals) => bfalse;
+  x = yes & y = x & y = no & ctx(Globals) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  yes = x => x = yes;
+  no = x => x = no;
+  not(yes = x) & ctx(Globals) => x = no;
+  not(x = yes) & ctx(Globals) => x = no;
+  not(no = x) & ctx(Globals) => x = yes;
+  not(x = no) & ctx(Globals) => x = yes
+END
+&
+THEORY ExpandHypX IS
+  inv(Bank) => inv(Globals);
+  inv(Bank) => accountNumber <: 1..maxAccounts;
+  inv(Bank) => account : accountNumber >-> NAT;
+  cst(Bank) => maxAccounts : 1..200000;
+  pre(deposit) => acc : accountNumber;
+  pre(deposit) => amount : NAT1;
+  pre(withdraw) => acc : accountNumber;
+  pre(withdraw) => amount : NAT1;
+  pre(isaccount) => acc : NAT
+END
+&
+THEORY Initialisation IS
+  cst(Bank) & ctx(Bank) => {} <: 1..maxAccounts;
+  cst(Bank) & ctx(Bank) => {} : {} >-> NAT
+END
+&
+THEORY create_acc IS
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(create_acc) => (acc : (1..maxAccounts)-accountNumber => accountNumber \/ {acc} <: 1..maxAccounts);
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(create_acc) => (acc : (1..maxAccounts)-accountNumber => account <+ {acc |-> 0} : accountNumber \/ {acc} >-> NAT)
+END
+&
+THEORY deposit IS
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(deposit) => account <+ {acc |-> account(acc)+amount} : accountNumber >-> NAT
+END
+&
+THEORY withdraw IS
+  cst(Bank) & ctx(Bank) & inv(Bank) & asn(Bank) & pre(withdraw) => (amount <= account(acc) => account <+ {acc |-> account(acc)-amount} : accountNumber >-> NAT)
+END
+&
+THEORY isaccount
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints IS
+  ( #maxAccounts.(maxAccounts : 1..200000) )
+END

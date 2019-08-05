@@ -1,0 +1,311 @@
+(
+ (?)
+ ;
+ (
+ (
+ (RES == accountNumber , account := {} , {})
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11),
+ (RES == accountNumber , account := {} , {})
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts)
+;
+(?)
+;
+(maxAccounts = 6)
+;
+(
+(Globals(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(account , accountNumber)
+;
+(account , accountNumber)
+;
+(accountNumber <: 1..maxAccounts & account : accountNumber --> NAT & dom(account) = accountNumber)
+;
+(accountNumber <: 1..maxAccounts & account : accountNumber --> NAT & dom(account) = accountNumber)
+;
+(?)
+;
+(accountNumber , account := {} , {})
+;
+(accountNumber , account := {} , {})
+;
+(create_account,deposit,withdraw,isaccount,getbalance)
+;
+(create_account , deposit , withdraw , isaccount , getbalance)
+;
+(Bank(?):(?):(?))
+;
+(
+(
+ (create_account)
+;
+ (? , Mod_Op , NonDet_Op , (accNr , rep <-- create_account))
+;
+ (?)
+;
+ (accNr , rep)
+;
+ (
+ (true)
+ |
+ (
+ (IF accountNumber /= 1..maxAccounts THEN
+ rep := TRUE ||
+ ANY acc WHERE
+ acc : (1..maxAccounts)-accountNumber
+ THEN
+ accNr := acc ||
+ accountNumber := accountNumber \/ {acc} ||
+ account(acc) := 0
+ END
+ ELSE
+ rep := FALSE ||
+ accNr := 0
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (not(accountNumber = 1..maxAccounts))
+ )
+ ==>
+ (
+ (
+ (rep := TRUE)
+ )
+ ||
+ (
+ @(acc).
+ (
+ (
+ (acc : (1..maxAccounts)-accountNumber)
+ )
+ ==>
+ (
+ (accNr , accountNumber , account := acc , accountNumber \/ {acc} , account <+ {acc |-> 0})
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (accountNumber = 1..maxAccounts)
+ )
+ ==>
+ (
+ (rep , accNr := FALSE , 0)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (deposit)
+;
+ (? , Mod_Op , Det_Op , (ok , newBalance <-- deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok , newBalance)
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (IF account(acc) < 5000-amount THEN
+ account(acc) := account(acc)+amount ||
+ newBalance := account(acc)+amount ||
+ ok := TRUE
+ ELSE
+ ok := FALSE ||
+ newBalance := 0
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (
+ (
+ (account(acc) < 5000-amount)
+ )
+ ==>
+ (
+ (account , newBalance , ok := account <+ {acc |-> account(acc)+amount} , account(acc)+amount , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (5000-amount <= account(acc))
+ )
+ ==>
+ (
+ (ok , newBalance := FALSE , 0)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (withdraw)
+;
+ (? , Mod_Op , Det_Op , (ok <-- withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok)
+;
+ (
+ (acc : accountNumber & amount : NAT)
+ |
+ (
+ (IF amount <= account(acc) THEN
+ account(acc) := account(acc)-amount ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT)
+ |
+ (
+ (
+ (
+ (amount <= account(acc))
+ )
+ ==>
+ (
+ (account , ok := account <+ {acc |-> account(acc)-amount} , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (account(acc) < amount)
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (isaccount)
+;
+ (? , Val_Op , Det_Op , (rr <-- isaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (acc : 1..maxAccounts)
+ |
+ (
+ (IF acc : accountNumber THEN
+ rr := TRUE
+ ELSE
+ rr := FALSE
+ END)
+ )
+ )
+;
+ (
+ (acc : 1..maxAccounts)
+ |
+ (
+ (
+ (
+ (acc : accountNumber)
+ )
+ ==>
+ (
+ (rr := TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(acc : accountNumber))
+ )
+ ==>
+ (
+ (rr := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (getbalance)
+;
+ (? , Val_Op , Det_Op , (bal <-- getbalance(acc)))
+;
+ (acc)
+;
+ (bal)
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (bal := account(acc))
+ )
+ )
+;
+ (
+ (acc : accountNumber)
+ |
+ (
+ (bal := account(acc))
+ )
+ )
+)
+)

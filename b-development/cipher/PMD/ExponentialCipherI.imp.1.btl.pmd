@@ -1,0 +1,9 @@
+PROOFMETHOD ExponentialCipherI.imp.1.btl IS
+
+  THEORY BToolUsersTheory
+  END
+  &
+  THEORY FwdBToolUsersTheory
+  END
+
+END

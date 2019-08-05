@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ATMI">
+  <TITLE>The ATMI implementation</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="IMPLEMENTATION"><B>IMPLEMENTATION</B></A>    ATMI
+
+<A NAME="REFINES"><B>REFINES</B></A>           <A HREF="ATM.mch.html#MACHINE">ATM</A>
+
+<A NAME="SEES"><B>SEES</B></A>              
+	<A HREF="basic_io.mch.html#MACHINE">basic_io</A>,
+	<A HREF="file_dump.mch.html#MACHINE">file_dump</A>,
+	<A HREF="String_TYPE.mch.html#MACHINE">String_TYPE</A>,
+	<A HREF="Scalar_TYPE.mch.html#MACHINE">Scalar_TYPE</A>, 
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="DEFINITIONS"><B>DEFINITIONS</B></A>
+	res == <A HREF="con_Nvar.mch.html#OPNAME!con_STO_NVAR">con_STO_NVAR</A>(0)
+
+<A NAME="IMPORTS"><B>IMPORTS</B></A>           
+	<A HREF="ATM_SocketClient.mch.html#MACHINE">ATM_SocketClient</A>(<A HREF="Scalar_TYPE.mch.html#SETS">SCALAR</A> \/ <A HREF="Bool_TYPE.mch.html#SETS">BOOL</A>, 10, 10),
+	<A HREF="con_Nvar.mch.html#MACHINE">con_Nvar</A>(1),			/** a flag that says if connected */
+	<A HREF="Cipher.mch.html#MACHINE">Cipher</A>(<A HREF="ATM.mch.html#DEFINITIONS">ee_cli</A>, <A HREF="ATM.mch.html#DEFINITIONS">dd_cli</A>, <A HREF="ATM.mch.html#DEFINITIONS">nn</A>)
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>    
+	res
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  <A NAME="OPNAME!connecting"><A HREF="ATM.mch.html#OPNAME!connecting">connecting</A> = 
+	<B>BEGIN</B>
+		<B>VAR</B> xx <B>IN</B>
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("<A HREF="ATM.mch.html#MACHINE">ATM</A> connecion to server...\n");
+			<A HREF="basic_io.mch.html#OPNAME!FLSH">FLSH</A>;
+			xx <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_INIT">ATM_INIT</A>("127.0.0.1", 3200);
+			xx <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_CONNECT">ATM_CONNECT</A>; 
+			<B>IF</B> xx = TRUE <B>THEN</B>
+				<A HREF="con_Nvar.mch.html#OPNAME!con_STO_NVAR">con_STO_NVAR</A>(1)
+			<B>ELSE</B>
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("can not connect...")
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>;
+
+  ok <-- <A NAME="OPNAME!shut_down"><A HREF="ATM.mch.html#OPNAME!shut_down">shut_down</A> =
+	<B>BEGIN</B>
+		res;
+		ok <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_CLOSE">ATM_CLOSE</A>
+	<B>END</B>;
+
+  accNr , rep <-- <A NAME="OPNAME!create_account"><A HREF="ATM.mch.html#OPNAME!create_account">create_account</A> = 
+/**
+	requests for <A NAME="OPNAME!create_account"><A HREF="ATM.mch.html#OPNAME!create_account">create_account</A> on Bank
+	by sending the number '1'
+	The reply is encrypted do demonstrate use
+	of the <A HREF="Cipher.mch.html#MACHINE">Cipher</A> development
+*/
+	<B>BEGIN</B>
+		<B>VAR</B> con_status, pp, encrypt_accNr <B>IN</B>
+			con_status <-- <A HREF="con_Nvar.mch.html#OPNAME!con_VAL_NVAR">con_VAL_NVAR</A>;
+			<B>IF</B> con_status = 1 <B>THEN</B>
+
+/**
+There is no documentation <A HREF="ATM_SocketClient.mch.html#INVARIANT">in</A> the specification
+which describes what toksize is!
+All we know is it has function identifier
+<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(tok : TOK & toksize : 1..4 )
+*/
+
+				<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(1, 1);
+				rep <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_WRITE">ATM_WRITE</A>;
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("requesting '<A NAME="OPNAME!create_account"><A HREF="ATM.mch.html#OPNAME!create_account">create_account</A>'\n")	
+			<B>ELSE</B>
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("No connection to server\n")
+			<B>END</B>;
+			rep, pp <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_READ">ATM_READ</A>;
+			encrypt_accNr <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A>(1);
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("encrypted account number is:\n");
+			<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(encrypt_accNr);
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n");
+
+/*decrypt accountNumber*/
+			accNr <-- <A HREF="Cipher.mch.html#OPNAME!decrypt_op">decrypt_op</A>(encrypt_accNr);
+			rep <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A>(1);
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("Your new account has Account Number: ");
+			<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(accNr);
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>(" ");
+			<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(encrypt_accNr);
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n")
+		<B>END</B>
+	<B>END</B>;
+
+  ok, newBalance <-- <A NAME="OPNAME!deposit"><A HREF="ATM.mch.html#OPNAME!deposit">deposit</A>(acc, amount) = 
+/**
+	requests <A NAME="OPNAME!deposit"><A HREF="ATM.mch.html#OPNAME!deposit">deposit</A> on Bank
+	by sending the number '2', parameters acc, and amount
+	Write to buffer, read reply and return new balance
+*/
+	<B>BEGIN</B>
+		<B>IF</B> acc < <A HREF="ATM.mch.html#CONSTANTS">maxAccounts</A> & amount < <A HREF="ATM.mch.html#DEFINITIONS">MAXINT</A> <B>THEN</B>
+			<B>VAR</B> con_status, pp, rep <B>IN</B>
+				con_status <-- <A HREF="con_Nvar.mch.html#OPNAME!con_VAL_NVAR">con_VAL_NVAR</A>;
+				<B>IF</B> con_status = 1 <B>THEN</B>
+/*ATM_PUT(TOK, NAT)*/
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(2, 1);
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(acc, 1);
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(amount, 1);
+					rep <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_WRITE">ATM_WRITE</A>;
+					rep, pp <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_READ">ATM_READ</A>;
+					ok <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A>(1);
+					newBalance <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A>(1);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("New balance is: ");
+					<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(newBalance);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n")
+				<B>END</B>
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>;
+
+  ok <-- <A NAME="OPNAME!withdraw"><A HREF="ATM.mch.html#OPNAME!withdraw">withdraw</A>(acc, amount) =
+/**
+	requests <A NAME="OPNAME!withdraw"><A HREF="ATM.mch.html#OPNAME!withdraw">withdraw</A> on Bank
+	by sending the number '3', parameters acc, and amount,
+	then read the status of the transaction request
+*/
+	<B>BEGIN</B>
+		<B>IF</B> acc < <A HREF="ATM.mch.html#CONSTANTS">maxAccounts</A> & amount < <A HREF="ATM.mch.html#DEFINITIONS">MAXINT</A> <B>THEN</B>
+			<B>VAR</B> con_status, pp, rep <B>IN</B>
+				con_status <-- <A HREF="con_Nvar.mch.html#OPNAME!con_VAL_NVAR">con_VAL_NVAR</A>;
+				<B>IF</B> con_status = 1 <B>THEN</B>
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(3, 1);
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(acc, 1);
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(amount, 1);
+					rep <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_WRITE">ATM_WRITE</A>;
+					rep, pp <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_READ">ATM_READ</A>;
+					ok <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A>(1);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("Status of withdrawal: ");
+					<A HREF="basic_io.mch.html#OPNAME!PUT_BOOL">PUT_BOOL</A>(ok);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n")
+				<B>END</B>
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>;
+
+  rr <-- <A NAME="OPNAME!isaccount"><A HREF="ATM.mch.html#OPNAME!isaccount">isaccount</A>(acc) =
+/**
+	requests <A NAME="OPNAME!isaccount"><A HREF="ATM.mch.html#OPNAME!isaccount">isaccount</A> on Bank
+	by sending the number '4', parameter acc
+	then return the answere
+*/
+	<B>BEGIN</B>
+		<B>IF</B> acc < <A HREF="ATM.mch.html#CONSTANTS">maxAccounts</A> <B>THEN</B>
+			<B>VAR</B> con_status, pp, rep <B>IN</B>
+				con_status <-- <A HREF="con_Nvar.mch.html#OPNAME!con_VAL_NVAR">con_VAL_NVAR</A>;
+				<B>IF</B> con_status = 1 <B>THEN</B>
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(4, 1);
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(acc, 1);
+					rep <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_WRITE">ATM_WRITE</A>;
+					rep, pp <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_READ">ATM_READ</A>;
+					rr <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A>(1);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("Status of account Number: ");
+					<A HREF="basic_io.mch.html#OPNAME!PUT_BOOL">PUT_BOOL</A>(rr);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n")
+				<B>END</B>
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>;
+
+  bal <-- <A NAME="OPNAME!getbalance"><A HREF="ATM.mch.html#OPNAME!getbalance">getbalance</A>(acc) =
+/**
+	request <A NAME="OPNAME!getbalance"><A HREF="ATM.mch.html#OPNAME!getbalance">getbalance</A> on Bank
+	by sending the number '5' and parameter acc
+	then retun answere,
+	query returns 0 if balance does not exist
+*/
+	<B>BEGIN</B>
+		<B>IF</B> acc < <A HREF="ATM.mch.html#CONSTANTS">maxAccounts</A> <B>THEN</B>
+			<B>VAR</B> con_status, pp, rep <B>IN</B>
+				con_status <-- <A HREF="con_Nvar.mch.html#OPNAME!con_VAL_NVAR">con_VAL_NVAR</A>;
+				<B>IF</B> con_status = 1 <B>THEN</B>
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(5, 1);
+					<A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A>(acc, 1);
+					rep <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_WRITE">ATM_WRITE</A>;
+					rep, pp <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_READ">ATM_READ</A>;
+					bal <-- <A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A>(1);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("balance is: ");
+					<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(bal);
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n")
+				<B>END</B>
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Mar  5 21:25:19 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

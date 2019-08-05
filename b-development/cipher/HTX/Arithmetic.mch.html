@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Arithmetic">
+  <TITLE>The Arithmetic machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           
+	Arithmetic
+
+<A NAME="CONSTANTS"><B>CONSTANTS</B></A>
+	prime, exp
+
+<A NAME="PROPERTIES"><B>PROPERTIES</B></A>
+	exp : (NAT * NAT) +-&gt; NAT & 
+
+	!(aa,bb).(aa : NAT & bb : NAT1 =&gt; exp(aa, bb) = exp(aa, bb-1) * aa & 
+	exp(aa,1) = aa &
+	exp(bb, 0) = 1 &
+	exp(0, bb) = 0 ) & 
+
+	prime &lt;: NAT 
+	
+/* NOT NEEDED */	
+/*
+	gcd : NAT * NAT --&gt; NAT &
+	!ff.(ff : NAT1 =&gt; !gg.(gg : NAT1 =&gt; gcd(ff, gg) = gcd(ff, ff mod gg))) &
+	!ff.(ff : NAT1 =&gt; gcd(ff, 0) = ff) &
+	gcd(0, 0) = 0 &
+
+	phi : NAT1 --&gt; NAT1 
+*/
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  rr <-- <A NAME="OPNAME!exp_op">exp_op</A>(aa, bb) = 
+		<B>PRE</B>
+			aa : NAT &
+			bb : NAT
+		<B>THEN</B>
+			rr := exp(aa, bb)
+		<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Feb 26 15:51:23 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

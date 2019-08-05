@@ -1,0 +1,44 @@
+MACHINE           ATM
+	
+SEES
+	CommsDefs, Bool_TYPE, Globals
+ /*, Client*/
+
+INCLUDES
+	Protocol
+
+VARIABLES
+	atm_state
+
+INVARIANT
+	atm_state : STATE
+
+INITIALISATION
+	atm_state := idle
+
+OPERATIONS
+	get_protocol_state =
+/*we realy want to query client state but must do it at the procotol
+because of SEES and INCLUDES constraints */
+		atm_state <-- query_pstate;
+
+	ans <-- deposit(acc : NAT & amount : NAT1) =
+		IF atm_state = connected THEN
+			ans <-- pwithdraw(acc, amount)
+		END;
+
+	ans <-- withdraw(acc:NAT & amount:NAT1) =
+		IF atm_state = connected THEN	
+			ans <-- pwithdraw(acc, amount)
+		END;
+		
+	aa <-- create_acc =
+		IF atm_state = connected THEN
+			aa <-- pcreate_acc
+		END;
+	
+	rr <-- isaccount(acc:NAT) =
+		IF atm_state = connected THEN
+			rr <-- pisaccount(acc)	
+		END
+END

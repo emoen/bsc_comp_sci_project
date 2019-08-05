@@ -1,0 +1,104 @@
+(
+ArithmeticI.imp(2):exp_op.2:
+
+(1[1] | (cst(ArithmeticI$1)) | HYP),
+(2[1] | (ctx(ArithmeticI$1)) | HYP),
+(3[1] | (inv(ArithmeticI$1)) | HYP),
+(4[1] | (asn(ArithmeticI$1)) | HYP),
+(5[1] | (pre(exp_op)) | HYP),
+(6[2] | (aa : NAT) | 5,HypExp.1),
+(7[2] | (not(aa = 0)) | HYP),
+(8[2] | (ii : NAT) | HYP),
+(9[2] | (kk = exp(aa , bb-ii)) | HYP),
+(10[2] | (not(ii = 0)) | HYP),
+(11[3] | (exp(aa , bb-ii+1) = exp(aa , bb-ii+1)) | EQL),
+(12[3] | (exp(aa , bb-ii+1) = exp(aa , bb-(ii-1))) | 11,Law.1),
+(13[3] | (exp(aa , bb-ii)*aa = exp(aa , bb-(ii-1))) | 6,12,BToolUsersTheory.1),
+(14[3] | (kk*aa = exp(aa , bb-(ii-1))) | 13,9),
+(15[1] | (QED) | DED)
+)
+;
+(
+ArithmeticI.imp(2):exp_op.5:
+
+(1[1] | (cst(ArithmeticI$1)) | HYP),
+(2[1] | (ctx(ArithmeticI$1)) | HYP),
+(3[1] | (inv(ArithmeticI$1)) | HYP),
+(4[1] | (asn(ArithmeticI$1)) | HYP),
+(5[1] | (pre(exp_op)) | HYP),
+(6[2] | (bb : NAT) | 5,HypExp.2),
+(7[2] | (aa : NAT) | 5,HypExp.1),
+(8[2] | (not(aa = 0)) | HYP),
+(9[3] | (aa : NAT1) | 8,7,Law.2),
+(10[3] | (exp(aa , 0) = exp(aa , 0)) | EQL),
+(11[3] | (exp(aa , 0) = exp(aa , bb-bb)) | 6,10,Law.3),
+(12[3] | (1 = exp(aa , bb-bb)) | 9,11,BToolUsersTheory.2),
+(13[1] | (QED) | DED)
+)
+;
+(
+ArithmeticI.imp(2):exp_op.7:
+
+(1[1] | (cst(ArithmeticI$1)) | HYP),
+(2[1] | (ctx(ArithmeticI$1)) | HYP),
+(3[1] | (inv(ArithmeticI$1)) | HYP),
+(4[1] | (asn(ArithmeticI$1)) | HYP),
+(5[1] | (pre(exp_op)) | HYP),
+(6[2] | (aa : NAT) | 5,HypExp.1),
+(7[2] | (not(bb = 0)) | HYP),
+(8[2] | (ii : NAT) | HYP),
+(9[2] | (kk = exp(aa , bb-ii)) | HYP),
+(10[2] | (not(ii = 0)) | HYP),
+(11[3] | (exp(aa , bb-ii+1) = exp(aa , bb-ii+1)) | EQL),
+(12[3] | (exp(aa , bb-ii+1) = exp(aa , bb-(ii-1))) | 11,Law.1),
+(13[3] | (exp(aa , bb-ii)*aa = exp(aa , bb-(ii-1))) | 6,12,BToolUsersTheory.1),
+(14[3] | (kk*aa = exp(aa , bb-(ii-1))) | 13,9),
+(15[1] | (QED) | DED)
+)
+;
+LAWS
+(
+HypExp.1:
+(
+  pre(exp_op)
+ =>
+  aa : NAT
+);
+HypExp.2:
+(
+  pre(exp_op)
+ =>
+  bb : NAT
+);
+BToolUsersTheory.1:
+(
+  aa : NAT
+ =>
+  exp(aa , b)*aa == exp(aa , b+1)
+);
+BToolUsersTheory.2:
+(
+  aa : NAT1
+ =>
+  1 == exp(aa , 0)
+);
+Law.1(RewriteAlgebra2X.8):
+(
+  c : 0..2147483647
+ =>
+  a-(b-c) == a-b+c
+);
+Law.2(FwdInNat1X.17):
+(
+  not(n = 0) &
+  n : NAT
+ =>
+  n : NAT1
+);
+Law.3(RewriteNat0X.2):
+(
+  a : NAT
+ =>
+  a-a == 0
+)
+)

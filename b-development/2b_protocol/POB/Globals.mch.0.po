@@ -1,0 +1,53 @@
+THEORY PropertiesX IS
+  ctx(Globals) => card(ACCOUNTNR) : NAT1;
+  ctx(Globals) => YESNO = {yes , no};
+  ctx(Globals) => card(YESNO) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Globals)) => YESNO == {yes , no}
+END
+&
+THEORY NotEqualX IS
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => not(yes = no);
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => not(no = yes)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => yes = no == false;
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => no = yes == false
+END
+&
+THEORY FwdContra0X IS
+  no = yes & ctx(Globals) => bfalse;
+  x = no & x = yes & ctx(Globals) => bfalse;
+  x = no & y = x & y = yes & ctx(Globals) => bfalse;
+  x = yes & x = no & ctx(Globals) => bfalse;
+  x = yes & y = x & y = no & ctx(Globals) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  yes = x => x = yes;
+  no = x => x = no;
+  not(yes = x) & ctx(Globals) => x = no;
+  not(x = yes) & ctx(Globals) => x = no;
+  not(no = x) & ctx(Globals) => x = yes;
+  not(x = no) & ctx(Globals) => x = yes
+END
+&
+THEORY ExpandHypX IS
+  cst(Globals) => maxAccounts : NAT
+END
+&
+THEORY Initialisation
+END
+&
+THEORY Context IS
+  cst(Globals) => (YESNO = {yes , no} & card(YESNO) = 2 => #ACCOUNTNR.(card(ACCOUNTNR) : NAT1))
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

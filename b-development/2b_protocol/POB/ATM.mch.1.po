@@ -1,0 +1,15 @@
+THEORY deposit IS
+1;1;0;1;1
+END
+&
+THEORY withdraw IS
+1;1;0;1;1
+END
+&
+THEORY create_acc IS
+1;1
+END
+&
+THEORY isaccount IS
+1;1
+END

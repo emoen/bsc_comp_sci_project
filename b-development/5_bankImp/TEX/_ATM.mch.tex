@@ -1,0 +1,221 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ATM.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em ATM\/} \-\label{ATM}\index{ATM}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \bhsp{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \+ \bbnl
+{\em Globals\/}\label{Globals}\index{Globals}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em con\/}\label{con}\index{con}  , {\em pubDecrypt\/}\label{pubDecrypt}\index{pubDecrypt}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em con\/} $\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  $\wedge$ \bnl
+{\em pubDecrypt\/} $\in$ {\em 1\/} $\upto$ {\em 6\/}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em con\/} , {\em pubDecrypt\/} $:=$  {\em FALSE\/} , {\em 6\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION connecting
+%
+{\bf { connecting}}  \bhsp $\defs$ \bhsp \+{\em con\/} $:\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION shut\_down
+%
+{\em ok\/} $\longleftarrow$  {\bf { shut\_down}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+{\em ok\/} $:\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \bparallel \bnl
+{\em con\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION create\_account
+%
+{\em accNr\/} , {\em rep\/} $\longleftarrow$  {\bf { create\_account}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em con\/} $=$ {\em TRUE\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em accNr\/} $:\in$ {\em 0\/} $\upto$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  \bparallel \bnl
+{\em rep\/} $:\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em maxAccounts}}{{\em Globals}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION deposit
+%
+{\em ok\/} , {\em newBalance\/} $\longleftarrow$  {\bf { deposit}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em 0\/} $\upto$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$ \bnl
+{\em amount\/} $\in$  $\nat\bsub{1}$  $\wedge$ \bnl
+{\em con\/} $=$ {\em TRUE\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em ok\/} $:\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \bparallel \bnl
+{\em newBalance\/} $:\in$  $\nat$  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em maxAccounts}}{{\em Globals}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION withdraw
+%
+{\em ok\/} $\longleftarrow$  {\bf { withdraw}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em 0\/} $\upto$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$ \bnl
+{\em amount\/} $\in$  $\nat\bsub{1}$  $\wedge$ \bnl
+{\em con\/} $=$ {\em TRUE\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em ok\/} $:\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em maxAccounts}}{{\em Globals}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION isaccount
+%
+{\em rr\/} $\longleftarrow$  {\bf { isaccount}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em 0\/} $\upto$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$ \bnl
+{\em con\/} $=$ {\em TRUE\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em rr\/} $:\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em maxAccounts}}{{\em Globals}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION getbalance
+%
+{\em bal\/} $\longleftarrow$  {\bf { getbalance}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em 0\/} $\upto$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$ \bnl
+{\em con\/} $=$ {\em TRUE\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em bal\/} $:\in$ {\em 0\/} $\upto$ {\em MAXINT\/}\label{MAXINT}\index{MAXINT}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em maxAccounts}}{{\em Globals}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em MAXINT}}{{\em Globals}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for ATM
+%
+\bxrefhead{Cross-references for ATM}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em Globals}}{}{{\sc machine}}{\bbpageref{Globals}}
+\bxrefline{{\em maxAccounts}}{{\em Globals}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em MAXINT}}{{\em Globals}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\vskip 3.5ex

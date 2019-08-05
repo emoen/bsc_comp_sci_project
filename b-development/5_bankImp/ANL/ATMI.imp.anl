@@ -1,0 +1,902 @@
+(
+ (?)
+ ;
+ (
+ (
+ (res == con_STO_NVAR(0)),
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11)
+ )
+ |
+ (
+ (res == con_STO_NVAR(0)),
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11)
+ )
+ )
+ )
+;
+(
+(basic_io(?):(?):((?),(?),(?)))
+,
+(file_dump(?):(?):((?),(?),(?)))
+,
+(String_TYPE(?):(?):((?),(?),(?)))
+,
+(Scalar_TYPE(?):(?):((?),(?),(?)))
+,
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts)
+;
+(encrypt , decrypt , maxAccounts)
+;
+(maxAccounts = 6)
+;
+(maxAccounts = 6 & encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..6 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..6 => decrypt(encrypt(mm)) = mm))
+;
+(
+(ATM_SocketClient(SCALAR \/ BOOL , 10 , 10):(card(SCALAR \/ BOOL) : NAT1 & 10 : NAT & 10 : NAT):((?),(?),(?)))
+,
+(con_Nvar(1):(1 <= 2147483646 & 1 : NAT):((?),(?),(?)))
+,
+(Cipher(9 , 11 , 7):(99 mod 7-1 = 1 & 11 : NAT & 9 : NAT & 7 : NAT1):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(in , inptr , outptr , outbufsize , con_Nvar)
+;
+(?)
+;
+(outbufsize : NAT1 & 10 <= outbufsize & in : NAT1 & 10 <= in & inptr : 0..in & outptr : 0..outbufsize & con_Nvar : 0..1)
+;
+(?)
+;
+(con_STO_NVAR(0))
+;
+(con_Nvar := 0;
+in , inptr , outptr , outbufsize := 0 , 0 , 0 , 10;
+con_STO_NVAR(0))
+;
+(connecting,shut_down,create_account,deposit,withdraw,isaccount,getbalance)
+;
+(connecting , shut_down , create_account , deposit , withdraw , isaccount , getbalance)
+;
+(ATMI(?):(?):(ATM))
+;
+(
+(
+ (connecting)
+;
+ (? , Mod_Op , NonDet_Op , connecting)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR xx IN
+ PUT_STR("ATM connecion to server...\n");
+ FLSH;
+ xx <-- ATM_INIT("127.0.0.1" , 3200);
+ xx <-- ATM_CONNECT;
+ IF xx = TRUE THEN
+ con_STO_NVAR(1)
+ ELSE
+ PUT_STR("can not connect...")
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(xx).
+ (
+ (
+ (
+ (
+ (
+ (PUT_STR("ATM connecion to server...\n"))
+ )
+ ;
+ (
+ (FLSH)
+ )
+ )
+ ;
+ (
+ (xx <-- ATM_INIT("127.0.0.1" , 3200))
+ )
+ )
+ ;
+ (
+ (xx <-- ATM_CONNECT)
+ )
+ )
+ ;
+ (
+ (
+ (
+ (xx = TRUE)
+ )
+ ==>
+ (
+ (con_STO_NVAR(1))
+ )
+ )
+ []
+ (
+ (
+ (not(xx = TRUE))
+ )
+ ==>
+ (
+ (PUT_STR("can not connect..."))
+ )
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (shut_down)
+;
+ (? , Mod_Op , NonDet_Op , (ok <-- shut_down))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ con_STO_NVAR(0);
+ ok <-- ATM_CLOSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (con_STO_NVAR(0))
+ )
+ ;
+ (
+ (ok <-- ATM_CLOSE)
+ )
+ )
+ )
+)
+,
+(
+ (create_account)
+;
+ (? , Mod_Op , NonDet_Op , (accNr , rep <-- create_account))
+;
+ (?)
+;
+ (accNr , rep)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR con_status , pp , encrypt_accNr IN
+ con_status <-- con_VAL_NVAR;
+ IF con_status = 1 THEN
+ ATM_PUT_TOK(1 , 1);
+ rep <-- ATM_WRITE;
+ PUT_STR("requesting 'create_account'\n")
+ ELSE
+ PUT_STR("No connection to server\n")
+ END;
+ rep , pp <-- ATM_READ;
+ encrypt_accNr <-- ATM_GET_TOK(1);
+ PUT_STR("encrypted account number is:\n");
+ PUT_NAT(encrypt_accNr);
+ PUT_STR("\n");
+ accNr <-- decrypt_op(encrypt_accNr);
+ rep <-- ATM_GET_TOK(1);
+ PUT_STR("Your new account has Account Number: ");
+ PUT_NAT(accNr);
+ PUT_STR(" ");
+ PUT_NAT(encrypt_accNr);
+ PUT_STR("\n")
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(con_status , pp , encrypt_accNr).
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (con_status <-- con_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (con_status = 1)
+ )
+ ==>
+ (
+ (
+ (
+ (ATM_PUT_TOK(1 , 1))
+ )
+ ;
+ (
+ (rep <-- ATM_WRITE)
+ )
+ )
+ ;
+ (
+ (PUT_STR("requesting 'create_account'\n"))
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(con_status = 1))
+ )
+ ==>
+ (
+ (PUT_STR("No connection to server\n"))
+ )
+ )
+ )
+ )
+ ;
+ (
+ (rep , pp <-- ATM_READ)
+ )
+ )
+ ;
+ (
+ (encrypt_accNr <-- ATM_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("encrypted account number is:\n"))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(encrypt_accNr))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ ;
+ (
+ (accNr <-- decrypt_op(encrypt_accNr))
+ )
+ )
+ ;
+ (
+ (rep <-- ATM_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("Your new account has Account Number: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(accNr))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(encrypt_accNr))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ )
+ )
+)
+,
+(
+ (deposit)
+;
+ (? , Mod_Op , NonDet_Op , (ok , newBalance <-- deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok , newBalance)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ IF acc < maxAccounts & amount < 5000 THEN
+ VAR con_status , pp , rep IN
+ con_status <-- con_VAL_NVAR;
+ IF con_status = 1 THEN
+ ATM_PUT_TOK(2 , 1);
+ ATM_PUT_TOK(acc , 1);
+ ATM_PUT_TOK(amount , 1);
+ rep <-- ATM_WRITE;
+ rep , pp <-- ATM_READ;
+ ok <-- ATM_GET_TOK(1);
+ newBalance <-- ATM_GET_TOK(1);
+ PUT_STR("New balance is: ");
+ PUT_NAT(newBalance);
+ PUT_STR("\n")
+ END
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (acc < maxAccounts & amount < 5000)
+ )
+ ==>
+ (
+ @(con_status , pp , rep).
+ (
+ (
+ (con_status <-- con_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (con_status = 1)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (ATM_PUT_TOK(2 , 1))
+ )
+ ;
+ (
+ (ATM_PUT_TOK(acc , 1))
+ )
+ )
+ ;
+ (
+ (ATM_PUT_TOK(amount , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- ATM_WRITE)
+ )
+ )
+ ;
+ (
+ (rep , pp <-- ATM_READ)
+ )
+ )
+ ;
+ (
+ (ok <-- ATM_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (newBalance <-- ATM_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("New balance is: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(newBalance))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(con_status = 1))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(acc < maxAccounts & amount < 5000))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (withdraw)
+;
+ (? , Mod_Op , NonDet_Op , (ok <-- withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ IF acc < maxAccounts & amount < 5000 THEN
+ VAR con_status , pp , rep IN
+ con_status <-- con_VAL_NVAR;
+ IF con_status = 1 THEN
+ ATM_PUT_TOK(3 , 1);
+ ATM_PUT_TOK(acc , 1);
+ ATM_PUT_TOK(amount , 1);
+ rep <-- ATM_WRITE;
+ rep , pp <-- ATM_READ;
+ ok <-- ATM_GET_TOK(1);
+ PUT_STR("Status of withdrawal: ");
+ PUT_BOOL(ok);
+ PUT_STR("\n")
+ END
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (acc < maxAccounts & amount < 5000)
+ )
+ ==>
+ (
+ @(con_status , pp , rep).
+ (
+ (
+ (con_status <-- con_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (con_status = 1)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (ATM_PUT_TOK(3 , 1))
+ )
+ ;
+ (
+ (ATM_PUT_TOK(acc , 1))
+ )
+ )
+ ;
+ (
+ (ATM_PUT_TOK(amount , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- ATM_WRITE)
+ )
+ )
+ ;
+ (
+ (rep , pp <-- ATM_READ)
+ )
+ )
+ ;
+ (
+ (ok <-- ATM_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("Status of withdrawal: "))
+ )
+ )
+ ;
+ (
+ (PUT_BOOL(ok))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(con_status = 1))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(acc < maxAccounts & amount < 5000))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (isaccount)
+;
+ (? , Mod_Op , NonDet_Op , (rr <-- isaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ IF acc < maxAccounts THEN
+ VAR con_status , pp , rep IN
+ con_status <-- con_VAL_NVAR;
+ IF con_status = 1 THEN
+ ATM_PUT_TOK(4 , 1);
+ ATM_PUT_TOK(acc , 1);
+ rep <-- ATM_WRITE;
+ rep , pp <-- ATM_READ;
+ rr <-- ATM_GET_TOK(1);
+ PUT_STR("Status of account Number: ");
+ PUT_BOOL(rr);
+ PUT_STR("\n")
+ END
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (acc < maxAccounts)
+ )
+ ==>
+ (
+ @(con_status , pp , rep).
+ (
+ (
+ (con_status <-- con_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (con_status = 1)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (ATM_PUT_TOK(4 , 1))
+ )
+ ;
+ (
+ (ATM_PUT_TOK(acc , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- ATM_WRITE)
+ )
+ )
+ ;
+ (
+ (rep , pp <-- ATM_READ)
+ )
+ )
+ ;
+ (
+ (rr <-- ATM_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("Status of account Number: "))
+ )
+ )
+ ;
+ (
+ (PUT_BOOL(rr))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(con_status = 1))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (maxAccounts <= acc)
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (getbalance)
+;
+ (? , Mod_Op , NonDet_Op , (bal <-- getbalance(acc)))
+;
+ (acc)
+;
+ (bal)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ IF acc < maxAccounts THEN
+ VAR con_status , pp , rep IN
+ con_status <-- con_VAL_NVAR;
+ IF con_status = 1 THEN
+ ATM_PUT_TOK(5 , 1);
+ ATM_PUT_TOK(acc , 1);
+ rep <-- ATM_WRITE;
+ rep , pp <-- ATM_READ;
+ bal <-- ATM_GET_TOK(1);
+ PUT_STR("balance is: ");
+ PUT_NAT(bal);
+ PUT_STR("\n")
+ END
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (acc < maxAccounts)
+ )
+ ==>
+ (
+ @(con_status , pp , rep).
+ (
+ (
+ (con_status <-- con_VAL_NVAR)
+ )
+ ;
+ (
+ (
+ (
+ (con_status = 1)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (ATM_PUT_TOK(5 , 1))
+ )
+ ;
+ (
+ (ATM_PUT_TOK(acc , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- ATM_WRITE)
+ )
+ )
+ ;
+ (
+ (rep , pp <-- ATM_READ)
+ )
+ )
+ ;
+ (
+ (bal <-- ATM_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("balance is: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(bal))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(con_status = 1))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (maxAccounts <= acc)
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+)

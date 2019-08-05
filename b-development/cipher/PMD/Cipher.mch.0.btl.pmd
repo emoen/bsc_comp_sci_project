@@ -1,0 +1,10 @@
+PROOFMETHOD Cipher.mch.1.btl IS
+
+  THEORY BToolUsersTheory IS
+    bsearch((a : NAT1) , b , c) & bsearch(a , A , B) & #B.[a := 3]c  => #A.b
+  END
+  &
+  THEORY FwdBToolUsersTheory
+  END
+
+END

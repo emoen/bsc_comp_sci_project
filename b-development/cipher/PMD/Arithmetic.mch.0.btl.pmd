@@ -1,0 +1,10 @@
+PROOFMETHOD Arithmetic.mch.1.btl IS
+
+  THEORY BToolUsersTheory IS
+    #p.(p <: NAT)
+  END
+  &
+  THEORY FwdBToolUsersTheory
+  END
+
+END

@@ -1,0 +1,122 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(AIRCRAFT , STRINGS)
+;
+(AIRCRAFT , STRINGS)
+;
+(?)
+;
+(?)
+;
+(card(AIRCRAFT) = maxaircraft & card(AIRCRAFT) : NAT1 & card(STRINGS) : NAT1)
+;
+(card(AIRCRAFT) = maxaircraft & card(AIRCRAFT) : NAT1 & card(STRINGS) : NAT1)
+;
+(?)
+;
+(?)
+;
+(aircraft , flight_id)
+;
+(aircraft , flight_id)
+;
+(maxaircraft : NAT1 & aircraft <: AIRCRAFT & flight_id : aircraft --> STRINGS)
+;
+(maxaircraft : NAT1 & aircraft <: AIRCRAFT & flight_id : aircraft --> STRINGS)
+;
+(?)
+;
+(aircraft , flight_id := {} , {})
+;
+(aircraft , flight_id := {} , {})
+;
+(create_aircraft,id_of)
+;
+(create_aircraft , id_of)
+;
+(Aircraft(maxaircraft):(maxaircraft : NAT):(?))
+;
+(
+(
+ (create_aircraft)
+;
+ (? , Mod_Op , NonDet_Op , (aa <-- create_aircraft(fid)))
+;
+ (fid)
+;
+ (aa)
+;
+ (
+ (fid : STRINGS & aircraft /= AIRCRAFT)
+ |
+ (
+ (ANY oo WHERE
+ oo : AIRCRAFT-aircraft
+ THEN
+ aa := oo ||
+ aircraft := aircraft \/ {oo} ||
+ flight_id(oo) := fid
+ END)
+ )
+ )
+;
+ (
+ (fid : STRINGS & not(aircraft = AIRCRAFT))
+ |
+ (
+ @(oo).
+ (
+ (
+ (oo : AIRCRAFT-aircraft)
+ )
+ ==>
+ (
+ (aa , aircraft , flight_id := oo , aircraft \/ {oo} , flight_id <+ {oo |-> fid})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (id_of)
+;
+ (? , Val_Op , Det_Op , (fid <-- id_of(aa)))
+;
+ (aa)
+;
+ (fid)
+;
+ (
+ (aa : aircraft)
+ |
+ (
+ (fid := flight_id(aa))
+ )
+ )
+;
+ (
+ (aa : aircraft)
+ |
+ (
+ (fid := flight_id(aa))
+ )
+ )
+)
+)

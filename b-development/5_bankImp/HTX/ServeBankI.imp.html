@@ -1,0 +1,185 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ServeBankI">
+  <TITLE>The ServeBankI implementation</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="IMPLEMENTATION"><B>IMPLEMENTATION</B></A>    ServeBankI
+
+<A NAME="REFINES"><B>REFINES</B></A>           <A HREF="ServeBank.mch.html#MACHINE">ServeBank</A>
+
+<A NAME="SEES"><B>SEES</B></A>              
+	<A HREF="basic_io.mch.html#MACHINE">basic_io</A>,
+	<A HREF="file_dump.mch.html#MACHINE">file_dump</A>,
+	<A HREF="String_TYPE.mch.html#MACHINE">String_TYPE</A>,
+	<A HREF="Scalar_TYPE.mch.html#MACHINE">Scalar_TYPE</A>,        	
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="IMPORTS"><B>IMPORTS</B></A>           
+	<A HREF="Bank.mch.html#MACHINE">Bank</A>,
+	<A HREF="Bank_SocketServer.mch.html#MACHINE">Bank_SocketServer</A>(<A HREF="Scalar_TYPE.mch.html#SETS">SCALAR</A> \/ <A HREF="Bool_TYPE.mch.html#SETS">BOOL</A>, 10, 10),
+	<A HREF="Cipher.mch.html#MACHINE">Cipher</A>(<A HREF="Bank.mch.html#DEFINITIONS">ee_ser</A>, <A HREF="Bank.mch.html#DEFINITIONS">dd_ser</A>, <A HREF="Bank.mch.html#DEFINITIONS">nn</A>),
+	<A HREF="publicDecrypt_Nvar.mch.html#MACHINE">publicDecrypt_Nvar</A>(<A HREF="Bank.mch.html#DEFINITIONS">MAXINT</A>)
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>
+	<A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_STO_NVAR">publicDecrypt_STO_NVAR</A>(0)
+
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  ok <-- <A NAME="OPNAME!startServer"><A HREF="ServeBank.mch.html#OPNAME!startServer">startServer</A> = 
+	<B>BEGIN</B>
+		<B>VAR</B> xx <B>IN</B>	
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("Server running.\n");
+			<A HREF="basic_io.mch.html#OPNAME!FLSH">FLSH</A>;
+			xx <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_INIT">Bank_INIT</A>("banklock", 3200, "bankbuff");
+			ok <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_ACCEPT">Bank_ACCEPT</A>;
+			<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("connection Established.\n")
+/**
+	If the Btoolkit had allowed dynamic (run-time) 'instansiation'
+	of machines, then we could have transmitted our own public
+	key, and received the ATM's public key.
+	we would then have passed the parameters to
+	<A HREF="Cipher.mch.html#MACHINE">Cipher</A> machine her.
+*/
+
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!listenForUser"><A HREF="ServeBank.mch.html#OPNAME!listenForUser">listenForUser</A> = 
+	<B>BEGIN</B>
+		<B>VAR</B> rep, pp, op <B>IN</B>
+			<B>WHILE</B> 1 = 1 <B>DO</B>
+
+/*  rep, pp &lt;-- ATM_READ rep : BOOL pp : 0..bufsize  */
+
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\nWAITING HERE...\n");
+				rep, pp <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_READ">Bank_READ</A>;
+/*IN ATMI I have commented that i dont know what toksize is good for
+but what use does 'pp' have??*/
+				op <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(1);
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("First tok is");
+				<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(op);
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n");
+				<B>IF</B> op = 1 <B>THEN</B>
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\nINSIDE <A HREF="Bank.mch.html#OPNAME!create_account">create_account</A>\n");
+					<B>VAR</B> ret_a, ret_b, crypt_ret <B>IN</B>
+				/*ret_a is accNr, ret_b is rep (if more accNrs)*/
+						ret_a, ret_b <-- <A HREF="Bank.mch.html#OPNAME!create_account">create_account</A>;
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("calling create acc.\n");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("<A HREF="Bank.mch.html#INVARIANT">account</A> number is:");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(ret_a);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n");
+
+/*decrypting <A HREF="Bank.mch.html#INVARIANT">account</A> number*/
+						crypt_ret <-- <A HREF="Cipher.mch.html#OPNAME!encrypt_op">encrypt_op</A>(ret_a);
+						<A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(crypt_ret, 1);
+
+						<A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_b, 1);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("Going to write tok\n");
+						rep <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_WRITE">Bank_WRITE</A>;
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("have put str\n")
+					<B>END</B>
+				<B>END</B>;
+				<B>IF</B> op = 2 <B>THEN</B>
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\nINSIDE <A HREF="Bank.mch.html#OPNAME!deposit">deposit</A>\n");
+					<B>VAR</B> in_a, in_b, ret_a, ret_b <B>IN</B>
+						in_a <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(1);
+						in_b <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(1);
+						ret_a,ret_b <-- <A HREF="Bank.mch.html#OPNAME!deposit">deposit</A>(in_a, in_b);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("<A HREF="Bank.mch.html#OPNAME!deposit">deposit</A> to accNr: ");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>(" amount:");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_b);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n");
+						<A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+						<A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_b,1);
+						
+						rep <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_WRITE">Bank_WRITE</A>
+					<B>END</B>
+				<B>END</B>;
+				<B>IF</B> op = 3 <B>THEN</B>
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\nINSIDE <A HREF="Bank.mch.html#OPNAME!withdraw">withdraw</A>\n");
+					<B>VAR</B> in_a, in_b, ret_a <B>IN</B>
+						in_a <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(1);
+						in_b <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(1);
+						ret_a <-- <A HREF="Bank.mch.html#OPNAME!withdraw">withdraw</A>(in_a, in_b);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("<A HREF="Bank.mch.html#OPNAME!withdraw">withdraw</A> from accNr: ");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>(" amount: ");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_b);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n");
+						<A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+
+						rep <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_WRITE">Bank_WRITE</A>
+					<B>END</B>
+				<B>END</B>;
+				<B>IF</B> op = 4 <B>THEN</B>
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\nINSIDE <A HREF="Bank.mch.html#OPNAME!isaccount">isaccount</A>\n");
+					<B>VAR</B> in_a, ret_a <B>IN</B>
+						in_a <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(1);
+						ret_a <-- <A HREF="Bank.mch.html#OPNAME!isaccount">isaccount</A>(in_a);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("<A HREF="Bank.mch.html#OPNAME!isaccount">isaccount</A> with accNr: ");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n");
+						<A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+
+						rep <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_WRITE">Bank_WRITE</A>
+					<B>END</B>
+				<B>END</B>;
+				<B>IF</B> op = 5 <B>THEN</B>
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\nINSIDE <A HREF="Bank.mch.html#OPNAME!getbalance">getbalance</A>\n");
+					<B>VAR</B> in_a, ret_a <B>IN</B>
+						in_a <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_GET_TOK">Bank_GET_TOK</A>(1);
+						ret_a <-- <A HREF="Bank.mch.html#OPNAME!getbalance">getbalance</A>(in_a);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("balance for accNr: ");
+						<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(in_a);
+						<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n");
+						<A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_PUT_TOK">Bank_PUT_TOK</A>(ret_a,1);
+
+						rep <-- <A HREF="Bank_SocketServer.mch.html#OPNAME!Bank_WRITE">Bank_WRITE</A>
+					<B>END</B>
+				<B>END</B>;
+				<B>IF</B> rep = FALSE <B>THEN</B>
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("could not send value\n")
+				<B>ELSE</B>
+					<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("AND returning values\n")
+				<B>END</B>;
+				op := 0;
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("value of OP");
+				<A HREF="basic_io.mch.html#OPNAME!PUT_NAT">PUT_NAT</A>(op);
+				<A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("\n")
+			<A NAME="INVARIANT"><B>INVARIANT</B></A> 
+				1 = 1
+			<B>VARIANT</B> 
+				1
+			<B>END</B>
+		<B>END</B>
+	<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:14:02 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

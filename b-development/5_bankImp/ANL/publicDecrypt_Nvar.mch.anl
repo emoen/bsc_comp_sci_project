@@ -1,0 +1,817 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(publicDecrypt_Nvar)
+;
+(publicDecrypt_Nvar)
+;
+(publicDecrypt_Nvar : 0..maxint)
+;
+(publicDecrypt_Nvar : 0..maxint)
+;
+(?)
+;
+(publicDecrypt_Nvar := 0)
+;
+(publicDecrypt_Nvar := 0)
+;
+(publicDecrypt_VAL_NVAR,publicDecrypt_STO_NVAR,publicDecrypt_MIN_NVAR,publicDecrypt_MAX_NVAR,publicDecrypt_PRE_INC_NVAR,publicDecrypt_INC_NVAR,publicDecrypt_PRE_DEC_NVAR,publicDecrypt_DEC_NVAR,publicDecrypt_PRE_ADD_NVAR,publicDecrypt_ADD_NVAR,publicDecrypt_PRE_MUL_NVAR,publicDecrypt_MUL_NVAR,publicDecrypt_PRE_SUB_NVAR,publicDecrypt_SUB_NVAR,publicDecrypt_PRE_DIV_NVAR,publicDecrypt_DIV_NVAR,publicDecrypt_PRE_MOD_NVAR,publicDecrypt_MOD_NVAR,publicDecrypt_EQL_NVAR,publicDecrypt_NEQ_NVAR,publicDecrypt_GTR_NVAR,publicDecrypt_GEQ_NVAR,publicDecrypt_SMR_NVAR,publicDecrypt_LEQ_NVAR,publicDecrypt_SAV_NVAR,publicDecrypt_RST_NVAR,publicDecrypt_SAVN_NVAR,publicDecrypt_RSTN_NVAR)
+;
+(publicDecrypt_VAL_NVAR , publicDecrypt_STO_NVAR , publicDecrypt_MIN_NVAR , publicDecrypt_MAX_NVAR , publicDecrypt_PRE_INC_NVAR , publicDecrypt_INC_NVAR , publicDecrypt_PRE_DEC_NVAR , publicDecrypt_DEC_NVAR , publicDecrypt_PRE_ADD_NVAR , publicDecrypt_ADD_NVAR , publicDecrypt_PRE_MUL_NVAR , publicDecrypt_MUL_NVAR , publicDecrypt_PRE_SUB_NVAR , publicDecrypt_SUB_NVAR , publicDecrypt_PRE_DIV_NVAR , publicDecrypt_DIV_NVAR , publicDecrypt_PRE_MOD_NVAR , publicDecrypt_MOD_NVAR , publicDecrypt_EQL_NVAR , publicDecrypt_NEQ_NVAR , publicDecrypt_GTR_NVAR , publicDecrypt_GEQ_NVAR , publicDecrypt_SMR_NVAR , publicDecrypt_LEQ_NVAR , publicDecrypt_SAV_NVAR , publicDecrypt_RST_NVAR , publicDecrypt_SAVN_NVAR , publicDecrypt_RSTN_NVAR)
+;
+(publicDecrypt_Nvar(maxint):(maxint <= 2147483646 & maxint : NAT):(?))
+;
+(
+(
+ (publicDecrypt_VAL_NVAR)
+;
+ (? , Val_Op , Det_Op , (vv <-- publicDecrypt_VAL_NVAR))
+;
+ (?)
+;
+ (vv)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ vv := publicDecrypt_Nvar
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (vv := publicDecrypt_Nvar)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_STO_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_STO_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := vv)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_MIN_NVAR)
+;
+ (? , Val_Op , Det_Op , (uu <-- publicDecrypt_MIN_NVAR(vv)))
+;
+ (vv)
+;
+ (uu)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := min({publicDecrypt_Nvar , vv}))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := min({publicDecrypt_Nvar , vv}))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_MAX_NVAR)
+;
+ (? , Val_Op , Det_Op , (uu <-- publicDecrypt_MAX_NVAR(vv)))
+;
+ (vv)
+;
+ (uu)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := max({publicDecrypt_Nvar , vv}))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (uu := max({publicDecrypt_Nvar , vv}))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_PRE_INC_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_PRE_INC_NVAR))
+;
+ (?)
+;
+ (bb)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ bb := bool(publicDecrypt_Nvar < maxint)
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar < maxint))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_INC_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_INC_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (publicDecrypt_Nvar+1 : 0..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar+1)
+ )
+ )
+;
+ (
+ (publicDecrypt_Nvar+1 : 0..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar+1)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_PRE_DEC_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_PRE_DEC_NVAR))
+;
+ (?)
+;
+ (bb)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ bb := bool(publicDecrypt_Nvar > 0)
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (bb := bool(0 < publicDecrypt_Nvar))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_DEC_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_DEC_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (publicDecrypt_Nvar : 1..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar-1)
+ )
+ )
+;
+ (
+ (publicDecrypt_Nvar : 1..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar-1)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_PRE_ADD_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_PRE_ADD_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar+vv <= maxint))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar+vv <= maxint))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_ADD_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_ADD_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint & publicDecrypt_Nvar+vv <= maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar+vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint & publicDecrypt_Nvar+vv <= maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar+vv)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_PRE_MUL_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_PRE_MUL_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar*vv <= maxint))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar*vv <= maxint))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_MUL_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_MUL_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint & publicDecrypt_Nvar*vv <= maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar*vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint & publicDecrypt_Nvar*vv <= maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar*vv)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_PRE_SUB_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_PRE_SUB_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar-vv >= 0))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(0 <= publicDecrypt_Nvar-vv))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_SUB_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_SUB_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 0..maxint & publicDecrypt_Nvar-vv >= 0)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar-vv)
+ )
+ )
+;
+ (
+ (vv : 0..maxint & 0 <= publicDecrypt_Nvar-vv)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar-vv)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_PRE_DIV_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_PRE_DIV_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv > 0))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(0 < vv))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_DIV_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_DIV_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar/vv)
+ )
+ )
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar/vv)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_PRE_MOD_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_PRE_MOD_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv > 0))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(0 < vv))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_MOD_NVAR)
+;
+ (? , Mod_Op , Det_Op , publicDecrypt_MOD_NVAR(vv))
+;
+ (vv)
+;
+ (?)
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar-vv*(publicDecrypt_Nvar/vv))
+ )
+ )
+;
+ (
+ (vv : 1..maxint)
+ |
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvar-vv*(publicDecrypt_Nvar/vv))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_EQL_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_EQL_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar = vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar = vv))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_NEQ_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_NEQ_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar /= vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(not(publicDecrypt_Nvar = vv)))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_GTR_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_GTR_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar > vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv < publicDecrypt_Nvar))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_GEQ_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_GEQ_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar >= vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(vv <= publicDecrypt_Nvar))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_SMR_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_SMR_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar < vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar < vv))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_LEQ_NVAR)
+;
+ (? , Val_Op , Det_Op , (bb <-- publicDecrypt_LEQ_NVAR(vv)))
+;
+ (vv)
+;
+ (bb)
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar <= vv))
+ )
+ )
+;
+ (
+ (vv : 0..maxint)
+ |
+ (
+ (bb := bool(publicDecrypt_Nvar <= vv))
+ )
+ )
+)
+,
+(
+ (publicDecrypt_SAV_NVAR)
+;
+ (? , Val_Op , Det_Op , publicDecrypt_SAV_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_RST_NVAR)
+;
+ (? , Mod_Op , NonDet_Op , publicDecrypt_RST_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ publicDecrypt_Nvar :: 0..maxint
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(publicDecrypt_Nvarx).
+ (
+ (
+ (publicDecrypt_Nvarx : 0..maxint)
+ )
+ ==>
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvarx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (publicDecrypt_SAVN_NVAR)
+;
+ (? , Val_Op , Det_Op , publicDecrypt_SAVN_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+)
+,
+(
+ (publicDecrypt_RSTN_NVAR)
+;
+ (? , Mod_Op , NonDet_Op , publicDecrypt_RSTN_NVAR)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ publicDecrypt_Nvar :: 0..maxint
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(publicDecrypt_Nvarx).
+ (
+ (
+ (publicDecrypt_Nvarx : 0..maxint)
+ )
+ ==>
+ (
+ (publicDecrypt_Nvar := publicDecrypt_Nvarx)
+ )
+ )
+ )
+ )
+)
+)

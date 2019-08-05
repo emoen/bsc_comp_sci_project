@@ -1,0 +1,168 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ATM.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em ATM\/} \-\label{ATM}\index{ATM}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em CommsDefs\/}\label{CommsDefs}\index{CommsDefs}  , {\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  , {\em Globals\/}\label{Globals}\index{Globals}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \+ \bbnl
+{\em Protocol\/}\label{Protocol}\index{Protocol}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em atm\_state\/}\label{atm_state}\index{atm_state}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em atm\_state\/} $\in$ {\em STATE\/}\label{STATE}\index{STATE}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em atm\_state\/} $:=$  {\em idle\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION get\_protocol\_state
+%
+{\bf { get\_protocol\_state}}  \bhsp $\defs$ \+ \bnl
+{\em atm\_state\/} $\longleftarrow$ {\em query\_pstate\/}\label{query_pstate}\index{query_pstate}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em query\_pstate}}{{\em Protocol}}{{\sc operations}}{\bbpageref{query_pstate}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION deposit
+%
+{\em ans\/} $\longleftarrow$  {\bf { deposit}} ( {\em acc\/} $\in$  $\nat$  $\wedge$
+{\em amount\/} $\in$  $\nat\bsub{1}$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em atm\_state\/} $=$ {\em connected\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ans\/} $\longleftarrow$ {\em pwithdraw\/}\label{pwithdraw}\index{pwithdraw}  ( {\em acc\/} , {\em amount\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em pwithdraw}}{{\em Protocol}}{{\sc operations}}{\bbpageref{pwithdraw}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION withdraw
+%
+{\em ans\/} $\longleftarrow$  {\bf { withdraw}} ( {\em acc\/} $\in$  $\nat$  $\wedge$
+{\em amount\/} $\in$  $\nat\bsub{1}$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em atm\_state\/} $=$ {\em connected\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ans\/} $\longleftarrow$ {\em pwithdraw\/}\label{pwithdraw}\index{pwithdraw}  ( {\em acc\/} , {\em amount\/} )  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em pwithdraw}}{{\em Protocol}}{{\sc operations}}{\bbpageref{pwithdraw}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION create\_acc
+%
+{\em aa\/} $\longleftarrow$  {\bf { create\_acc}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em atm\_state\/} $=$ {\em connected\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em aa\/} $\longleftarrow$ {\em pcreate\_acc\/}\label{pcreate_acc}\index{pcreate_acc}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em pcreate\_acc}}{{\em Protocol}}{{\sc operations}}{\bbpageref{pcreate_acc}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION isaccount
+%
+{\em rr\/} $\longleftarrow$  {\bf { isaccount}} ( {\em acc\/} $\in$  $\nat$  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em atm\_state\/} $=$ {\em connected\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em rr\/} $\longleftarrow$ {\em pisaccount\/}\label{pisaccount}\index{pisaccount}  ( {\em acc\/} )  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em pisaccount}}{{\em Protocol}}{{\sc operations}}{\bbpageref{pisaccount}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for ATM
+%
+\bxrefhead{Cross-references for ATM}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em CommsDefs}}{}{{\sc machine}}{\bbpageref{CommsDefs}}
+\bxrefline{{\em Globals}}{}{{\sc machine}}{\bbpageref{Globals}}
+\bxrefline{{\em pcreate\_acc}}{{\em Protocol}}{{\sc operations}}{\bbpageref{pcreate_acc}}
+\bxrefline{{\em pisaccount}}{{\em Protocol}}{{\sc operations}}{\bbpageref{pisaccount}}
+\bxrefline{{\em Protocol}}{}{{\sc machine}}{\bbpageref{Protocol}}
+\bxrefline{{\em pwithdraw}}{{\em Protocol}}{{\sc operations}}{\bbpageref{pwithdraw}}
+\bxrefline{{\em query\_pstate}}{{\em Protocol}}{{\sc operations}}{\bbpageref{query_pstate}}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vskip 3.5ex

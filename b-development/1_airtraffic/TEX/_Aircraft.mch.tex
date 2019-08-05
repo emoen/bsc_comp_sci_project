@@ -1,0 +1,81 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Aircraft.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \bhsp\+{\em Aircraft\/} ( {\em maxaircraft\/} )  \-\label{Aircraft}\index{Aircraft}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SETS
+%
+\bbnl
+{\bf SETS} \+ \bbnl
+{\em AIRCRAFT\/}\label{AIRCRAFT}\index{AIRCRAFT}  \bStatementSemiColon {\em STRINGS\/}\label{STRINGS}\index{STRINGS}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PROPERTIES
+%
+\bbnl
+{\bf PROPERTIES} \+ \bbnl
+ {\sf card}$\;$( {\em AIRCRAFT\/} )  $=$ {\em maxaircraft\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em aircraft\/}\label{aircraft}\index{aircraft}  , {\em flight\_id\/}\label{flight_id}\index{flight_id}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em maxaircraft\/} $\in$  $\nat\bsub{1}$  $\wedge$ \bnl
+{\em aircraft\/} $\subseteq$ {\em AIRCRAFT\/} $\wedge$ \bnl
+{\em flight\_id\/} $\in$ {\em aircraft\/} $\fun$ {\em STRINGS\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em aircraft\/} , {\em flight\_id\/} $:=$   $\emptyset$  ,  $\emptyset$  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION create\_aircraft
+%
+{\em aa\/} $\longleftarrow$  {\bf { create\_aircraft}} ( {\em fid\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em fid\/} $\in$ {\em STRINGS\/} $\wedge$ \bnl
+{\em aircraft\/} $\neq$ {\em AIRCRAFT\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{ANY} \+{\em oo\/} \-\bnl
+\bOpnWord{WHERE} \+{\em oo\/} $\in$ {\em AIRCRAFT\/} $-$ {\em aircraft\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em aa\/} $:=$  {\em oo\/} \bparallel \bnl
+{\em aircraft\/} $:=$  {\em aircraft\/} $\cup$  \{ \+{\em oo\/} \- \}  \bparallel \bnl
+{\em flight\_id\/} ( {\em oo\/} )  $:=$  {\em fid\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION id\_of
+%
+{\em fid\/} $\longleftarrow$  {\bf { id\_of}} ( {\em aa\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em aa\/} $\in$ {\em aircraft\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em fid\/} $:=$  {\em flight\_id\/} ( {\em aa\/} )  \-\bnl
+\bOpnWord{END}  \-\- \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent

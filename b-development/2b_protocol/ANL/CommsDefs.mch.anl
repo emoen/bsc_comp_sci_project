@@ -1,0 +1,57 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(STATE(idle , conpending , conrequest , have_report , connected) , MESSAGES(con , true , false))
+;
+(STATE(idle , conpending , conrequest , have_report , connected) , MESSAGES(con , true , false))
+;
+(buffsize)
+;
+(buffsize)
+;
+(buffsize = 100)
+;
+(buffsize = 100)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(CommsDefs(?):(?):(?))
+;
+(
+?
+)

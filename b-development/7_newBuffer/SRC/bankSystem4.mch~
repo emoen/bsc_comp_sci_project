@@ -1,0 +1,54 @@
+MACHINE           bankSystem4
+
+SEES
+	GlobalATM2, Bool_TYPE
+
+VARIABLES         
+	networkData, networkRequest
+
+DEFINITIONS
+	maxSize == 100
+
+INVARIANT         
+	networkData : seq(NAT --> (NAT*NAT)) &
+	networkRequest : seq(NAT --> (NAT*NAT)) &
+	card(networkData) <= maxSize &
+	card(networkRequest) <= maxSize
+
+INITIALISATION  
+	networkData := {}
+
+OPERATIONS
+
+  mm, ok <-- receive_transaction =
+	BEGIN
+		IF card(networkData) > 0 THEN
+			mm := first(networkData) ||
+			ok := TRUE
+		ELSE 	ok := FALSE
+		END
+	END;
+
+  ok <-- send_transaction(xx : NAT & yy : NAT & zz : NAT) =
+	IF card(networkData) < maxSize THEN
+		networkData := networkData <- {xx |-> (yy |-> zz)} ||
+		ok := TRUE
+	ELSE	ok := FALSE
+	END;
+
+  mm, ok <-- receive_request =
+	BEGIN
+		IF card(networkRequest) > 0 THEN
+			mm := first(networkRequest) ||
+			ok := TRUE
+		ELSE 	ok := FALSE
+		END
+	END;
+
+  ok <-- send_request (rr : NAT --> (NAT*NAT)) = 
+	IF card(networkRequest) < maxSize THEN
+		networkRequest := networkRequest <- rr ||
+		ok := TRUE
+	ELSE 	ok := FALSE
+	END
+END

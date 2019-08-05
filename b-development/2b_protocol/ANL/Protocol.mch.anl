@@ -1,0 +1,591 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (ACCOUNTS == 1..10)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+,
+(CommsDefs(?):(?):((?),(?),(?)))
+,
+(Globals(maxAccounts):(maxAccounts : NAT):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(
+(Client(?):(?):((?),(?),(?)))
+,
+(Server(?):(?):((?),(?),(?)))
+,
+(client.Buffer(MESSAGES , buffsize):(card(MESSAGES) : NAT1 & buffsize : NAT):((contents , remove , initial , add , binit),(clientcontents , clientremove , clientinitial , clientadd , clientbinit),(client.contents , client.remove , client.initial , client.add , client.binit)))
+,
+(server.Buffer(MESSAGES , buffsize):(card(MESSAGES) : NAT1 & buffsize : NAT):((contents , remove , initial , add , binit),(servercontents , serverremove , serverinitial , serveradd , serverbinit),(server.contents , server.remove , server.initial , server.add , server.binit)))
+)
+;
+(?)
+;
+(p_state , report)
+;
+(p_state , report , clientstate , sstate , account , accountNumber , clientcontents , servercontents)
+;
+(p_state : STATE & report : BOOL)
+;
+(p_state : STATE & report : BOOL & clientstate : STATE & sstate : STATE & accountNumber <: 1..10 & account : accountNumber >-> NAT & clientcontents : seq(MESSAGES) & size(clientcontents) <= buffsize & servercontents : seq(MESSAGES) & size(servercontents) <= buffsize)
+;
+(?)
+;
+(p_state , report := idle , FALSE)
+;
+(servercontents := <> || clientcontents := <> || accountNumber , account := {} , {} || sstate := idle || clientstate := idle || p_state , report := idle , FALSE)
+;
+(pinit,pcon_request,pcon_in,pcon_report,pcon_give_report,prot_state,pcreate_acc,pdeposit,pwithdraw,pisaccount,query_pstate)
+;
+(pinit , pcon_request , pcon_in , pcon_report , pcon_give_report , prot_state , pcreate_acc , pdeposit , pwithdraw , pisaccount , query_pstate)
+;
+(Protocol(?):(?):(?))
+;
+(
+(
+ (pinit)
+;
+ (? , Mod_Op , Det_Op , pinit)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ p_state := idle ||
+ clientbinit ||
+ serverbinit
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (p_state := idle)
+ )
+ ||
+ (
+ (clientbinit)
+ )
+ )
+ ||
+ (
+ (serverbinit)
+ )
+ )
+ )
+)
+,
+(
+ (pcon_request)
+;
+ (? , Mod_Op , Det_Op , (ok_protocol , ok_client , ok_buffer <-- pcon_request))
+;
+ (?)
+;
+ (ok_protocol , ok_client , ok_buffer)
+;
+ (
+ (true)
+ |
+ (
+ (IF p_state = idle THEN
+ p_state := conpending ||
+ ok_protocol := TRUE ||
+ ok_client <-- client_con_request ||
+ ok_buffer <-- clientadd(con)
+ ELSE
+ ok_protocol := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (p_state = idle)
+ )
+ ==>
+ (
+ (
+ (
+ (p_state , ok_protocol := conpending , TRUE)
+ )
+ ||
+ (
+ (ok_client <-- client_con_request)
+ )
+ )
+ ||
+ (
+ (ok_buffer <-- clientadd(con))
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(p_state = idle))
+ )
+ ==>
+ (
+ (ok_protocol := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (pcon_in)
+;
+ (? , Mod_Op , Det_Op , (ok_protocol , ok_server , ok_buffer <-- pcon_in))
+;
+ (?)
+;
+ (ok_protocol , ok_server , ok_buffer)
+;
+ (
+ (true)
+ |
+ (
+ (IF p_state = conpending THEN
+ p_state := conrequest ||
+ ok_protocol := TRUE ||
+ ok_server <-- conin ||
+ ok_buffer <-- clientremove
+ ELSE
+ ok_protocol := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (p_state = conpending)
+ )
+ ==>
+ (
+ (
+ (
+ (p_state , ok_protocol := conrequest , TRUE)
+ )
+ ||
+ (
+ (ok_server <-- conin)
+ )
+ )
+ ||
+ (
+ (ok_buffer <-- clientremove)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(p_state = conpending))
+ )
+ ==>
+ (
+ (ok_protocol := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (pcon_report)
+;
+ (? , Mod_Op , NonDet_Op , (ok_protocol , ok_server , ok_buffer <-- pcon_report))
+;
+ (?)
+;
+ (ok_protocol , ok_server , ok_buffer)
+;
+ (
+ (true)
+ |
+ (
+ (IF p_state = conrequest THEN
+ p_state := have_report ||
+ report <-- server_con_report ||
+ ok_protocol := report ||
+ ok_server := report ||
+ IF report = TRUE THEN
+ ok_buffer <-- serveradd(true)
+ ELSE
+ ok_buffer <-- serveradd(false)
+ END
+ ELSE
+ ok_protocol := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (p_state = conrequest)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (
+ (p_state := have_report)
+ )
+ ||
+ (
+ (report <-- server_con_report)
+ )
+ )
+ ||
+ (
+ (ok_protocol := report)
+ )
+ )
+ ||
+ (
+ (ok_server := report)
+ )
+ )
+ ||
+ (
+ (
+ (
+ (report = TRUE)
+ )
+ ==>
+ (
+ (ok_buffer <-- serveradd(true))
+ )
+ )
+ []
+ (
+ (
+ (not(report = TRUE))
+ )
+ ==>
+ (
+ (ok_buffer <-- serveradd(false))
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(p_state = conrequest))
+ )
+ ==>
+ (
+ (ok_protocol := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (pcon_give_report)
+;
+ (? , Mod_Op , Det_Op , (ok_protocol , ok_client , ok_buffer <-- pcon_give_report))
+;
+ (?)
+;
+ (ok_protocol , ok_client , ok_buffer)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ok_client <-- client_con_report(report) ||
+ IF p_state = have_report THEN
+ IF report = TRUE THEN
+ p_state := connected
+ ELSE
+ sinit ||
+ p_state := idle
+ END ||
+ ok_protocol := TRUE ||
+ ok_buffer <-- serverremove
+ ELSE
+ ok_protocol := FALSE
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (ok_client <-- client_con_report(report))
+ )
+ ||
+ (
+ (
+ (
+ (p_state = have_report)
+ )
+ ==>
+ (
+ (
+ (
+ (
+ (
+ (report = TRUE)
+ )
+ ==>
+ (
+ (p_state := connected)
+ )
+ )
+ []
+ (
+ (
+ (not(report = TRUE))
+ )
+ ==>
+ (
+ (
+ (sinit)
+ )
+ ||
+ (
+ (p_state := idle)
+ )
+ )
+ )
+ )
+ ||
+ (
+ (ok_protocol := TRUE)
+ )
+ )
+ ||
+ (
+ (ok_buffer <-- serverremove)
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(p_state = have_report))
+ )
+ ==>
+ (
+ (ok_protocol := FALSE)
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (prot_state)
+;
+ (? , Val_Op , Det_Op , (ps <-- prot_state))
+;
+ (?)
+;
+ (ps)
+;
+ (
+ (true)
+ |
+ (
+ (ps := p_state)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (ps := p_state)
+ )
+ )
+)
+,
+(
+ (pcreate_acc)
+;
+ (? , Mod_Op , NonDet_Op , (aa <-- pcreate_acc))
+;
+ (?)
+;
+ (aa)
+;
+ (
+ (p_state = connected)
+ |
+ (
+ (aa <-- screate_acc)
+ )
+ )
+;
+ (
+ (p_state = connected)
+ |
+ (
+ (aa <-- screate_acc)
+ )
+ )
+)
+,
+(
+ (pdeposit)
+;
+ (? , Mod_Op , Det_Op , (new <-- pdeposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (new)
+;
+ (
+ (acc : NAT & amount : NAT & p_state = connected)
+ |
+ (
+ (new <-- sdeposit(acc , amount))
+ )
+ )
+;
+ (
+ (acc : NAT & amount : NAT & p_state = connected)
+ |
+ (
+ (new <-- sdeposit(acc , amount))
+ )
+ )
+)
+,
+(
+ (pwithdraw)
+;
+ (? , Mod_Op , Det_Op , (ans <-- pwithdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ans)
+;
+ (
+ (acc : NAT1 & amount : NAT1 & p_state = connected)
+ |
+ (
+ (ans <-- swithdraw(acc , amount))
+ )
+ )
+;
+ (
+ (acc : NAT1 & amount : NAT1 & p_state = connected)
+ |
+ (
+ (ans <-- swithdraw(acc , amount))
+ )
+ )
+)
+,
+(
+ (pisaccount)
+;
+ (? , Val_Op , Det_Op , (rr <-- pisaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (acc : NAT & p_state = connected)
+ |
+ (
+ (rr <-- sisaccount(acc))
+ )
+ )
+;
+ (
+ (acc : NAT & p_state = connected)
+ |
+ (
+ (rr <-- sisaccount(acc))
+ )
+ )
+)
+,
+(
+ (query_pstate)
+;
+ (? , Val_Op , Det_Op , (rr <-- query_pstate))
+;
+ (?)
+;
+ (rr)
+;
+ (
+ (true)
+ |
+ (
+ (rr := p_state)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (rr := p_state)
+ )
+ )
+)
+)

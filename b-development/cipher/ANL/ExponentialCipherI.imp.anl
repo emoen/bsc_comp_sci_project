@@ -1,0 +1,133 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(encrypt , decrypt)
+;
+(prime , exp , encrypt , decrypt)
+;
+(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))
+;
+(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm) & exp : NAT*NAT +-> NAT & !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0) & prime <: NAT)
+;
+(
+(Arithmetic(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(encrypt_op,decrypt_op)
+;
+(encrypt_op , decrypt_op)
+;
+(ExponentialCipherI(ee , dd , nn):(ee*dd mod (nn-1) = 1 & dd : NAT & ee : NAT & nn : NAT1):(ExponentialCipherRef))
+;
+(
+(
+ (encrypt_op)
+;
+ (? , Val_Op , NonDet_Op , (rr <-- encrypt_op(mm)))
+;
+ (mm)
+;
+ (rr)
+;
+ (
+ (true)
+ |
+ (
+ (VAR tmp IN
+ tmp <-- exp_op(mm , ee);
+ rr := tmp mod nn
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(tmp).
+ (
+ (
+ (tmp <-- exp_op(mm , ee))
+ )
+ ;
+ (
+ (rr := tmp mod nn)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (decrypt_op)
+;
+ (? , Val_Op , NonDet_Op , (rr <-- decrypt_op(mm)))
+;
+ (mm)
+;
+ (rr)
+;
+ (
+ (true)
+ |
+ (
+ (VAR tmp IN
+ tmp <-- exp_op(mm , dd);
+ rr := tmp mod nn
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(tmp).
+ (
+ (
+ (tmp <-- exp_op(mm , dd))
+ )
+ ;
+ (
+ (rr := tmp mod nn)
+ )
+ )
+ )
+ )
+)
+)

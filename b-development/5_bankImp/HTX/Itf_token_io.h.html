@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Itf_token_io.h Code Module">
+  <TITLE>Itf_token_io.h Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "basic_io.h"
+
+<B>#define</B> <A NAME="OPNAME!INI_Itf_token_io"><A HREF="Itf_token_io.mch.html">INI_Itf_token_io</A></A>()       <B>{</B> ; <B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!Itf_GET_TOK"><A HREF="Itf_token_io.mch.html#OPNAME!Itf_GET_TOK">Itf_GET_TOK</A></A>(t)           GET_NAT ( t )
+
+<B>#define</B> <A NAME="OPNAME!Itf_GET_PROMPT_TOK"><A HREF="Itf_token_io.mch.html#OPNAME!Itf_GET_PROMPT_TOK">Itf_GET_PROMPT_TOK</A></A>(t,s)  GET_PROMPT_NAT ( t, s )
+
+<B>#define</B> <A NAME="OPNAME!Itf_PUT_TOK"><A HREF="Itf_token_io.mch.html#OPNAME!Itf_PUT_TOK">Itf_PUT_TOK</A></A>(t)           PUT_NAT ( t )
+
+<B>#ifndef</B> _BT_Motif
+
+<B>#define</B> <A NAME="OPNAME!Itf_PUT_ACT_TOK"><A HREF="Itf_token_io.mch.html#OPNAME!Itf_PUT_ACT_TOK">Itf_PUT_ACT_TOK</A></A>(T,t) \
+  <B>if</B> ( T [ 0 ] [ 0 ] == '\0' ) <B>{</B> \
+    PUT_STR( T [ t ] ); \
+  <B>}</B> \
+  <B>else</B> <B>{</B> \
+    <B>if</B> ( ( strcmp ( T [ 0 ], "SCALAR" ) != 0 )        && \
+         ( strcmp ( T [ 0 ], "0..2147483646" ) != 0 )    ) <B>{</B> \
+      PUT_STR( T [ 0 ] ); PUT_CHR ('.'); \
+    <B>}</B> \
+    PUT_NAT ( t ); \
+  <B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!Itf_GET_PROMPT_ACT_TOK"><A HREF="Itf_token_io.mch.html#OPNAME!Itf_GET_PROMPT_ACT_TOK">Itf_GET_PROMPT_ACT_TOK</A></A>(t,T,s) \
+  PUT_STR ( s ); \
+  <A NAME="OPNAME!Itf_GET_ACT_TOK"><A HREF="Itf_token_io.mch.html#OPNAME!Itf_GET_ACT_TOK">Itf_GET_ACT_TOK</A></A> (t, T )
+
+<B>#else</B>
+
+<B>extern</B> <B>void</B> PUT_ACT_TOK_M ();
+<B>extern</B> <B>void</B> GET_ACT_TOK_M ();
+
+<B>#define</B> Itf_PUT_ACT_TOK(T,t) \
+  <B>if</B> ( T [ 0 ][ 0 ] == '\0' ) \
+    PUT_ACT_TOK_M ( T, t ); \
+  <B>else</B> \
+    _lib_PUT_TOK ( t )
+
+<B>#define</B> Itf_GET_ACT_TOK(t,T) \
+  <B>if</B> ( T [ 0 ][ 0 ] == '\0' ) \
+    GET_ACT_TOK_M ( T, t, "      Select token:     " ); \
+  <B>else</B> \
+    _lib_GET_TOK ( t )
+
+<B>#define</B> Itf_GET_PROMPT_ACT_TOK(t,T,s) \
+  <B>if</B> ( T [ 0 ][ 0 ] == '\0' ) \
+    GET_ACT_TOK_M ( T, t, s ); \
+  <B>else</B> \
+    GET_PROMPT_TOK ( t, s )
+
+<B>#endif</B>
+
+<B>#ifndef</B> _BT_Motif
+
+<B>void</B> Itf_GET_ACT_TOK ();
+
+<B>#endif</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:16:15 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

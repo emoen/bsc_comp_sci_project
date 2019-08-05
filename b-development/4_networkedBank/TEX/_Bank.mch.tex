@@ -1,0 +1,190 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Bank.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \+ \bbnl
+{\em Bank\/} \-\label{Bank}\index{Bank}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INCLUDES
+%
+\bbnl
+{\bf INCLUDES} \+ \bbnl
+{\em Globals\/}\label{Globals}\index{Globals}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em account\/}\label{account}\index{account}  , {\em accountNumber\/}\label{accountNumber}\index{accountNumber}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em accountNumber\/} $\subseteq$ {\em ACCOUNTS\/}\label{ACCOUNTS}\index{ACCOUNTS}  $\wedge$ \bnl
+{\em account\/} $\in$ {\em accountNumber\/} $\fun$  $\nat$  $\wedge$ \bnl
+{\sf dom}$\;$( {\em account\/} )  $=$ {\em accountNumber\/}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ACCOUNTS}}{{\em Globals}}{{\sc definitions}}{\bbpageref{ACCOUNTS}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em RES\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION create\_account
+%
+{\em accNr\/} , {\em rep\/} $\longleftarrow$  {\bf { create\_account}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em accountNumber\/} $\neq$ {\em ACCOUNTS\/}\label{ACCOUNTS}\index{ACCOUNTS}  \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em rep\/} $:=$  {\em TRUE\/} \bparallel \bnl
+\bOpnWord{ANY} \+{\em acc\/} \-\bnl
+\bOpnWord{WHERE} \+\bnl
+{\em acc\/} $\in$ {\em ACCOUNTS\/}\label{ACCOUNTS}\index{ACCOUNTS}  $-$ {\em accountNumber\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em accNr\/} $:=$  {\em acc\/} \bparallel \bnl
+{\em accountNumber\/} $:=$  {\em accountNumber\/} $\cup$  \{ \+{\em acc\/} \- \}  \bparallel \bnl
+{\em account\/} ( {\em acc\/} )  $:=$  {\em 0\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{ELSE} \+{\em rep\/} $:=$  {\em FALSE\/} \bparallel \bnl
+{\em accNr\/} $:=$  {\em 0\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ACCOUNTS}}{{\em Globals}}{{\sc definitions}}{\bbpageref{ACCOUNTS}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION deposit
+%
+{\em ok\/} , {\em newBalance\/} $\longleftarrow$  {\bf { deposit}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em accountNumber\/} $\wedge$ \bnl
+{\em amount\/} $\in$  $\nat\bsub{1}$  \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+{\em account\/} ( {\em acc\/} )  $<$ {\em MAXINT\/}\label{MAXINT}\index{MAXINT}  $-$ {\em amount\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em account\/} ( {\em acc\/} )  $:=$  {\em account\/} ( {\em acc\/} )  $+$ {\em amount\/} \bparallel \bnl
+{\em newBalance\/} $:=$  {\em account\/} ( {\em acc\/} )  $+$ {\em amount\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em ok\/} $:=$  {\em FALSE\/} \bparallel \bnl
+{\em newBalance\/} $:=$  {\em 0\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em MAXINT}}{{\em Globals}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION withdraw
+%
+{\em ok\/} $\longleftarrow$  {\bf { withdraw}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em accountNumber\/} $\wedge$ \bnl
+{\em amount\/} $\in$  $\nat$  \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+\bnl
+{\em amount\/} $\leq$ {\em account\/} ( {\em acc\/} )  \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em account\/} ( {\em acc\/} )  $:=$  {\em account\/} ( {\em acc\/} )  $-$ {\em amount\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION isaccount
+%
+{\em rr\/} $\longleftarrow$  {\bf { isaccount}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em ACCOUNTS\/}\label{ACCOUNTS}\index{ACCOUNTS}  \-\bnl
+\bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+{\em acc\/} $\in$ {\em accountNumber\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em rr\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em rr\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ACCOUNTS}}{{\em Globals}}{{\sc definitions}}{\bbpageref{ACCOUNTS}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION getbalance
+%
+{\em bal\/} $\longleftarrow$  {\bf { getbalance}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{PRE} \+\bnl
+{\em acc\/} $\in$ {\em accountNumber\/} \-\bnl
+\bOpnWord{THEN} \+\bnl
+{\em bal\/} $:=$  {\em account\/} ( {\em acc\/} )  \-\bnl
+\bOpnWord{END}  \-\- \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DEFINITIONS
+%
+\bbnl
+{\bf DEFINITIONS} \+ \bbnl
+{\em RES\/}\label{RES}\index{RES}  $\;\;\defs\;\;$ {\em accountNumber\/} , {\em account\/} $:=$   $\emptyset$  ,  $\emptyset$  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Bank
+%
+\bxrefhead{Cross-references for Bank}
+\bxrefline{{\em ACCOUNTS}}{{\em Globals}}{{\sc definitions}}{\bbpageref{ACCOUNTS}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em Globals}}{}{{\sc machine}}{\bbpageref{Globals}}
+\bxrefline{{\em MAXINT}}{{\em Globals}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\vskip 3.5ex

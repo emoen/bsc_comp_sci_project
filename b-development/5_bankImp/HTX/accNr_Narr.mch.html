@@ -1,0 +1,464 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of accNr_Narr">
+  <TITLE>The accNr_Narr machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>         accNr_Narr(maxint,maxidx)
+
+<A NAME="CONSTRAINTS"><B>CONSTRAINTS</B></A>
+
+   maxint &gt; 0 &
+   maxint &lt;= 2147483646 &
+   maxidx &lt;= 2147483646
+
+<A NAME="SEES"><B>SEES</B></A>            <A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>       accNr_Narr
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>       accNr_Narr: 1..maxidx --&gt; 0..maxint
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>  accNr_Narr:: 1..maxidx --&gt; 0..maxint
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  bb <-- <A NAME="OPNAME!accNr_TST_IDX_NARR">accNr_TST_IDX_NARR</A>(ii) =
+  <B>PRE</B> ii: NAT
+  <B>THEN</B>
+    bb := <B>bool</B>(ii:1..maxidx)
+  <B>END</B>;
+
+  vv <-- <A NAME="OPNAME!accNr_MAX_IDX_NARR">accNr_MAX_IDX_NARR</A>(ii,jj) =
+  <B>PRE</B>
+    ii: 1..maxidx &
+    jj: 1..maxidx &
+    ran((ii..jj) &lt;| accNr_Narr) /= {}
+  <B>THEN</B>
+    vv::accNr_Narr~[{max(ran((ii..jj) &lt;| accNr_Narr))}]
+  <B>END</B>;
+
+  vv <-- <A NAME="OPNAME!accNr_MIN_IDX_NARR">accNr_MIN_IDX_NARR</A>(ii,jj) =
+  <B>PRE</B>
+    ii: 1..maxidx &
+    jj: 1..maxidx &
+    ran((ii..jj) &lt;| accNr_Narr) /= {}
+  <B>THEN</B>
+    vv::accNr_Narr~[{min(ran((ii..jj) &lt;| accNr_Narr))}]
+  <B>END</B>;
+
+  vv <-- <A NAME="OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A>(ii) =
+  <B>PRE</B> ii:1..maxidx
+  <B>THEN</B> 
+    vv:=accNr_Narr(ii)
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_STO_NARR">accNr_STO_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx
+  <B>THEN</B> 
+    accNr_Narr(ii):=vv
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_ADD_NARR">accNr_ADD_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx &
+    accNr_Narr(ii)+vv &lt;= maxint
+  <B>THEN</B> 
+    accNr_Narr(ii):=accNr_Narr(ii)+vv
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_MUL_NARR">accNr_MUL_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx &
+    accNr_Narr(ii)*vv &lt;= maxint
+  <B>THEN</B> 
+    accNr_Narr(ii):=accNr_Narr(ii)*vv
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_SUB_NARR">accNr_SUB_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx &
+    accNr_Narr(ii) &gt;= vv 
+  <B>THEN</B> 
+    accNr_Narr(ii):=accNr_Narr(ii)-vv
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_DIV_NARR">accNr_DIV_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:1..maxint &
+    ii:1..maxidx
+  <B>THEN</B> 
+    accNr_Narr(ii):=accNr_Narr(ii)/vv
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_MOD_NARR">accNr_MOD_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:1..maxint &
+    ii:1..maxidx
+  <B>THEN</B> 
+    accNr_Narr(ii):=accNr_Narr(ii)-vv*(accNr_Narr(ii)/vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!accNr_EQL_NARR">accNr_EQL_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx
+  <B>THEN</B>
+    bb:=<B>bool</B>(accNr_Narr(ii)=vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!accNr_NEQ_NARR">accNr_NEQ_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx
+  <B>THEN</B>
+    bb:=<B>bool</B>(accNr_Narr(ii)/=vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!accNr_GTR_NARR">accNr_GTR_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx
+  <B>THEN</B>
+    bb:=<B>bool</B>(accNr_Narr(ii)&gt;vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!accNr_GEQ_NARR">accNr_GEQ_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx
+  <B>THEN</B>
+    bb:=<B>bool</B>(accNr_Narr(ii)&gt;=vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!accNr_SMR_NARR">accNr_SMR_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx
+  <B>THEN</B>
+    bb:=<B>bool</B>(accNr_Narr(ii)&lt;vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!accNr_LEQ_NARR">accNr_LEQ_NARR</A>(ii,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    ii:1..maxidx
+  <B>THEN</B>
+    bb:=<B>bool</B>(accNr_Narr(ii)&lt;=vv)
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_LO_EQL_NARR">accNr_SCH_LO_EQL_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[{vv}]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= min(ss \/ {maxidx})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_LO_NEQ_NARR">accNr_SCH_LO_NEQ_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[(0..maxint)-{vv}]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= min(ss \/ {maxidx})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_LO_GEQ_NARR">accNr_SCH_LO_GEQ_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[vv..maxint]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= min(ss \/ {maxidx})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_LO_GTR_NARR">accNr_SCH_LO_GTR_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[vv+1..maxint]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= min(ss \/ {maxidx})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_LO_LEQ_NARR">accNr_SCH_LO_LEQ_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[0..vv]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= min(ss \/ {maxidx})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_LO_SMR_NARR">accNr_SCH_LO_SMR_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[ 0..vv-1]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= min(ss \/ {maxidx})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_HI_EQL_NARR">accNr_SCH_HI_EQL_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[{vv}]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= max(ss \/ {1})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_HI_NEQ_NARR">accNr_SCH_HI_NEQ_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[(0..maxint)-{vv}]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= max(ss \/ {1})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_HI_GEQ_NARR">accNr_SCH_HI_GEQ_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[vv..maxint]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= max(ss \/ {1})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_HI_GTR_NARR">accNr_SCH_HI_GTR_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[vv+1..maxint]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= max(ss \/ {1})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_HI_LEQ_NARR">accNr_SCH_HI_LEQ_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[0..vv]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= max(ss \/ {1})
+    <B>END</B>
+  <B>END</B>;
+
+  bb,ii <-- <A NAME="OPNAME!accNr_SCH_HI_SMR_NARR">accNr_SCH_HI_SMR_NARR</A>(jj,kk,vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    jj:1..maxidx &
+    kk:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> ss <B>BE</B>
+      ss = (jj..kk) /\ accNr_Narr~[ 0..vv-1]
+    <B>IN</B>
+      bb:=<B>bool</B>(ss/={}) ||
+      ii:= max(ss \/ {1})
+    <B>END</B>
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_SRT_ASC_NARR">accNr_SRT_ASC_NARR</A>(ii,jj) =
+  <B>PRE</B>
+    ii:1..maxidx &
+    jj:1..maxidx &
+    ii &lt;= jj
+  <B>THEN</B>
+    <B>ANY</B> ff,aa,bb,cc <B>WHERE</B>
+      ff: (ii..jj) &gt;-&gt;&gt; (ii..jj) &
+      bb: NAT +-&gt; (0..maxint) &
+      bb = (ff;accNr_Narr) &
+      !kk.(kk:ii..jj-1 =&gt; bb(kk) &lt;= bb(kk+1)) &
+      aa = (1..ii-1) &lt;| accNr_Narr &
+      cc = (jj+1..maxidx) &lt;| accNr_Narr
+    <B>THEN</B>
+      accNr_Narr := aa \/ bb \/ cc
+    <B>END</B>
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_SRT_DSC_NARR">accNr_SRT_DSC_NARR</A>(ii,jj) =
+  <B>PRE</B>
+    ii:1..maxidx &
+    jj:1..maxidx  &
+    ii &lt;= jj
+  <B>THEN</B>
+    <B>ANY</B> ff,aa,bb,cc <B>WHERE</B>
+      ff: ii..jj &gt;-&gt;&gt; ii..jj &
+      bb: NAT +-&gt; (0..maxint) &
+      bb = (ff;accNr_Narr) &
+      !kk.(kk:ii..jj-1 =&gt; bb(kk) &gt;= bb(kk+1)) &
+      aa = (1..ii-1) &lt;| accNr_Narr &
+      cc = (jj+1..maxidx) &lt;| accNr_Narr
+    <B>THEN</B>
+      accNr_Narr := aa \/ bb \/ cc
+    <B>END</B>
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_REV_NARR">accNr_REV_NARR</A>(ii,jj) =
+  <B>PRE</B>
+    ii:1..maxidx &
+    jj:1..maxidx &
+    ii &lt;= jj
+  <B>THEN</B>
+    <B>LET</B> aa,bb,cc <B>BE</B>
+      aa = (1..ii-1) &lt;| accNr_Narr &
+      bb = %kk.(kk:ii..jj | accNr_Narr(jj+ii-kk)) &
+      cc = (jj+1..maxidx) &lt;| accNr_Narr
+    <B>IN</B>
+      accNr_Narr := aa \/ bb \/ cc
+    <B>END</B>
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_RHT_NARR">accNr_RHT_NARR</A>(ii,jj,nn) =
+  <B>PRE</B>
+    ii:1..maxidx &
+    jj:1..maxidx &
+    nn:1..maxidx &
+    ii &lt;= jj
+  <B>THEN</B>
+    <B>LET</B> aa,bb,cc <B>BE</B>
+      aa = (1..ii+nn-1) &lt;| accNr_Narr &
+      bb = %kk.(
+           kk:ii+nn..min({maxidx,jj+nn}) | accNr_Narr(kk-nn)
+           ) &
+      cc = (jj+nn+1..maxidx) &lt;| accNr_Narr
+    <B>IN</B>
+      accNr_Narr := aa \/ bb \/ cc
+    <B>END</B>
+  <B>END</B>;
+
+  <A NAME="OPNAME!accNr_LFT_NARR">accNr_LFT_NARR</A>(ii,jj,nn) =
+  <B>PRE</B>
+    ii:1..maxidx &
+    jj:1..maxidx &
+    ii &lt;= jj &
+    nn:1..maxidx
+  <B>THEN</B>
+    <B>LET</B> aa,bb,cc <B>BE</B>
+      aa = (1..ii-nn-1) &lt;| accNr_Narr &
+      bb = %kk.(
+           kk:max({1,ii-nn})..jj-nn | accNr_Narr(kk+nn)
+           ) &
+      cc = (jj-nn+1..maxidx) &lt;| accNr_Narr
+    <B>IN</B>
+      accNr_Narr := aa \/ bb \/ cc
+    <B>END</B>
+  <B>END</B>;
+
+
+  <A NAME="OPNAME!accNr_SWP_NARR">accNr_SWP_NARR</A>(ii,jj) =
+  <B>PRE</B>
+    ii: 1..maxidx &
+    jj: 1..maxidx
+  <B>THEN</B>
+    accNr_Narr:= ( 
+      accNr_Narr<+{ii |-> accNr_Narr(jj), jj |-&gt; accNr_Narr(ii)}
+      )
+  <B>END</B>;
+
+
+/**************  save/restore host byte order **************/
+
+ <A NAME="OPNAME!accNr_SAV_NARR">accNr_SAV_NARR</A> = <B>BEGIN</B> <B>skip</B> <B>END</B>;
+
+ <A NAME="OPNAME!accNr_RST_NARR">accNr_RST_NARR</A> =
+ <B>BEGIN</B>  accNr_Narr :: 1..maxidx --&gt; 0..maxint <B>END</B>;
+
+
+/**************  save/restore network byte order **************/
+
+ <A NAME="OPNAME!accNr_SAVN_NARR">accNr_SAVN_NARR</A> = <B>BEGIN</B> <B>skip</B> <B>END</B>;
+ 
+ <A NAME="OPNAME!accNr_RSTN_NARR">accNr_RSTN_NARR</A> =
+ <B>BEGIN</B>  accNr_Narr :: 1..maxidx --&gt; 0..maxint <B>END</B>
+
+
+<B>END</B>
+
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:31 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

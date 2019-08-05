@@ -1,0 +1,88 @@
+THEORY PropertiesX IS
+  ctx(ATM) => maxAccounts = 6;
+  ctx(ATM) => ctx(Bool_TYPE);
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE
+END
+&
+THEORY ExpandHypX IS
+  inv(ATM) => inv(Bool_TYPE);
+  inv(ATM) => con : BOOL;
+  inv(ATM) => pubDecrypt : 1..6;
+  pre(create_account) => con = TRUE;
+  pre(deposit) => acc : 0..maxAccounts;
+  pre(deposit) => amount : NAT1;
+  pre(deposit) => con = TRUE;
+  pre(withdraw) => acc : 0..maxAccounts;
+  pre(withdraw) => amount : NAT1;
+  pre(withdraw) => con = TRUE;
+  pre(isaccount) => acc : 0..maxAccounts;
+  pre(isaccount) => con = TRUE;
+  pre(getbalance) => acc : 0..maxAccounts;
+  pre(getbalance) => con = TRUE
+END
+&
+THEORY Initialisation IS
+  cst(ATM) & ctx(ATM) => 6 : 1..6
+END
+&
+THEORY connecting
+END
+&
+THEORY shut_down
+END
+&
+THEORY create_account
+END
+&
+THEORY deposit
+END
+&
+THEORY withdraw
+END
+&
+THEORY isaccount
+END
+&
+THEORY getbalance
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

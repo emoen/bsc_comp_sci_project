@@ -1,0 +1,35 @@
+THEORY Initialisation IS
+0;0;0;0;0
+END
+&
+THEORY request_deposit IS
+0
+END
+&
+THEORY request_withdraw IS
+0
+END
+&
+THEORY ATM_deposit IS
+0;0;0;1
+END
+&
+THEORY Bank_deposit IS
+0;1;1;0;1
+END
+&
+THEORY ATM_withdraw IS
+0;0;0;1
+END
+&
+THEORY Bank_withdraw IS
+0;1;1;0;1
+END
+&
+THEORY network_goes_down IS
+1
+END
+&
+THEORY corrupt_network IS
+1
+END

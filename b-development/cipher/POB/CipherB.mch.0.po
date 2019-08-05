@@ -1,0 +1,45 @@
+THEORY PropertiesX END
+&
+THEORY EnumerateX END
+&
+THEORY NotEqualX END
+&
+THEORY RewriteToFalseOrTrueX END
+&
+THEORY FwdContra0X END
+&
+THEORY FwdEqual1X END
+&
+THEORY ExpandHypX IS
+  inv(CipherB) => encrypt : NAT --> NAT;
+  inv(CipherB) => decrypt : NAT --> NAT;
+  inv(CipherB) => !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm);
+  inv(CipherB) => !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm);
+  cst(CipherB) => ee*dd mod nn-1 = 1;
+  cst(CipherB) => dd : NAT;
+  cst(CipherB) => ee : NAT;
+  cst(CipherB) => nn : NAT1;
+  pre(encrypt_op) => mm : 0..nn-1
+END
+&
+THEORY Initialisation IS
+  cst(CipherB) & ctx(CipherB) => encrypt : NAT --> NAT;
+  cst(CipherB) & ctx(CipherB) => decrypt : NAT --> NAT;
+  cst(CipherB) & ctx(CipherB) => (mm : 0..nn-1 => encrypt(decrypt(mm)) = mm);
+  cst(CipherB) & ctx(CipherB) => (mm : 0..nn-1 => decrypt(encrypt(mm)) = mm)
+END
+&
+THEORY encrypt_op IS
+  cst(CipherB) & ctx(CipherB) & inv(CipherB) & asn(CipherB) & pre(encrypt_op) => (mm$0 : 0..nn-1 => encrypt(decrypt(mm$0)) = mm$0);
+  cst(CipherB) & ctx(CipherB) & inv(CipherB) & asn(CipherB) & pre(encrypt_op) => (mm$0 : 0..nn-1 => decrypt(encrypt(mm$0)) = mm$0)
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints IS
+  ( #(dd , nn , ee).(dd : NAT & ee : NAT & nn : NAT1 & ee*dd mod nn-1 = 1) )
+END

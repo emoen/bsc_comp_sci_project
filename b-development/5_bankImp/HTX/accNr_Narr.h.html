@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of accNr_Narr.h Code Module">
+  <TITLE>accNr_Narr.h Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>extern</B> <B>int</B> accNr_NarrP1;
+<B>extern</B> <B>int</B> accNr_NarrP2;
+<B>extern</B> <B>int</B> accNr_Narray<B>[</B><B>]</B>;
+<B>#define</B> <A NAME="OPNAME!INI_accNr_Narr"><A HREF="accNr_Narr.mch.html">INI_accNr_Narr</A></A>()      <B>{</B> ; <B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_TST_IDX_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_TST_IDX_NARR">accNr_TST_IDX_NARR</A></A>(bb,ii) {*(bb) = \
+                         (((ii&gt;=1) && (ii&lt;=accNr_NarrP2))!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_VAL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_VAL_NARR">accNr_VAL_NARR</A></A>(vv,ii) {*(vv) = accNr_Narray<B>[</B>ii<B>]</B>;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_STO_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_STO_NARR">accNr_STO_NARR</A></A>(ii,vv) {accNr_Narray[ii] = (vv);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_ADD_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_ADD_NARR">accNr_ADD_NARR</A></A>(ii,vv) {accNr_Narray[ii] = accNr_Narray<B>[</B>ii<B>]</B>+(vv);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_SUB_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SUB_NARR">accNr_SUB_NARR</A></A>(ii,vv) {accNr_Narray[ii] = accNr_Narray<B>[</B>ii<B>]</B>-(vv);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_MUL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_MUL_NARR">accNr_MUL_NARR</A></A>(ii,vv) {accNr_Narray[ii] = accNr_Narray<B>[</B>ii<B>]</B>*(vv);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_DIV_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_DIV_NARR">accNr_DIV_NARR</A></A>(ii,vv) {accNr_Narray[ii] = accNr_Narray<B>[</B>ii<B>]</B>/(vv);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_MOD_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_MOD_NARR">accNr_MOD_NARR</A></A>(ii,vv) \
+{accNr_Narray[ii] = accNr_Narray<B>[</B>ii<B>]</B>-(vv)*(accNr_Narray<B>[</B>ii<B>]</B>/(vv));<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!accNr_EQL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_EQL_NARR">accNr_EQL_NARR</A></A>(bb,ii,vv) {*(bb) = ((accNr_Narray<B>[</B>ii<B>]</B>==(vv))!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_NEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_NEQ_NARR">accNr_NEQ_NARR</A></A>(bb,ii,vv) {*(bb) = ((accNr_Narray<B>[</B>ii<B>]</B>!=(vv))!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_GTR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_GTR_NARR">accNr_GTR_NARR</A></A>(bb,ii,vv) {*(bb) = ((accNr_Narray<B>[</B>ii<B>]</B>&gt; (vv))!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_GEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_GEQ_NARR">accNr_GEQ_NARR</A></A>(bb,ii,vv) {*(bb) = ((accNr_Narray<B>[</B>ii<B>]</B>&gt;=(vv))!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_SMR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SMR_NARR">accNr_SMR_NARR</A></A>(bb,ii,vv) {*(bb) = ((accNr_Narray<B>[</B>ii<B>]</B>&lt; (vv))!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!accNr_LEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_LEQ_NARR">accNr_LEQ_NARR</A></A>(bb,ii,vv) {*(bb) = ((accNr_Narray<B>[</B>ii<B>]</B>&lt;=(vv))!=0);<B>}</B>
+
+<B>void</B> <A NAME="OPNAME!accNr_SAV_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SAV_NARR">accNr_SAV_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SAVN_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SAVN_NARR">accNr_SAVN_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_RST_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_RST_NARR">accNr_RST_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_RSTN_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_RSTN_NARR">accNr_RSTN_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SWP_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SWP_NARR">accNr_SWP_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_MAX_IDX_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_MAX_IDX_NARR">accNr_MAX_IDX_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_MIN_IDX_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_MIN_IDX_NARR">accNr_MIN_IDX_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_LO_EQL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_EQL_NARR">accNr_SCH_LO_EQL_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_LO_NEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_NEQ_NARR">accNr_SCH_LO_NEQ_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_LO_GEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_GEQ_NARR">accNr_SCH_LO_GEQ_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_LO_GTR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_GTR_NARR">accNr_SCH_LO_GTR_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_LO_LEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_LEQ_NARR">accNr_SCH_LO_LEQ_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_LO_SMR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_LO_SMR_NARR">accNr_SCH_LO_SMR_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_HI_EQL_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_EQL_NARR">accNr_SCH_HI_EQL_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_HI_NEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_NEQ_NARR">accNr_SCH_HI_NEQ_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_HI_GEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_GEQ_NARR">accNr_SCH_HI_GEQ_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_HI_GTR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_GTR_NARR">accNr_SCH_HI_GTR_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_HI_LEQ_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_LEQ_NARR">accNr_SCH_HI_LEQ_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SCH_HI_SMR_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SCH_HI_SMR_NARR">accNr_SCH_HI_SMR_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SRT_ASC_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SRT_ASC_NARR">accNr_SRT_ASC_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_SRT_DSC_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_SRT_DSC_NARR">accNr_SRT_DSC_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_REV_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_REV_NARR">accNr_REV_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_RHT_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_RHT_NARR">accNr_RHT_NARR</A></A>();
+<B>void</B> <A NAME="OPNAME!accNr_LFT_NARR"><A HREF="accNr_Narr.mch.html#OPNAME!accNr_LFT_NARR">accNr_LFT_NARR</A></A>();
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:31 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,261 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(String_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(Itf_GET_TOK,Itf_GET_PROMPT_TOK,Itf_PUT_TOK,Itf_GET_ACT_TOK,Itf_GET_PROMPT_ACT_TOK,Itf_PUT_ACT_TOK)
+;
+(Itf_GET_TOK , Itf_GET_PROMPT_TOK , Itf_PUT_TOK , Itf_GET_ACT_TOK , Itf_GET_PROMPT_ACT_TOK , Itf_PUT_ACT_TOK)
+;
+(Itf_token_io(TOKEN):(card(TOKEN) : NAT1):(?))
+;
+(
+(
+ (Itf_GET_TOK)
+;
+ (? , Val_Op , NonDet_Op , (tt <-- Itf_GET_TOK))
+;
+ (?)
+;
+ (tt)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ tt :: TOKEN
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(ttx).
+ (
+ (
+ (ttx : TOKEN)
+ )
+ ==>
+ (
+ (tt := ttx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (Itf_GET_PROMPT_TOK)
+;
+ (? , Val_Op , NonDet_Op , (tt <-- Itf_GET_PROMPT_TOK(ss)))
+;
+ (ss)
+;
+ (tt)
+;
+ (
+ (ss : STRING)
+ |
+ (
+ (BEGIN
+ tt :: TOKEN
+ END)
+ )
+ )
+;
+ (
+ (ss : STRING)
+ |
+ (
+ @(ttx).
+ (
+ (
+ (ttx : TOKEN)
+ )
+ ==>
+ (
+ (tt := ttx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (Itf_PUT_TOK)
+;
+ (? , Val_Op , Det_Op , Itf_PUT_TOK(tt))
+;
+ (tt)
+;
+ (?)
+;
+ (
+ (tt : TOKEN)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (tt : TOKEN)
+ |
+ (
+ (skip)
+ )
+ )
+)
+,
+(
+ (Itf_GET_ACT_TOK)
+;
+ (? , Val_Op , NonDet_Op , (tt <-- Itf_GET_ACT_TOK(SS)))
+;
+ (SS)
+;
+ (tt)
+;
+ (
+ (SS : POW(TOKEN))
+ |
+ (
+ (BEGIN
+ tt :: SS
+ END)
+ )
+ )
+;
+ (
+ (SS : POW(TOKEN))
+ |
+ (
+ @(ttx).
+ (
+ (
+ (ttx : SS)
+ )
+ ==>
+ (
+ (tt := ttx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (Itf_GET_PROMPT_ACT_TOK)
+;
+ (? , Val_Op , NonDet_Op , (tt <-- Itf_GET_PROMPT_ACT_TOK(SS , ss)))
+;
+ (SS , ss)
+;
+ (tt)
+;
+ (
+ (SS : POW(TOKEN) & ss : STRING)
+ |
+ (
+ (BEGIN
+ tt :: TOKEN
+ END)
+ )
+ )
+;
+ (
+ (SS : POW(TOKEN) & ss : STRING)
+ |
+ (
+ @(ttx).
+ (
+ (
+ (ttx : TOKEN)
+ )
+ ==>
+ (
+ (tt := ttx)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (Itf_PUT_ACT_TOK)
+;
+ (? , Val_Op , Det_Op , Itf_PUT_ACT_TOK(SS , tt))
+;
+ (SS , tt)
+;
+ (?)
+;
+ (
+ (SS : POW(TOKEN) & tt : SS)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (SS : POW(TOKEN) & tt : SS)
+ |
+ (
+ (skip)
+ )
+ )
+)
+)

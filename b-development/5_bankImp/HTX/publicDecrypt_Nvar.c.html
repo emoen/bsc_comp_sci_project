@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of publicDecrypt_Nvar.c Code Module">
+  <TITLE>publicDecrypt_Nvar.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "publicDecrypt_Nvar.h"
+
+<B>#include</B> &lt;stdio.h&gt;
+<B>#include</B> &lt;sys/types.h&gt;
+<B>#include</B> &lt;netinet/in.h&gt;
+
+<B>extern</B> <B>FILE</B> *dump_file;
+
+
+<B>#define</B>  write_fm(a,b)    <B>fwrite</B>(&a,<B>sizeof</B>(<B>int</B>),b,dump_file)
+
+<B>void</B>
+<A NAME="OPNAME!publicDecrypt_SAV_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_SAV_NVAR">publicDecrypt_SAV_NVAR</A></A>()
+<B>{</B>
+	write_fm(publicDecrypt_Nscv,1);
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!publicDecrypt_SAVN_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_SAVN_NVAR">publicDecrypt_SAVN_NVAR</A></A>()
+<B>{</B>
+	publicDecrypt_Nscv = htonl ( publicDecrypt_Nscv );
+	write_fm(publicDecrypt_Nscv,1);
+	publicDecrypt_Nscv = ntohl ( publicDecrypt_Nscv );
+<B>}</B>
+
+
+<B>#define</B>  read_fm(a,b)    <B>fread</B>(&a,<B>sizeof</B>(<B>int</B>),b,dump_file)
+
+<B>void</B>
+<A NAME="OPNAME!publicDecrypt_RST_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_RST_NVAR">publicDecrypt_RST_NVAR</A></A>()
+<B>{</B>
+	read_fm(publicDecrypt_Nscv,1);
+<B>}</B>
+
+<B>void</B>
+<A NAME="OPNAME!publicDecrypt_RSTN_NVAR"><A HREF="publicDecrypt_Nvar.mch.html#OPNAME!publicDecrypt_RSTN_NVAR">publicDecrypt_RSTN_NVAR</A></A>()
+<B>{</B>
+	read_fm(publicDecrypt_Nscv,1);
+	publicDecrypt_Nscv = ntohl ( publicDecrypt_Nscv );
+<B>}</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:01 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

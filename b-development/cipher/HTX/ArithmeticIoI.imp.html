@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ArithmeticIoI">
+  <TITLE>The ArithmeticIoI implementation</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="IMPLEMENTATION"><B>IMPLEMENTATION</B></A>   ArithmeticIoI
+
+<A NAME="REFINES"><B>REFINES</B></A>          <A HREF="ArithmeticIo.mch.html#MACHINE">ArithmeticIo</A>
+
+<A NAME="SEES"><B>SEES</B></A>             <A HREF="basic_io.mch.html#MACHINE">basic_io</A>, <A HREF="String_TYPE.mch.html#MACHINE">String_TYPE</A> 
+
+<A NAME="CONSTANTS"><B>CONSTANTS</B></A>        string1
+
+<A NAME="PROPERTIES"><B>PROPERTIES</B></A>       string1 ="Arithmetic operation number? "
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  <A NAME="OPNAME!Arithmetic_Menu"><A HREF="ArithmeticIo.mch.html#OPNAME!Arithmetic_Menu">Arithmetic_Menu</A> =
+    <B>BEGIN</B>
+      <A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("  0 Arithmetic Menu ");
+      <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(2);
+      <A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("  1 exp_op");
+      <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(2);
+      <A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>("  2 Quit");
+      <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(1)
+    <B>END</B>;
+
+  op<--<A NAME="OPNAME!Get_Arithmetic_Op"><A HREF="ArithmeticIo.mch.html#OPNAME!Get_Arithmetic_Op">Get_Arithmetic_Op</A> =
+    <B>VAR</B> opcode <B>IN</B>
+      opcode <-- <A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_NBR">GET_PROMPT_NBR</A>(string1,2);
+      <B>CASE</B> opcode <B>OF</B>
+        <B>EITHER</B> 0 <B>THEN</B>
+          op:=Arithmetic_Menu_OP
+        <B>OR</B> 1 <B>THEN</B>
+          op:=exp_op_OP
+        <B>OR</B> 2 <B>THEN</B>
+          op:=Quit_OP
+        <B>END</B>
+      <B>END</B>
+    <B>END</B>
+
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Sun Mar  2 22:06:42 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

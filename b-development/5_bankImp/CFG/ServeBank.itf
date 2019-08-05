@@ -1,0 +1,8 @@
+INTERFACE     ServeBank
+
+OPERATIONS
+
+  startServer,
+  listenForUser
+
+END

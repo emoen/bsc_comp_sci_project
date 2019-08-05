@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of con_Nvar.h Code Module">
+  <TITLE>con_Nvar.h Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>extern</B> <B>int</B> con_NvarP1;
+<B>extern</B> <B>int</B> con_Nscv;
+
+<B>#define</B> <A NAME="OPNAME!INI_con_Nvar"><A HREF="con_Nvar.mch.html">INI_con_Nvar</A></A>()   {con_Nscv = 0;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_VAL_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_VAL_NVAR">con_VAL_NVAR</A></A>(uu) {*(uu) = con_Nscv;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_STO_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_STO_NVAR">con_STO_NVAR</A></A>(vv) {con_Nscv = vv;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_MIN_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_MIN_NVAR">con_MIN_NVAR</A></A>(uu,vv) {if( con_Nscv&lt;=vv )<B>{</B> *(uu) = con_Nscv ;}else{ *(uu) = vv ;<B>}</B>;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_MAX_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_MAX_NVAR">con_MAX_NVAR</A></A>(uu,vv) {if( con_Nscv&gt;=vv )<B>{</B> *(uu) = con_Nscv ;}else{ *(uu) = vv ;<B>}</B>;<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_PRE_INC_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_PRE_INC_NVAR">con_PRE_INC_NVAR</A></A>(bb)   {*(bb) = \
+                    ((con_Nscv &lt; con_NvarP1)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_INC_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_INC_NVAR">con_INC_NVAR</A></A>()   {con_Nscv = con_Nscv+1;<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!con_PRE_DEC_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_PRE_DEC_NVAR">con_PRE_DEC_NVAR</A></A>(bb)  {*(bb) = ((con_Nscv &gt; 0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_DEC_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_DEC_NVAR">con_DEC_NVAR</A></A>()  {con_Nscv = con_Nscv-1;<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!con_PRE_ADD_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_PRE_ADD_NVAR">con_PRE_ADD_NVAR</A></A>(bb,vv) {*(bb) = \
+                   ((vv&lt;=con_NvarP1-con_Nscv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_ADD_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_ADD_NVAR">con_ADD_NVAR</A></A>(vv) {con_Nscv = con_Nscv+(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!con_PRE_SUB_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_PRE_SUB_NVAR">con_PRE_SUB_NVAR</A></A>(bb,vv) {*(bb) = ((vv&lt;=con_Nscv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_SUB_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_SUB_NVAR">con_SUB_NVAR</A></A>(vv) {con_Nscv = con_Nscv-(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!con_PRE_MUL_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_PRE_MUL_NVAR">con_PRE_MUL_NVAR</A></A>(bb,vv) {*(bb) = \
+                    ( (con_Nscv!=0) ? ((vv&lt;=con_NvarP1/con_Nscv)!=0) : 1) ;<B>}</B> 
+<B>#define</B> <A NAME="OPNAME!con_MUL_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_MUL_NVAR">con_MUL_NVAR</A></A>(vv) {con_Nscv = con_Nscv*(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!con_PRE_DIV_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_PRE_DIV_NVAR">con_PRE_DIV_NVAR</A></A>(bb,vv) {*(bb) = ((vv&gt;0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_DIV_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_DIV_NVAR">con_DIV_NVAR</A></A>(vv) {con_Nscv = con_Nscv/(vv);<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!con_PRE_MOD_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_PRE_MOD_NVAR">con_PRE_MOD_NVAR</A></A>(bb,vv) {*(bb) = ((vv&gt;0)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_MOD_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_MOD_NVAR">con_MOD_NVAR</A></A>(vv) {con_Nscv = con_Nscv-(vv)*(con_Nscv/(vv));<B>}</B>
+
+<B>#define</B> <A NAME="OPNAME!con_EQL_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_EQL_NVAR">con_EQL_NVAR</A></A>(bb,vv) {*(bb) = ((con_Nscv==vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_NEQ_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_NEQ_NVAR">con_NEQ_NVAR</A></A>(bb,vv) {*(bb) = ((con_Nscv!=vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_GTR_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_GTR_NVAR">con_GTR_NVAR</A></A>(bb,vv) {*(bb) = ((con_Nscv&gt; vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_GEQ_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_GEQ_NVAR">con_GEQ_NVAR</A></A>(bb,vv) {*(bb) = ((con_Nscv&gt;=vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_SMR_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_SMR_NVAR">con_SMR_NVAR</A></A>(bb,vv) {*(bb) = ((con_Nscv&lt; vv)!=0);<B>}</B>
+<B>#define</B> <A NAME="OPNAME!con_LEQ_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_LEQ_NVAR">con_LEQ_NVAR</A></A>(bb,vv) {*(bb) = ((con_Nscv&lt;=vv)!=0);<B>}</B>
+
+<B>void</B> <A NAME="OPNAME!con_SAV_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_SAV_NVAR">con_SAV_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!con_SAVN_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_SAVN_NVAR">con_SAVN_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!con_RST_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_RST_NVAR">con_RST_NVAR</A></A>();
+<B>void</B> <A NAME="OPNAME!con_RSTN_NVAR"><A HREF="con_Nvar.mch.html#OPNAME!con_RSTN_NVAR">con_RSTN_NVAR</A></A>();
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:12:58 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

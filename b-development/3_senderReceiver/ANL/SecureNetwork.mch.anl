@@ -1,0 +1,157 @@
+(
+ (?)
+ ;
+ (
+ (
+ (maxSize == 100)
+ )
+ |
+ (
+ (maxSize == 100)
+ )
+ )
+ )
+;
+(?)
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(MESSAGE)
+;
+(MESSAGE)
+;
+(?)
+;
+(?)
+;
+(card(MESSAGE) : NAT1)
+;
+(card(MESSAGE) : NAT1)
+;
+(?)
+;
+(?)
+;
+(msg)
+;
+(msg)
+;
+(msg : seq(MESSAGE) & card(msg) <= 100)
+;
+(msg : seq(MESSAGE) & card(msg) <= 100)
+;
+(?)
+;
+(msg := {})
+;
+(msg := {})
+;
+(receive,send)
+;
+(receive , send)
+;
+(SecureNetwork(?):(?):(?))
+;
+(
+(
+ (receive)
+;
+ (? , Val_Op , Det_Op , (mm , ok <-- receive))
+;
+ (?)
+;
+ (mm , ok)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ IF card(msg) > 0 THEN
+ mm := first(msg) ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (0 < card(msg))
+ )
+ ==>
+ (
+ (mm , ok := first(msg) , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (card(msg) <= 0)
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (send)
+;
+ (? , Mod_Op , Det_Op , (ok <-- send(mm)))
+;
+ (mm)
+;
+ (ok)
+;
+ (
+ (mm : MESSAGE)
+ |
+ (
+ (IF card(msg) < 100 THEN
+ msg := msg <- mm ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (mm : MESSAGE)
+ |
+ (
+ (
+ (
+ (card(msg) < 100)
+ )
+ ==>
+ (
+ (msg , ok := msg <- mm , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (100 <= card(msg))
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+)

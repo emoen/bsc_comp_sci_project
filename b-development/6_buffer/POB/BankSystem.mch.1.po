@@ -1,0 +1,31 @@
+THEORY Initialisation IS
+0;0;0;0
+END
+&
+THEORY create_account IS
+0;0;1;1;1;1;0;1
+END
+&
+THEORY bank_deposit IS
+0;1;1;1;0;1
+END
+&
+THEORY deposit_to_network IS
+0;0;0;0;0;0;0
+END
+&
+THEORY deposit_to_ATM IS
+0;0;0;0
+END
+&
+THEORY bank_withdraw IS
+0;0;0;0;0
+END
+&
+THEORY withdrawal_to_network IS
+0;0;0;0;0;0;0
+END
+&
+THEORY withdrawal_to_ATM IS
+1;1;1;0;1
+END

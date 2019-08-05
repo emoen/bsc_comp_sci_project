@@ -1,0 +1,13 @@
+INTERFACE     ATM
+
+OPERATIONS
+
+  connecting,
+  shut_down,
+  create_account,
+  deposit,
+  withdraw,
+  isaccount,
+  getbalance
+
+END

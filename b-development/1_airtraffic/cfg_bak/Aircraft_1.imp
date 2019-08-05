@@ -1,0 +1,41 @@
+IMPLEMENTATION    Aircraft_1
+
+REFINES           
+	Aircraft
+
+SEES
+	Bool_TYPE, String_TYPE
+
+IMPORTS           
+	Flightid_str_obj(maxaircraft, maxaircraft*10),
+	Aircraft_fnc_obj(Flightid_STROBJ, 1, maxaircraft)
+		
+CONSTANTS
+	flight_size
+
+PROPERTIES
+	flight_size == 1 &
+	AIRCRAFT = Aircraft_FNCOBJ
+	
+INVARIANT         
+	aircraft = Aircraft_fnctok &
+	!aa.(aa : aircraft => flight_size : dom(Aircraft_fncstruct(aa)) &
+		Flightid_strstruct(Aircraft_fncstruct(aa)(flight_size)) = flight_id(aa))
+
+OPERATIONS
+
+  aa <-- create_aircraft(fid) =
+		VAR bb, ss IN	
+			bb, aa <-- Aircraft_CRE_FNC_OBJ;
+			IF(bb = TRUE) THEN
+				bb, ss <-- Flightid_NEW_STR_OBJ(fid);
+				Aircraft_STO_FNC_OBJ(aa, flight_size, ss)
+			END
+		END;
+		
+	fid <-- id_of(aa) =
+		VAR ss IN
+			ss <-- Aircraft_VAL_FNC_OBJ(aa, flight_size);
+			fid <-- Flightid_XTR_STR_OBJ(ss)
+		END
+END

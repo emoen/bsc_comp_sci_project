@@ -1,0 +1,3 @@
+THEORY Context IS
+0
+END

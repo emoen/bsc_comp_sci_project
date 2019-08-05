@@ -1,0 +1,107 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Server">
+  <TITLE>The Server machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE>
+<A NAME="MACHINE"><B>MACHINE</B></A>           
+	Server
+
+<A NAME="SEES"><B>SEES</B></A>
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>, <A HREF="CommsDefs.mch.html#MACHINE">CommsDefs</A>, <A HREF="Globals.mch.html#MACHINE">Globals</A>
+
+<A NAME="INCLUDES"><B>INCLUDES</B></A>
+	<A HREF="Bank.mch.html#MACHINE">Bank</A>(10)
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>
+	sstate
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>
+	sstate : <A HREF="CommsDefs.mch.html#SETS">STATE</A> 
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A> 
+	sstate := idle
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+<A NAME="OPNAME!sinit">sinit</A> =
+	sstate := idle;
+
+	
+  ok <-- <A NAME="OPNAME!conin">conin</A> =
+	<B>IF</B> sstate = idle <B>THEN</B>
+		sstate := conrequest ||
+		ok := TRUE
+	<B>ELSE</B>	ok := FALSE
+	<B>END</B>;
+		
+  msg <-- <A NAME="OPNAME!server_con_report">server_con_report</A> =
+	<B>IF</B> sstate = conrequest <B>THEN</B>
+		<B>ANY</B> pp
+		<B>WHERE</B> pp : <A HREF="Bool_TYPE.mch.html#SETS">BOOL</A> <B>THEN</B>
+			<B>IF</B> pp = TRUE <B>THEN</B>
+				sstate := connected ||
+				msg := TRUE
+			<B>ELSE</B>
+				sstate := idle ||
+				msg := FALSE
+			<B>END</B>			
+		<B>END</B>
+	<B>END</B>;
+
+  ans <-- <A NAME="OPNAME!screate_acc">screate_acc</A> =
+	<B>PRE</B>
+		sstate = connected
+	<B>THEN</B>
+		ans <-- <A HREF="Bank.mch.html#OPNAME!create_acc">create_acc</A>
+	<B>END</B>;
+		
+  new <-- <A NAME="OPNAME!sdeposit">sdeposit</A>(acc : NAT & amount : NAT) =
+	<B>PRE</B>
+		sstate = connected		
+	<B>THEN</B>
+		new <-- <A HREF="Bank.mch.html#OPNAME!deposit">deposit</A>(acc, amount)
+	<B>END</B>;
+		
+  ans <-- <A NAME="OPNAME!swithdraw">swithdraw</A>(acc, amount) =
+	<B>PRE</B>
+		acc : NAT & amount : NAT &
+		sstate = connected			
+	<B>THEN</B>
+		ans &lt;--	<A HREF="Bank.mch.html#OPNAME!withdraw">withdraw</A>(acc, amount)
+	<B>END</B>;
+	
+  rr <-- <A NAME="OPNAME!sisaccount">sisaccount</A>(acc:NAT) =
+	<B>PRE</B>
+		sstate = connected			
+	<B>THEN</B>
+		rr <-- <A HREF="Bank.mch.html#OPNAME!isaccount">isaccount</A>(acc)
+	<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Wed Mar  5 18:55:53 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

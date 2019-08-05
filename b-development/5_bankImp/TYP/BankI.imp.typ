@@ -1,0 +1,1 @@
+(?;BankI(? | VBL(?));create_account(? | VBL(? , ii(NAT)));deposit(? | VBL(? , VBL(? , VBL(? , curBal(NAT)) , ii(NAT))));withdraw(? | VBL(? , VBL(? , VBL(? , curBal(NAT)) , ii(NAT))));isaccount(? | VBL(? , VBL(? , ii(NAT))));getbalance(? | VBL(? , VBL(? , ii(NAT)))))

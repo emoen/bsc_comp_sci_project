@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of file_dump.c Code Module">
+  <TITLE>file_dump.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> &lt;stdio.h&gt;
+
+<B>#include</B> "file_dump.h"
+
+<B>void</B>
+<A NAME="OPNAME!open_write_dump_file"><A HREF="file_dump.mch.html#OPNAME!open_write_dump_file">open_write_dump_file</A></A>()
+<B>{</B>
+	dump_file = <B>fopen</B>("TMP.file","w");
+<B>}</B>
+
+
+<B>void</B>
+<A NAME="OPNAME!open_read_dump_file"><A HREF="file_dump.mch.html#OPNAME!open_read_dump_file">open_read_dump_file</A></A>()
+<B>{</B>
+	dump_file = <B>fopen</B>("TMP.file","r");
+<B>}</B>
+
+
+<B>void</B>
+<A NAME="OPNAME!close_dump_file"><A HREF="file_dump.mch.html#OPNAME!close_dump_file">close_dump_file</A></A>()
+<B>{</B>
+	<B>fclose</B>(dump_file);
+<B>}</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:12:53 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

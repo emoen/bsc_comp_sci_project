@@ -1,0 +1,53 @@
+MACHINE           
+	Bank(maxAccounts)
+
+SEES
+	Globals
+
+CONSTRAINTS
+	maxAccounts : 1 .. 200000
+
+DEFINITIONS
+	ACCOUNTS == 1 .. maxAccounts
+	
+VARIABLES         
+	account, accountNumber
+
+INVARIANT        
+	accountNumber <: ACCOUNTS &
+	account : accountNumber >-> NAT
+	
+
+INITIALISATION    
+	accountNumber, account := {}, {}
+
+OPERATIONS
+
+  aa <-- create_acc =
+	ANY acc
+	WHERE acc : ACCOUNTS - accountNumber
+	THEN
+		aa := acc ||
+		accountNumber := accountNumber \/ {acc} ||
+		account(acc) := 0
+	END;
+
+  ans <-- deposit(acc : accountNumber & amount:NAT1) =
+	BEGIN
+		account(acc) := account(acc) + amount ||
+		ans := account(acc) + amount
+	END;
+		
+  ans <--withdraw(acc : accountNumber & amount:NAT1) =
+	IF amount <= account(acc) THEN
+		account(acc) := account(acc) - amount ||
+		ans := yes
+	ELSE	ans := no
+	END;
+			
+  rr <-- isaccount(acc:NAT) =
+	IF acc : accountNumber THEN
+		rr := yes
+	ELSE	rr := no
+	END
+END

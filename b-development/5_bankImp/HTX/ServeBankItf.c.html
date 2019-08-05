@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ServeBankItf.c Code Module">
+  <TITLE>ServeBankItf.c Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> "<A HREF="ServeBankItf.h.html#ServeBankItf.h">ServeBankItf.h</A>"
+
+<B>#define</B> <A NAME="CONSTANTS!string1"><A HREF="ServeBankItfI.imp.html#CONSTANTS">string1</A></A> " Value (BOOL) returned <A HREF="ServeBank.g.html#INVARIANT">in</A> ok: "
+
+<B>#include</B> "<A HREF="ServeBank.h.html#ServeBank.h">ServeBank.h</A>"
+<B>#include</B> "<A HREF="ServeBankIo.h.html#ServeBankIo.h">ServeBankIo.h</A>"
+<B>#include</B> "<A HREF="Itf_token_io.h.html#Itf_token_io.h">Itf_token_io.h</A>"
+<B>#include</B> "<A HREF="basic_io.h.html#basic_io.h">basic_io.h</A>"
+<B>#include</B> "<A HREF="file_dump.h.html#file_dump.h">file_dump.h</A>"
+<B>#include</B> "<A HREF="Scalar_TYPE.h.html#Scalar_TYPE.h">Scalar_TYPE.h</A>"
+<B>#include</B> "<A HREF="Bool_TYPE.h.html#Bool_TYPE.h">Bool_TYPE.h</A>"
+<B>#include</B> "<A HREF="String_TYPE.h.html#String_TYPE.h">String_TYPE.h</A>"
+
+<B>void</B>
+<A NAME="OPNAME!INI_ServeBankItf"><A HREF="ServeBankItfI.imp.html#IMPORTS">INI_ServeBankItf</A></A>()
+<B>{</B>
+  <A HREF="ServeBank.c.html#OPNAME!INI_ServeBank">INI_ServeBank</A>();
+  <A HREF="ServeBankIo.c.html#OPNAME!INI_ServeBankIo">INI_ServeBankIo</A>();
+  <A HREF="Itf_token_io.h.html#OPNAME!INI_Itf_token_io">INI_Itf_token_io</A>();
+  <A HREF="basic_io.h.html#OPNAME!INI_basic_io">INI_basic_io</A>();
+  <A HREF="file_dump.h.html#OPNAME!INI_file_dump">INI_file_dump</A>();
+  <A HREF="Scalar_TYPE.c.html#OPNAME!INI_Scalar_TYPE">INI_Scalar_TYPE</A>();
+  <A HREF="Bool_TYPE.c.html#OPNAME!INI_Bool_TYPE">INI_Bool_TYPE</A>();
+  <A HREF="String_TYPE.c.html#OPNAME!INI_String_TYPE">INI_String_TYPE</A>();
+
+<B>}</B>
+
+<B>int</B>
+<A NAME="OPNAME!main"><A HREF="ServeBankItfI.imp.html#OPNAME!main">main</A></A>(argc,argv)
+<B>int</B> argc;
+<B>char</B> **argv;
+<B>{</B>
+  INI_ServeBankItf();
+  <B>{</B>
+    <B>int</B> count,op;
+    count = 2147483646;
+    op = <A NAME="SETS!ServeBank_Menu_OP"><A HREF="ServeBankItfI.imp.html#SETS">ServeBank_Menu_OP</A></A>;
+    <B>while</B> ( count != 0 && op != <A NAME="SETS!Quit_OP"><A HREF="ServeBankItfI.imp.html#SETS">Quit_OP</A></A> ) <B>{</B>
+      <B>switch</B> ( op ) <B>{</B>
+        <B>case</B> <A HREF="ServeBankIo.h.html#SETS">ServeBank_Menu_OP</A> :
+          <A HREF="basic_io.c.html#OPNAME!NWL">NWL</A>(1);
+          <A HREF="ServeBankIo.c.html#OPNAME!ServeBank_Menu">ServeBank_Menu</A>();
+          <A HREF="basic_io.c.html#OPNAME!NWL">NWL</A>(1);
+          <B>break</B>;
+        <B>case</B> <A NAME="SETS!startServer_OP"><A HREF="ServeBankItfI.imp.html#SETS">startServer_OP</A></A> :
+          <A HREF="basic_io.c.html#OPNAME!NWL">NWL</A>(1);
+          <B>{</B>
+            <B>int</B> okX;
+            <A HREF="ServeBank.c.html#OPNAME!startServer">startServer</A>(&okX);
+            <A HREF="basic_io.h.html#OPNAME!PUT_STR">PUT_STR</A>(string1);
+            <A HREF="basic_io.h.html#OPNAME!PUT_BOOL">PUT_BOOL</A>(okX);
+            <A HREF="basic_io.c.html#OPNAME!NWL">NWL</A>(1);
+          <B>}</B>;
+          <A HREF="basic_io.c.html#OPNAME!NWL">NWL</A>(1);
+          <B>break</B>;
+        <B>case</B> <A NAME="SETS!listenForUser_OP"><A HREF="ServeBankItfI.imp.html#SETS">listenForUser_OP</A></A> :
+          <A HREF="basic_io.c.html#OPNAME!NWL">NWL</A>(1);
+          <A HREF="ServeBank.c.html#OPNAME!listenForUser">listenForUser</A>();
+          <A HREF="basic_io.c.html#OPNAME!NWL">NWL</A>(1);
+          <B>break</B>;
+      <B>}</B>;
+      <A HREF="ServeBankIo.c.html#OPNAME!Get_ServeBank_Op">Get_ServeBank_Op</A>(&op);
+      count = count-1;
+    <B>}</B>
+  <B>}</B>
+  <B>return</B> 0;
+<B>}</B>
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:16:55 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

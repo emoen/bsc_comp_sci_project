@@ -1,0 +1,53 @@
+THEORY PropertiesX IS
+  ctx(ExponentialCipherRef$1) => encrypt : NAT --> NAT;
+  ctx(ExponentialCipherRef$1) => decrypt : NAT --> NAT;
+  ctx(ExponentialCipherRef$1) => !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm);
+  ctx(ExponentialCipherRef$1) => !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm);
+  ctx(ExponentialCipherRef$1) => ctx(Arithmetic);
+  ctx(Arithmetic) => exp : NAT*NAT +-> NAT;
+  ctx(Arithmetic) => !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0);
+  ctx(Arithmetic) => prime <: NAT
+END
+&
+THEORY EnumerateX END
+&
+THEORY NotEqualX END
+&
+THEORY RewriteToFalseOrTrueX END
+&
+THEORY FwdContra0X END
+&
+THEORY FwdEqual1X END
+&
+THEORY ExpandHypX IS
+  inv(ExponentialCipherRef$1) => inv(Arithmetic);
+  pre(encrypt_op) => mm : 0..nn-1;
+  pre(decrypt_op) => mm : 0..nn-1;
+  inv(ExponentialCipherRef$1) => inv(Cipher);
+  asn(ExponentialCipherRef$1) => asn(Cipher);
+  cst(ExponentialCipherRef$1) => ee*dd mod (nn-1) = 1;
+  cst(ExponentialCipherRef$1) => dd : NAT;
+  cst(ExponentialCipherRef$1) => ee : NAT;
+  cst(ExponentialCipherRef$1) => nn : NAT1
+END
+&
+THEORY Initialisation
+END
+&
+THEORY encrypt_op IS
+  cst(ExponentialCipherRef$1) & ctx(ExponentialCipherRef$1) & inv(ExponentialCipherRef$1) & asn(ExponentialCipherRef$1) & pre(encrypt_op) => exp(mm , ee) mod nn = encrypt(mm)
+END
+&
+THEORY decrypt_op IS
+  cst(ExponentialCipherRef$1) & ctx(ExponentialCipherRef$1) & inv(ExponentialCipherRef$1) & asn(ExponentialCipherRef$1) & pre(decrypt_op) => exp(mm , dd) mod nn = decrypt(mm)
+END
+&
+THEORY Context IS
+  cst(ExponentialCipherRef$1) => (ctx(Arithmetic) => #(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm)))
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

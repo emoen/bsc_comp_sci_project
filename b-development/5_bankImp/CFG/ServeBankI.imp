@@ -1,0 +1,153 @@
+IMPLEMENTATION    ServeBankI
+
+REFINES           ServeBank
+
+SEES              
+	basic_io,
+	file_dump,
+	String_TYPE,
+	Scalar_TYPE,        	
+	Bool_TYPE
+
+IMPORTS           
+	Bank,
+	Bank_SocketServer(SCALAR \/ BOOL, 10, 10),
+	Cipher(ee_ser, dd_ser, nn),
+	publicDecrypt_Nvar(MAXINT)
+
+INITIALISATION
+	publicDecrypt_STO_NVAR(0)
+
+
+OPERATIONS
+
+  ok <-- startServer = 
+	BEGIN
+		VAR xx IN	
+			PUT_STR("Server running.\n");
+			FLSH;
+			xx <-- Bank_INIT("banklock", 3200, "bankbuff");
+			ok <-- Bank_ACCEPT;
+			PUT_STR("connection Established.\n")
+/**
+	If the Btoolkit had allowed dynamic (run-time) 'instansiation'
+	of machines, then we could have transmitted our own public
+	key, and received the ATM's public key.
+	we would then have passed the parameters to
+	Cipher machine her.
+*/
+
+		END
+	END;
+
+  listenForUser = 
+	BEGIN
+		VAR rep, pp, op IN
+			WHILE 1 = 1 DO
+
+/*  rep, pp <-- ATM_READ rep : BOOL pp : 0..bufsize  */
+
+				PUT_STR("\nWAITING HERE...\n");
+				rep, pp <-- Bank_READ;
+/*IN ATMI I have commented that i dont know what toksize is good for
+but what use does 'pp' have??*/
+				op <-- Bank_GET_TOK(1);
+				PUT_STR("First tok is");
+				PUT_NAT(op);
+				PUT_STR("\n");
+				IF op = 1 THEN
+					PUT_STR("\nINSIDE create_account\n");
+					VAR ret_a, ret_b, crypt_ret IN
+				/*ret_a is accNr, ret_b is rep (if more accNrs)*/
+						ret_a, ret_b <-- create_account;
+						PUT_STR("calling create acc.\n");
+						PUT_STR("account number is:");
+						PUT_NAT(ret_a);
+						PUT_STR("\n");
+
+/*decrypting account number*/
+						crypt_ret <-- encrypt_op(ret_a);
+						Bank_PUT_TOK(crypt_ret, 1);
+
+						Bank_PUT_TOK(ret_b, 1);
+						PUT_STR("Going to write tok\n");
+						rep <-- Bank_WRITE;
+						PUT_STR("have put str\n")
+					END
+				END;
+				IF op = 2 THEN
+					PUT_STR("\nINSIDE deposit\n");
+					VAR in_a, in_b, ret_a, ret_b IN
+						in_a <-- Bank_GET_TOK(1);
+						in_b <-- Bank_GET_TOK(1);
+						ret_a,ret_b <-- deposit(in_a, in_b);
+						PUT_STR("deposit to accNr: ");
+						PUT_NAT(in_a);
+						PUT_STR(" amount:");
+						PUT_NAT(in_b);
+						PUT_STR("\n");
+						Bank_PUT_TOK(ret_a,1);
+						Bank_PUT_TOK(ret_b,1);
+						
+						rep <-- Bank_WRITE
+					END
+				END;
+				IF op = 3 THEN
+					PUT_STR("\nINSIDE withdraw\n");
+					VAR in_a, in_b, ret_a IN
+						in_a <-- Bank_GET_TOK(1);
+						in_b <-- Bank_GET_TOK(1);
+						ret_a <-- withdraw(in_a, in_b);
+						PUT_STR("withdraw from accNr: ");
+						PUT_NAT(in_a);
+						PUT_STR(" amount: ");
+						PUT_NAT(in_b);
+						PUT_STR("\n");
+						Bank_PUT_TOK(ret_a,1);
+
+						rep <-- Bank_WRITE
+					END
+				END;
+				IF op = 4 THEN
+					PUT_STR("\nINSIDE isaccount\n");
+					VAR in_a, ret_a IN
+						in_a <-- Bank_GET_TOK(1);
+						ret_a <-- isaccount(in_a);
+						PUT_STR("isaccount with accNr: ");
+						PUT_NAT(in_a);
+						PUT_STR("\n");
+						Bank_PUT_TOK(ret_a,1);
+
+						rep <-- Bank_WRITE
+					END
+				END;
+				IF op = 5 THEN
+					PUT_STR("\nINSIDE getbalance\n");
+					VAR in_a, ret_a IN
+						in_a <-- Bank_GET_TOK(1);
+						ret_a <-- getbalance(in_a);
+						PUT_STR("balance for accNr: ");
+						PUT_NAT(in_a);
+						PUT_STR("\n");
+						Bank_PUT_TOK(ret_a,1);
+
+						rep <-- Bank_WRITE
+					END
+				END;
+				IF rep = FALSE THEN
+					PUT_STR("could not send value\n")
+				ELSE
+					PUT_STR("AND returning values\n")
+				END;
+				op := 0;
+				PUT_STR("value of OP");
+				PUT_NAT(op);
+				PUT_STR("\n")
+			INVARIANT 
+				1 = 1
+			VARIANT 
+				1
+			END
+		END
+	END
+END

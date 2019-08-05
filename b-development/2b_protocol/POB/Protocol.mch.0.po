@@ -1,0 +1,222 @@
+THEORY PropertiesX IS
+  ctx(Protocol) => ctx(Bool_TYPE);
+  ctx(Protocol) => ctx(CommsDefs);
+  ctx(CommsDefs) => buffsize = 100;
+  ctx(Protocol) => ctx(Globals);
+  ctx(Globals) => card(ACCOUNTNR) : NAT1;
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2;
+  ctx(CommsDefs) => STATE = {idle , conpending , conrequest , have_report , connected};
+  ctx(CommsDefs) => card(STATE) = 5;
+  ctx(CommsDefs) => MESSAGES = {con , true , false};
+  ctx(CommsDefs) => card(MESSAGES) = 3;
+  ctx(Globals) => YESNO = {yes , no};
+  ctx(Globals) => card(YESNO) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE};
+  binhyp(ctx(CommsDefs)) => STATE == {idle , conpending , conrequest , have_report , connected};
+  binhyp(ctx(CommsDefs)) => MESSAGES == {con , true , false};
+  binhyp(ctx(Globals)) => YESNO == {yes , no}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE);
+  binhyp(STATE = {a , b , c , d , e}) & binhyp(card(STATE) = 5) & bsearch(E , (a , b , c , d , e) , S) & bsearch(F , S , T) => not(E = F);
+  binhyp(MESSAGES = {a , b , c}) & binhyp(card(MESSAGES) = 3) & bsearch(E , (a , b , c) , S) & bsearch(F , S , T) => not(E = F);
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => not(yes = no);
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => not(no = yes)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false;
+  binhyp(STATE = {a , b , c , d , e}) & binhyp(card(STATE) = 5) & bsearch(E , (a , b , c , d , e) , S) & bsearch(F , S , T) => E = F == false;
+  binhyp(MESSAGES = {a , b , c}) & binhyp(card(MESSAGES) = 3) & bsearch(E , (a , b , c) , S) & bsearch(F , S , T) => E = F == false;
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => yes = no == false;
+  binhyp(YESNO = {yes , no}) & binhyp(card(YESNO) = 2) => no = yes == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse;
+  connected = idle & ctx(CommsDefs) => bfalse;
+  x = connected & x = idle & ctx(CommsDefs) => bfalse;
+  x = connected & y = x & y = idle & ctx(CommsDefs) => bfalse;
+  x = idle & x = connected & ctx(CommsDefs) => bfalse;
+  x = idle & y = x & y = connected & ctx(CommsDefs) => bfalse;
+  connected = conpending & ctx(CommsDefs) => bfalse;
+  x = connected & x = conpending & ctx(CommsDefs) => bfalse;
+  x = connected & y = x & y = conpending & ctx(CommsDefs) => bfalse;
+  x = conpending & x = connected & ctx(CommsDefs) => bfalse;
+  x = conpending & y = x & y = connected & ctx(CommsDefs) => bfalse;
+  connected = conrequest & ctx(CommsDefs) => bfalse;
+  x = connected & x = conrequest & ctx(CommsDefs) => bfalse;
+  x = connected & y = x & y = conrequest & ctx(CommsDefs) => bfalse;
+  x = conrequest & x = connected & ctx(CommsDefs) => bfalse;
+  x = conrequest & y = x & y = connected & ctx(CommsDefs) => bfalse;
+  connected = have_report & ctx(CommsDefs) => bfalse;
+  x = connected & x = have_report & ctx(CommsDefs) => bfalse;
+  x = connected & y = x & y = have_report & ctx(CommsDefs) => bfalse;
+  x = have_report & x = connected & ctx(CommsDefs) => bfalse;
+  x = have_report & y = x & y = connected & ctx(CommsDefs) => bfalse;
+  have_report = idle & ctx(CommsDefs) => bfalse;
+  x = have_report & x = idle & ctx(CommsDefs) => bfalse;
+  x = have_report & y = x & y = idle & ctx(CommsDefs) => bfalse;
+  x = idle & x = have_report & ctx(CommsDefs) => bfalse;
+  x = idle & y = x & y = have_report & ctx(CommsDefs) => bfalse;
+  have_report = conpending & ctx(CommsDefs) => bfalse;
+  x = have_report & x = conpending & ctx(CommsDefs) => bfalse;
+  x = have_report & y = x & y = conpending & ctx(CommsDefs) => bfalse;
+  x = conpending & x = have_report & ctx(CommsDefs) => bfalse;
+  x = conpending & y = x & y = have_report & ctx(CommsDefs) => bfalse;
+  have_report = conrequest & ctx(CommsDefs) => bfalse;
+  x = have_report & x = conrequest & ctx(CommsDefs) => bfalse;
+  x = have_report & y = x & y = conrequest & ctx(CommsDefs) => bfalse;
+  x = conrequest & x = have_report & ctx(CommsDefs) => bfalse;
+  x = conrequest & y = x & y = have_report & ctx(CommsDefs) => bfalse;
+  conrequest = idle & ctx(CommsDefs) => bfalse;
+  x = conrequest & x = idle & ctx(CommsDefs) => bfalse;
+  x = conrequest & y = x & y = idle & ctx(CommsDefs) => bfalse;
+  x = idle & x = conrequest & ctx(CommsDefs) => bfalse;
+  x = idle & y = x & y = conrequest & ctx(CommsDefs) => bfalse;
+  conrequest = conpending & ctx(CommsDefs) => bfalse;
+  x = conrequest & x = conpending & ctx(CommsDefs) => bfalse;
+  x = conrequest & y = x & y = conpending & ctx(CommsDefs) => bfalse;
+  x = conpending & x = conrequest & ctx(CommsDefs) => bfalse;
+  x = conpending & y = x & y = conrequest & ctx(CommsDefs) => bfalse;
+  conpending = idle & ctx(CommsDefs) => bfalse;
+  x = conpending & x = idle & ctx(CommsDefs) => bfalse;
+  x = conpending & y = x & y = idle & ctx(CommsDefs) => bfalse;
+  x = idle & x = conpending & ctx(CommsDefs) => bfalse;
+  x = idle & y = x & y = conpending & ctx(CommsDefs) => bfalse;
+  false = con & ctx(CommsDefs) => bfalse;
+  x = false & x = con & ctx(CommsDefs) => bfalse;
+  x = false & y = x & y = con & ctx(CommsDefs) => bfalse;
+  x = con & x = false & ctx(CommsDefs) => bfalse;
+  x = con & y = x & y = false & ctx(CommsDefs) => bfalse;
+  false = true & ctx(CommsDefs) => bfalse;
+  x = false & x = true & ctx(CommsDefs) => bfalse;
+  x = false & y = x & y = true & ctx(CommsDefs) => bfalse;
+  x = true & x = false & ctx(CommsDefs) => bfalse;
+  x = true & y = x & y = false & ctx(CommsDefs) => bfalse;
+  true = con & ctx(CommsDefs) => bfalse;
+  x = true & x = con & ctx(CommsDefs) => bfalse;
+  x = true & y = x & y = con & ctx(CommsDefs) => bfalse;
+  x = con & x = true & ctx(CommsDefs) => bfalse;
+  x = con & y = x & y = true & ctx(CommsDefs) => bfalse;
+  no = yes & ctx(Globals) => bfalse;
+  x = no & x = yes & ctx(Globals) => bfalse;
+  x = no & y = x & y = yes & ctx(Globals) => bfalse;
+  x = yes & x = no & ctx(Globals) => bfalse;
+  x = yes & y = x & y = no & ctx(Globals) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE;
+  idle = x => x = idle;
+  conpending = x => x = conpending;
+  conrequest = x => x = conrequest;
+  have_report = x => x = have_report;
+  connected = x => x = connected;
+  con = x => x = con;
+  true = x => x = true;
+  false = x => x = false;
+  yes = x => x = yes;
+  no = x => x = no;
+  not(yes = x) & ctx(Globals) => x = no;
+  not(x = yes) & ctx(Globals) => x = no;
+  not(no = x) & ctx(Globals) => x = yes;
+  not(x = no) & ctx(Globals) => x = yes
+END
+&
+THEORY ExpandHypX IS
+  inv(Protocol) => inv(Bool_TYPE);
+  inv(Protocol) => inv(CommsDefs);
+  inv(Protocol) => inv(Globals);
+  inv(Protocol) => p_state : STATE;
+  inv(Protocol) => report : BOOL;
+  inv(Protocol) => clientstate : STATE;
+  inv(Protocol) => sstate : STATE;
+  inv(Protocol) => accountNumber <: 1..10;
+  inv(Protocol) => account : accountNumber >-> NAT;
+  inv(Protocol) => clientcontents : seq(MESSAGES);
+  inv(Protocol) => size(clientcontents) <= buffsize;
+  inv(Protocol) => servercontents : seq(MESSAGES);
+  inv(Protocol) => size(servercontents) <= buffsize;
+  pre(pcreate_acc) => p_state = connected;
+  pre(pdeposit) => acc : NAT;
+  pre(pdeposit) => amount : NAT;
+  pre(pdeposit) => p_state = connected;
+  pre(pwithdraw) => acc : NAT1;
+  pre(pwithdraw) => amount : NAT1;
+  pre(pwithdraw) => p_state = connected;
+  pre(pisaccount) => acc : NAT;
+  pre(pisaccount) => p_state = connected
+END
+&
+THEORY Initialisation
+END
+&
+THEORY pinit
+END
+&
+THEORY pcon_request
+END
+&
+THEORY pcon_in
+END
+&
+THEORY pcon_report
+END
+&
+THEORY pcon_give_report
+END
+&
+THEORY prot_state
+END
+&
+THEORY pcreate_acc IS
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pcreate_acc) => sstate = connected
+END
+&
+THEORY pdeposit IS
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pdeposit) => sstate = connected;
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pdeposit) => acc : accountNumber;
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pdeposit) => amount : NAT1
+END
+&
+THEORY pwithdraw IS
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pwithdraw) => acc : NAT;
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pwithdraw) => amount : NAT;
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pwithdraw) => sstate = connected;
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pwithdraw) => acc : accountNumber
+END
+&
+THEORY pisaccount IS
+  cst(Protocol) & ctx(Protocol) & inv(Protocol) & asn(Protocol) & pre(pisaccount) => sstate = connected
+END
+&
+THEORY query_pstate
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints IS
+  cst(Protocol) & ctx(Protocol) => card(MESSAGES) : NAT1;
+  cst(Protocol) & ctx(Protocol) => buffsize : NAT
+END

@@ -1,0 +1,124 @@
+THEORY PropertiesX IS
+  ctx(NetworkedBank) => maxAccounts = 6;
+  ctx(NetworkedBank) => ctx(Bool_TYPE);
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE
+END
+&
+THEORY ExpandHypX IS
+  inv(NetworkedBank) => inv(Bool_TYPE);
+  inv(NetworkedBank) => ff : seq(NAT);
+  inv(NetworkedBank) => creq : seq(NAT);
+  inv(NetworkedBank) => size(ff) <= 100;
+  inv(NetworkedBank) => accountNumber <: 1..maxAccounts;
+  inv(NetworkedBank) => account : accountNumber --> NAT;
+  inv(NetworkedBank) => dom(account) = accountNumber;
+  pre(ATM_deposit) => acc : accountNumber;
+  pre(ATM_deposit) => amount : NAT1;
+  pre(ATM_withdraw) => acc : accountNumber;
+  pre(ATM_withdraw) => amount : NAT1;
+  pre(ATM_isaccount) => acc : accountNumber;
+  pre(ATM_getbalance) => acc : accountNumber
+END
+&
+THEORY Initialisation IS
+  cst(NetworkedBank) & ctx(NetworkedBank) => <> : seq(NAT);
+  cst(NetworkedBank) & ctx(NetworkedBank) => size(<>) <= 100
+END
+&
+THEORY ATM_create_account IS
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_create_account) => creq <- 1 : seq(NAT)
+END
+&
+THEORY ATM_deposit IS
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_deposit) => (size(ff) <= 98 & size(ff) < 33 => ff <+ {card(ff)+1 |-> acc , card(ff)+2 |-> amount} : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_deposit) => (size(ff) <= 98 & size(ff) < 33 => creq <- 2 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_deposit) => (size(ff) <= 98 & size(ff) < 33 => size(ff <+ {card(ff)+1 |-> acc , card(ff)+2 |-> amount}) <= 100)
+END
+&
+THEORY ATM_withdraw IS
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_withdraw) => (size(ff) <= 98 & size(ff) < 33 => ff ^ [acc , amount] : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_withdraw) => (size(ff) <= 98 & size(ff) < 33 => creq <- 3 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_withdraw) => (size(ff) <= 98 & size(ff) < 33 => size(ff ^ [acc , amount]) <= 100)
+END
+&
+THEORY ATM_isaccount IS
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_isaccount) => (size(ff) <= 98 & size(ff) < 33 => ff ^ [acc] : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_isaccount) => (size(ff) <= 98 & size(ff) < 33 => creq <- 4 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_isaccount) => (size(ff) <= 98 & size(ff) < 33 => size(ff ^ [acc]) <= 100)
+END
+&
+THEORY ATM_getbalance IS
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_getbalance) => (size(ff) <= 98 & size(ff) < 33 => ff ^ [acc] : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_getbalance) => (size(ff) <= 98 & size(ff) < 33 => creq <- 5 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(ATM_getbalance) => (size(ff) <= 98 & size(ff) < 33 => size(ff ^ [acc]) <= 100)
+END
+&
+THEORY check_clientreq IS
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & last(creq) = 1 & not(accountNumber = 1..maxAccounts) & acc : (1..maxAccounts)-accountNumber => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & last(creq) = 1 & accountNumber = 1..maxAccounts => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 => aa : accountNumber);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 => bb : NAT1);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 & account(aa) < 5000-bb => ff /|\ card(ff)-2 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 & account(aa) < 5000-bb => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 & account(aa) < 5000-bb => size(ff /|\ card(ff)-2) <= 100);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 & 5000-bb <= account(aa) => ff /|\ card(ff)-2 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 & 5000-bb <= account(aa) => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & last(creq) = 2 & 5000-bb <= account(aa) => size(ff /|\ card(ff)-2) <= 100);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 => aa : accountNumber);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 => bb : NAT);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 & bb <= account(aa) => ff /|\ card(ff)-2 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 & bb <= account(aa) => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 & bb <= account(aa) => size(ff /|\ card(ff)-2) <= 100);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 & account(aa) < bb => ff /|\ card(ff)-2 : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 & account(aa) < bb => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & last(creq) = 3 & account(aa) < bb => size(ff /|\ card(ff)-2) <= 100);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & last(creq) = 4 => aa : 1..maxAccounts);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & last(creq) = 4 => tail(ff) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & last(creq) = 4 => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & last(creq) = 4 => size(tail(ff)) <= 100);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & not(last(creq) = 4) & last(creq) = 5 => aa : accountNumber);
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & not(last(creq) = 4) & last(creq) = 5 => tail(ff) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & not(last(creq) = 4) & last(creq) = 5 => front(creq) : seq(NAT));
+  cst(NetworkedBank) & ctx(NetworkedBank) & inv(NetworkedBank) & asn(NetworkedBank) & pre(check_clientreq) => (0 < card(creq) & not(last(creq) = 1) & not(last(creq) = 2) & not(last(creq) = 3) & not(last(creq) = 4) & last(creq) = 5 => size(tail(ff)) <= 100)
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

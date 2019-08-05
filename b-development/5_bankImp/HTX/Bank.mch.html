@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Bank">
+  <TITLE>The Bank machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE>/* Why does'nt the toolkit provide a set Z over the whole
+set of integers, positive and negative?? 
+
+Peculiarity: -0 is not defined as 0. and consequently it
+does not analyse1
+*/
+
+<A NAME="MACHINE"><B>MACHINE</B></A>           
+	Bank
+
+<A NAME="SEES"><B>SEES</B></A> 
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="INCLUDES"><B>INCLUDES</B></A>
+	<A HREF="Globals.mch.html#MACHINE">Globals</A>
+
+<A NAME="DEFINITIONS"><B>DEFINITIONS</B></A>
+	RES == (accountNumber, account := {}, {})
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>         
+	account, accountNumber
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>        
+	accountNumber <: <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> &
+	account : accountNumber --&gt; NAT &
+	dom(account) = accountNumber
+	
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>    
+	RES
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  accNr, rep <-- <A NAME="OPNAME!create_account">create_account</A> =
+	<B>IF</B> accountNumber /= <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> <B>THEN</B>
+		rep := TRUE ||
+		<B>ANY</B> acc
+		<B>WHERE</B> 
+			acc : <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> - accountNumber 
+		<B>THEN</B>
+			accNr := acc ||
+			accountNumber := accountNumber \/ {acc} ||
+			account(acc) := 0
+		<B>END</B>
+	<B>ELSE</B>	rep := FALSE ||
+		accNr := 0	
+	<B>END</B>;
+
+	ok, newBalance <-- <A NAME="OPNAME!deposit">deposit</A>(acc , amount) =
+		<B>PRE</B>
+			acc : accountNumber & 
+			amount : NAT1
+		<B>THEN</B>
+			<B>IF</B> account(acc) < <A HREF="Globals.mch.html#DEFINITIONS">MAXINT</A> - amount <B>THEN</B>
+				account(acc) := account(acc) + amount ||
+/* how do I know that newBalance is not going to be twice the mount?
+In ansii C this behaviour is undefined ( &'s within a if/while statement)
+where assignment is done within an if test.
+*/
+				newBalance := account(acc) + amount ||
+				ok := TRUE
+			<B>ELSE</B> 
+				ok := FALSE ||
+				newBalance := 0
+			<B>END</B>
+		<B>END</B>;
+		
+	ok <--<A NAME="OPNAME!withdraw">withdraw</A>(acc, amount) =
+		<B>PRE</B>
+			acc : accountNumber &
+			amount : NAT
+		<B>THEN</B>
+			<B>IF</B> 
+				amount &lt;= account(acc)
+			<B>THEN</B>
+				account(acc) := account(acc) - amount ||
+				ok := TRUE 
+			<B>ELSE</B>
+				ok := FALSE
+			<B>END</B>
+		<B>END</B>;
+	
+	rr <-- <A NAME="OPNAME!isaccount">isaccount</A>(acc) =
+		<B>PRE</B>
+			acc : <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A>
+		<B>THEN</B>
+			<B>IF</B> acc : accountNumber
+			<B>THEN</B>
+				rr := TRUE
+			<B>ELSE</B>
+				rr := FALSE
+			<B>END</B>
+		<B>END</B>;
+		
+	bal <-- <A NAME="OPNAME!getbalance">getbalance</A>(acc) =
+		<B>PRE</B>	
+			acc : accountNumber
+		<B>THEN</B>
+			bal := account(acc)
+		<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:13:26 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

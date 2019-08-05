@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of bankSystem3">
+  <TITLE>The bankSystem3 machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           bankSystem3
+
+<A NAME="INCLUDES"><B>INCLUDES</B></A>
+	<A HREF="Globals.mch.html#MACHINE">Globals</A>
+
+<A NAME="SEES"><B>SEES</B></A>
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>         
+	accountNumber, 
+	accountBalance, totalBalance, 
+	ATMData, networkData, 
+	transactionId,
+	req_deposit,
+	req_withdraw,
+	confirm_deposit, confirm_withdrawal
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>
+	accountNumber <: <A HREF="Globals.mch.html#DEFINITIONS">ACCOUNTS</A> &         
+	accountBalance : accountNumber --&gt; NAT &
+	totalBalance : accountNumber --&gt; NAT & 
+	ATMData : accountNumber --&gt; NAT &
+	networkData : accountNumber --&gt; NAT &
+
+	transactionId &lt;: 1..100 &
+
+	req_deposit : transactionId --&gt; (accountNumber * NAT) &
+	req_withdraw : transactionId --&gt; (accountNumber * NAT) &
+	
+	confirm_deposit &lt;: transactionId &
+	confirm_withdrawal &lt;: transactionId &
+
+	!(aa).(aa : accountNumber =&gt;
+		totalBalance(aa) = accountBalance(aa) + ATMData(aa) )
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>
+	accountNumber,
+	accountBalance, totalBalance, 
+	ATMData, networkData,
+	transactionId,
+	req_deposit, req_withdraw,
+	confirm_deposit, confirm_withdrawal := {},{},{},{},{},{},{},{},{},{}
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  <A NAME="OPNAME!request_deposit">request_deposit</A>(acc : accountNumber & amount : NAT ) =
+	<B>BEGIN</B>
+		<B>ANY</B> xx
+		<B>WHERE</B> 
+			xx : transactionId &
+			xx /: dom(req_deposit) 
+		<B>THEN</B>
+			req_deposit := req_deposit \/ {xx |-&gt; (acc |-&gt; amount)} 
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!request_withdraw">request_withdraw</A>(acc : accountNumber & amount : NAT ) =
+	<B>BEGIN</B>
+		<B>ANY</B> xx
+		<B>WHERE</B> 
+			xx : transactionId &
+			xx /: dom(req_withdraw)
+		<B>THEN</B>
+			req_withdraw := req_withdraw \/ {xx |-&gt; (acc |-&gt; amount)}
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!ATM_deposit">ATM_deposit</A> =
+	<B>BEGIN</B>
+		<B>ANY</B> xx, yy,zz
+		<B>WHERE</B> 
+			xx : transactionId &
+			yy : accountNumber &
+			zz : NAT &
+			xx /: confirm_deposit &
+			yy |-&gt; zz /: ATMData &
+			yy |-&gt; zz /: networkData &
+			xx |-&gt; (yy |-&gt; zz) : req_deposit
+
+		<B>THEN</B>
+			networkData(yy) := zz ||
+			ATMData(yy) := zz ||
+			totalBalance(yy) := totalBalance(yy) + zz 
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!Bank_deposit">Bank_deposit</A> =
+	<B>BEGIN</B>
+		<B>ANY</B> xx, yy, zz
+		<B>WHERE</B> 
+			xx : transactionId &
+			yy : accountNumber &
+			zz : NAT &
+			xx /: confirm_deposit &
+			xx |-&gt; yy : ATMData &
+			yy |-&gt; zz : networkData &
+			xx |-&gt; (yy |-&gt; zz) : req_deposit &
+			ATMData(yy) = networkData(yy)
+		<B>THEN</B>
+			networkData := networkData - {yy |-&gt; zz} ||
+			ATMData := ATMData - {yy |-&gt; zz} ||
+			accountBalance(yy) := accountBalance(yy) + zz ||
+			confirm_deposit := confirm_deposit \/ {xx}
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!ATM_withdraw">ATM_withdraw</A> =
+	<B>BEGIN</B>
+		<B>ANY</B> xx, yy, zz
+		<B>WHERE</B>
+			xx : transactionId &
+			yy : accountNumber &
+			zz : NAT &
+			xx /: confirm_withdrawal &
+			xx |-&gt; yy /: ATMData &
+			yy |-&gt; zz /: networkData &
+			xx |-&gt; (yy |-&gt; zz) : req_withdraw &
+			zz &lt;= accountBalance(yy)
+		<B>THEN</B>
+			networkData(yy) := zz ||
+			ATMData(yy) := zz ||
+			totalBalance(yy) := totalBalance(yy) - zz 
+		<B>END</B>
+	<B>END</B>;
+
+  <A NAME="OPNAME!Bank_withdraw">Bank_withdraw</A> = 
+	<B>BEGIN</B>
+		<B>ANY</B> xx, yy, zz
+		<B>WHERE</B>
+			xx : transactionId &
+			yy : accountNumber &
+			zz : NAT &
+			xx /: confirm_withdrawal &
+			xx |-&gt; (yy |-&gt; zz) : req_withdraw &
+			yy |-&gt; zz : networkData &
+			zz &lt;= accountBalance(yy) &
+			ATMData(yy) = networkData(yy)
+		<B>THEN</B>
+			networkData := networkData - {yy |-&gt; zz} ||
+			ATMData := ATMData - {yy |-&gt; zz} ||
+			accountBalance(yy) := accountBalance(yy) - zz ||
+			confirm_withdrawal := confirm_withdrawal \/ {xx}
+		<B>END</B>
+	<B>END</B>;
+
+
+  <A NAME="OPNAME!network_goes_down">network_goes_down</A> =
+	networkData := {};
+
+  <A NAME="OPNAME!corrupt_network">corrupt_network</A> =
+	<B>BEGIN</B>
+		<B>ANY</B> xx, vv
+		<B>WHERE</B>
+			xx : accountNumber &
+			vv : NAT
+		<B>THEN</B>
+			networkData(xx) := networkData(xx) - vv
+		<B>END</B>
+	<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 23:22:14 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

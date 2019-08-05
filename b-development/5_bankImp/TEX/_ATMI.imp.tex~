@@ -1,0 +1,368 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ATMI.imp.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPLEMENTATION
+%
+\bbnl
+{\bf IMPLEMENTATION} \bhsp\+{\em ATMI\/} \-\label{ATMI}\index{ATMI}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  REFINES
+%
+\bbnl
+{\bf REFINES} \bhsp{\em ATM\/}\label{ATM}\index{ATM}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em basic\_io\/}\label{basic_io}\index{basic_io}  , \bnl
+{\em file\_dump\/}\label{file_dump}\index{file_dump}  , \bnl
+{\em String\_TYPE\/}\label{String_TYPE}\index{String_TYPE}  , \bnl
+{\em Scalar\_TYPE\/}\label{Scalar_TYPE}\index{Scalar_TYPE}  , \bnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPORTS
+%
+\bbnl
+{\bf IMPORTS} \+ \bbnl
+{\em ATM\_SocketClient\/}\label{ATM_SocketClient}\index{ATM_SocketClient}  ( {\em SCALAR\/}\label{SCALAR}\index{SCALAR}  $\cup$ {\em BOOL\/}\label{BOOL}\index{BOOL}  , {\em 10\/} , {\em 10\/} )  , \bnl
+{\em con\_Nvar\/}\label{con_Nvar}\index{con_Nvar}  ( {\em 1\/} )  , \bnl
+{\em Cipher\/}\label{Cipher}\index{Cipher}  ( {\em ee\_cli\/}\label{ee_cli}\index{ee_cli}  , {\em dd\_cli\/}\label{dd_cli}\index{dd_cli}  , {\em nn\/}\label{nn}\index{nn}  )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em res\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION connecting
+%
+{\bf { connecting}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em xx\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt ATM connecion to server...
+} ''  )  \bStatementSemiColon \bnl
+{\em FLSH\/}\label{FLSH}\index{FLSH}  \bStatementSemiColon \bnl
+{\em xx\/} $\longleftarrow$ {\em ATM\_INIT\/}\label{ATM_INIT}\index{ATM_INIT}  (  `` {\tt 127.0.0.1} ''  , {\em 3200\/} )  \bStatementSemiColon \bnl
+{\em xx\/} $\longleftarrow$ {\em ATM\_CONNECT\/}\label{ATM_CONNECT}\index{ATM_CONNECT}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em xx\/} $=$ {\em TRUE\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em con\_STO\_NVAR\/}\label{con_STO_NVAR}\index{con_STO_NVAR}  ( {\em 1\/} )  \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt can not connect...} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ATM\_CONNECT}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_CONNECT}}
+\bxrefline{{\em ATM\_INIT}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_INIT}}
+\bxrefline{{\em con\_STO\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_STO_NVAR}}
+\bxrefline{{\em FLSH}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{FLSH}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION shut\_down
+%
+{\em ok\/} $\longleftarrow$  {\bf { shut\_down}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+{\em res\/} \bStatementSemiColon \bnl
+{\em ok\/} $\longleftarrow$ {\em ATM\_CLOSE\/}\label{ATM_CLOSE}\index{ATM_CLOSE}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ATM\_CLOSE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_CLOSE}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION create\_account
+%
+{\em accNr\/} , {\em rep\/} $\longleftarrow$  {\bf { create\_account}}  \bhsp $\defs$ \+ \bnl
+\bnl
+\bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em con\_status\/} , {\em pp\/} , {\em encrypt\_accNr\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em con\_status\/} $\longleftarrow$ {\em con\_VAL\_NVAR\/}\label{con_VAL_NVAR}\index{con_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em con\_status\/} $=$ {\em 1\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em 1\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em ATM\_WRITE\/}\label{ATM_WRITE}\index{ATM_WRITE}  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt requesting 'create\_account'
+} ''  )  \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt No connection to server
+} ''  )  \-\bnl
+\bOpnWord{END}  \bStatementSemiColon \bnl
+{\em rep\/} , {\em pp\/} $\longleftarrow$ {\em ATM\_READ\/}\label{ATM_READ}\index{ATM_READ}  \bStatementSemiColon \bnl
+{\em encrypt\_accNr\/} $\longleftarrow$ {\em ATM\_GET\_TOK\/}\label{ATM_GET_TOK}\index{ATM_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt encrypted account number is:
+} ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em encrypt\_accNr\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \bStatementSemiColon \bnl
+{\em accNr\/} $\longleftarrow$ {\em decrypt\_op\/}\label{decrypt_op}\index{decrypt_op}  ( {\em encrypt\_accNr\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em ATM\_GET\_TOK\/}\label{ATM_GET_TOK}\index{ATM_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt Your new account has Account Number: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em accNr\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt  } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em encrypt\_accNr\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ATM\_GET\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_GET_TOK}}
+\bxrefline{{\em ATM\_PUT\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_PUT_TOK}}
+\bxrefline{{\em ATM\_READ}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_READ}}
+\bxrefline{{\em ATM\_WRITE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_WRITE}}
+\bxrefline{{\em con\_VAL\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_VAL_NVAR}}
+\bxrefline{{\em decrypt\_op}}{{\em Cipher}}{{\sc operations}}{\bbpageref{decrypt_op}}
+\bxrefline{{\em PUT\_NAT}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_NAT}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION deposit
+%
+{\em ok\/} , {\em newBalance\/} $\longleftarrow$  {\bf { deposit}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+\bnl
+\bOpnWord{BEGIN} \+\bnl
+\bOpnWord{IF} \+{\em acc\/} $<$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$
+{\em amount\/} $<$ {\em MAXINT\/}\label{MAXINT}\index{MAXINT}  \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{VAR} \+{\em con\_status\/} , {\em pp\/} , {\em rep\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em con\_status\/} $\longleftarrow$ {\em con\_VAL\_NVAR\/}\label{con_VAL_NVAR}\index{con_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em con\_status\/} $=$ {\em 1\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em 2\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em acc\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em amount\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em ATM\_WRITE\/}\label{ATM_WRITE}\index{ATM_WRITE}  \bStatementSemiColon \bnl
+{\em rep\/} , {\em pp\/} $\longleftarrow$ {\em ATM\_READ\/}\label{ATM_READ}\index{ATM_READ}  \bStatementSemiColon \bnl
+{\em ok\/} $\longleftarrow$ {\em ATM\_GET\_TOK\/}\label{ATM_GET_TOK}\index{ATM_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em newBalance\/} $\longleftarrow$ {\em ATM\_GET\_TOK\/}\label{ATM_GET_TOK}\index{ATM_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt New balance is: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em newBalance\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ATM\_GET\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_GET_TOK}}
+\bxrefline{{\em ATM\_PUT\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_PUT_TOK}}
+\bxrefline{{\em ATM\_READ}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_READ}}
+\bxrefline{{\em ATM\_WRITE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_WRITE}}
+\bxrefline{{\em con\_VAL\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em ATM}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em MAXINT}}{{\em ATM}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\bxrefline{{\em PUT\_NAT}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_NAT}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION withdraw
+%
+{\em ok\/} $\longleftarrow$  {\bf { withdraw}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+\bnl
+\bOpnWord{BEGIN} \+\bnl
+\bOpnWord{IF} \+{\em acc\/} $<$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$
+{\em amount\/} $<$ {\em MAXINT\/}\label{MAXINT}\index{MAXINT}  \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{VAR} \+{\em con\_status\/} , {\em pp\/} , {\em rep\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em con\_status\/} $\longleftarrow$ {\em con\_VAL\_NVAR\/}\label{con_VAL_NVAR}\index{con_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em con\_status\/} $=$ {\em 1\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em 3\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em acc\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em amount\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em ATM\_WRITE\/}\label{ATM_WRITE}\index{ATM_WRITE}  \bStatementSemiColon \bnl
+{\em rep\/} , {\em pp\/} $\longleftarrow$ {\em ATM\_READ\/}\label{ATM_READ}\index{ATM_READ}  \bStatementSemiColon \bnl
+{\em ok\/} $\longleftarrow$ {\em ATM\_GET\_TOK\/}\label{ATM_GET_TOK}\index{ATM_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt Status of withdrawal: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_BOOL\/}\label{PUT_BOOL}\index{PUT_BOOL}  ( {\em ok\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ATM\_GET\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_GET_TOK}}
+\bxrefline{{\em ATM\_PUT\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_PUT_TOK}}
+\bxrefline{{\em ATM\_READ}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_READ}}
+\bxrefline{{\em ATM\_WRITE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_WRITE}}
+\bxrefline{{\em con\_VAL\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em ATM}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em MAXINT}}{{\em ATM}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\bxrefline{{\em PUT\_BOOL}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_BOOL}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION isaccount
+%
+{\em rr\/} $\longleftarrow$  {\bf { isaccount}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+\bnl
+\bOpnWord{BEGIN} \+\bnl
+\bOpnWord{IF} \+{\em acc\/} $<$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{VAR} \+{\em con\_status\/} , {\em pp\/} , {\em rep\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em con\_status\/} $\longleftarrow$ {\em con\_VAL\_NVAR\/}\label{con_VAL_NVAR}\index{con_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em con\_status\/} $=$ {\em 1\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em 4\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em acc\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em ATM\_WRITE\/}\label{ATM_WRITE}\index{ATM_WRITE}  \bStatementSemiColon \bnl
+{\em rep\/} , {\em pp\/} $\longleftarrow$ {\em ATM\_READ\/}\label{ATM_READ}\index{ATM_READ}  \bStatementSemiColon \bnl
+{\em rr\/} $\longleftarrow$ {\em ATM\_GET\_TOK\/}\label{ATM_GET_TOK}\index{ATM_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt Status of account Number: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_BOOL\/}\label{PUT_BOOL}\index{PUT_BOOL}  ( {\em rr\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ATM\_GET\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_GET_TOK}}
+\bxrefline{{\em ATM\_PUT\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_PUT_TOK}}
+\bxrefline{{\em ATM\_READ}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_READ}}
+\bxrefline{{\em ATM\_WRITE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_WRITE}}
+\bxrefline{{\em con\_VAL\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em ATM}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em PUT\_BOOL}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_BOOL}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION getbalance
+%
+{\em bal\/} $\longleftarrow$  {\bf { getbalance}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+\bnl
+\bOpnWord{BEGIN} \+\bnl
+\bOpnWord{IF} \+{\em acc\/} $<$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{VAR} \+{\em con\_status\/} , {\em pp\/} , {\em rep\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em con\_status\/} $\longleftarrow$ {\em con\_VAL\_NVAR\/}\label{con_VAL_NVAR}\index{con_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em con\_status\/} $=$ {\em 1\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em 5\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em ATM\_PUT\_TOK\/}\label{ATM_PUT_TOK}\index{ATM_PUT_TOK}  ( {\em acc\/} , {\em 1\/} )  \bStatementSemiColon \bnl
+{\em rep\/} $\longleftarrow$ {\em ATM\_WRITE\/}\label{ATM_WRITE}\index{ATM_WRITE}  \bStatementSemiColon \bnl
+{\em rep\/} , {\em pp\/} $\longleftarrow$ {\em ATM\_READ\/}\label{ATM_READ}\index{ATM_READ}  \bStatementSemiColon \bnl
+{\em bal\/} $\longleftarrow$ {\em ATM\_GET\_TOK\/}\label{ATM_GET_TOK}\index{ATM_GET_TOK}  ( {\em 1\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt balance is: } ''  )  \bStatementSemiColon \bnl
+{\em PUT\_NAT\/}\label{PUT_NAT}\index{PUT_NAT}  ( {\em bal\/} )  \bStatementSemiColon \bnl
+{\em PUT\_STR\/}\label{PUT_STR}\index{PUT_STR}  (  `` {\tt
+} ''  )  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em ATM\_GET\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_GET_TOK}}
+\bxrefline{{\em ATM\_PUT\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_PUT_TOK}}
+\bxrefline{{\em ATM\_READ}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_READ}}
+\bxrefline{{\em ATM\_WRITE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_WRITE}}
+\bxrefline{{\em con\_VAL\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em ATM}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em PUT\_NAT}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_NAT}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DEFINITIONS
+%
+\bbnl
+{\bf DEFINITIONS} \+ \bbnl
+{\em res\/}\label{res}\index{res}  $\;\;\defs\;\;$ {\em con\_STO\_NVAR\/}\label{con_STO_NVAR}\index{con_STO_NVAR}  ( {\em 0\/} )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for ATMI
+%
+\bxrefhead{Cross-references for ATMI}
+\bxrefline{{\em ATM}}{}{{\sc machine}}{\bbpageref{ATM}}
+\bxrefline{{\em ATM\_CLOSE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_CLOSE}}
+\bxrefline{{\em ATM\_CONNECT}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_CONNECT}}
+\bxrefline{{\em ATM\_GET\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_GET_TOK}}
+\bxrefline{{\em ATM\_INIT}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_INIT}}
+\bxrefline{{\em ATM\_PUT\_TOK}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_PUT_TOK}}
+\bxrefline{{\em ATM\_READ}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_READ}}
+\bxrefline{{\em ATM\_SocketClient}}{}{{\sc machine}}{\bbpageref{ATM_SocketClient}}
+\bxrefline{{\em ATM\_WRITE}}{{\em ATM\_SocketClient}}{{\sc operations}}{\bbpageref{ATM_WRITE}}
+\bxrefline{{\em basic\_io}}{}{{\sc machine}}{\bbpageref{basic_io}}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em Cipher}}{}{{\sc machine}}{\bbpageref{Cipher}}
+\bxrefline{{\em con\_Nvar}}{{\em con\_Nvar}}{{\sc variables}}{\bbpageref{con_Nvar}}
+\bxrefline{{\em con\_STO\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_STO_NVAR}}
+\bxrefline{{\em con\_VAL\_NVAR}}{{\em con\_Nvar}}{{\sc operations}}{\bbpageref{con_VAL_NVAR}}
+\bxrefline{{\em dd\_cli}}{{\em ATM}}{{\sc definitions}}{\bbpageref{dd_cli}}
+\bxrefline{{\em decrypt\_op}}{{\em Cipher}}{{\sc operations}}{\bbpageref{decrypt_op}}
+\bxrefline{{\em ee\_cli}}{{\em ATM}}{{\sc definitions}}{\bbpageref{ee_cli}}
+\bxrefline{{\em file\_dump}}{}{{\sc machine}}{\bbpageref{file_dump}}
+\bxrefline{{\em FLSH}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{FLSH}}
+\bxrefline{{\em maxAccounts}}{{\em ATM}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em MAXINT}}{{\em ATM}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\bxrefline{{\em nn}}{{\em ATM}}{{\sc definitions}}{\bbpageref{nn}}
+\bxrefline{{\em PUT\_BOOL}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_BOOL}}
+\bxrefline{{\em PUT\_NAT}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_NAT}}
+\bxrefline{{\em PUT\_STR}}{{\em basic\_io}}{{\sc operations}}{\bbpageref{PUT_STR}}
+\bxrefline{{\em SCALAR}}{{\em Scalar\_TYPE}}{{\sc sets}}{\bbpageref{SCALAR}}
+\bxrefline{{\em Scalar\_TYPE}}{}{{\sc machine}}{\bbpageref{Scalar_TYPE}}
+\bxrefline{{\em String\_TYPE}}{}{{\sc machine}}{\bbpageref{String_TYPE}}
+\vskip 3.5ex

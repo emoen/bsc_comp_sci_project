@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of Aircraft">
+  <TITLE>The Aircraft machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>           Aircraft(maxaircraft)
+
+<A NAME="SETS"><B>SETS</B></A>
+	AIRCRAFT; STRINGS
+	
+<A NAME="PROPERTIES"><B>PROPERTIES</B></A>
+	card(AIRCRAFT) = maxaircraft
+	
+<A NAME="VARIABLES"><B>VARIABLES</B></A>         
+	aircraft, flight_id
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>  
+		maxaircraft : NAT1 &       
+		aircraft &lt;: AIRCRAFT &
+		flight_id : aircraft --&gt; STRINGS
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>    
+	aircraft, flight_id := {}, {}
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  aa <-- <A NAME="OPNAME!create_aircraft">create_aircraft</A>(fid) =
+		<B>PRE</B> 
+			fid : STRINGS &
+			aircraft /= AIRCRAFT
+		<B>THEN</B>
+			<B>ANY</B> oo
+			<B>WHERE</B> oo: AIRCRAFT - aircraft
+			<B>THEN</B>
+				aa := oo ||
+				aircraft := aircraft \/ {oo} ||
+				flight_id(oo) := fid
+			<B>END</B>
+		<B>END</B>;
+	
+	fid <-- <A NAME="OPNAME!id_of">id_of</A>(aa) =
+		<B>PRE</B>
+			aa : aircraft
+		<B>THEN</B>
+			fid := flight_id(aa)
+		<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb  7 15:42:54 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

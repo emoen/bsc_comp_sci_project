@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ArithmeticItfI">
+  <TITLE>The ArithmeticItfI implementation</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="IMPLEMENTATION"><B>IMPLEMENTATION</B></A>   ArithmeticItfI
+
+<A NAME="REFINES"><B>REFINES</B></A>          <A HREF="ArithmeticItf.mch.html#MACHINE">ArithmeticItf</A>
+
+<A NAME="IMPORTS"><B>IMPORTS</B></A>
+
+  <A HREF="Arithmetic.mch.html#MACHINE">Arithmetic</A>,
+  <A HREF="ArithmeticIo.mch.html#MACHINE">ArithmeticIo</A>,
+  <A HREF="Itf_token_io.mch.html#MACHINE">Itf_token_io</A>(<A HREF="Scalar_TYPE.mch.html#SETS">SCALAR</A>),
+  <A HREF="basic_io.mch.html#MACHINE">basic_io</A>,
+  <A HREF="file_dump.mch.html#MACHINE">file_dump</A>,
+  <A HREF="Scalar_TYPE.mch.html#MACHINE">Scalar_TYPE</A>,
+  <A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>,
+  <A HREF="String_TYPE.mch.html#MACHINE">String_TYPE</A>
+
+<A NAME="CONSTANTS"><B>CONSTANTS</B></A>
+
+  string1, string2, string3
+
+<A NAME="PROPERTIES"><B>PROPERTIES</B></A>
+
+  string1 = "  Input (NAT) Value for aa: " &
+  string2 = "  Input (NAT) Value for bb: " &
+  string3 = "  Value (NAT) returned in rr: "
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  <A NAME="OPNAME!main"><A HREF="ArithmeticItf.mch.html#OPNAME!main">main</A> =
+    <B>VAR</B> count,op <B>IN</B>
+      count := <A HREF="Scalar_TYPE.mch.html#DEFINITIONS">MaxScalar</A>; op := Arithmetic_Menu_OP;
+      <B>WHILE</B> count /= 0 & op /= Quit_OP <B>DO</B>
+        <B>CASE</B> op <B>OF</B>
+          <B>EITHER</B> Arithmetic_Menu_OP <B>THEN</B>
+            <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(1); <A HREF="ArithmeticIo.mch.html#OPNAME!Arithmetic_Menu">Arithmetic_Menu</A>; <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(1)
+          <B>OR</B> exp_op_OP <B>THEN</B>
+            <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(1);
+            <B>VAR</B> aaX , bbX , rrX <B>IN</B>
+              aaX <-- <A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_NAT">GET_PROMPT_NAT</A>(string1);
+              bbX <-- <A HREF="basic_io.mch.html#OPNAME!GET_PROMPT_NAT">GET_PROMPT_NAT</A>(string2);
+              <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(1);
+              rrX <-- <A HREF="Arithmetic.mch.html#OPNAME!exp_op">exp_op</A>(aaX , bbX);
+              <A HREF="basic_io.mch.html#OPNAME!PUT_STR">PUT_STR</A>(string3);
+              <A HREF="basic_io.mch.html#OPNAME!PUT_NBR">PUT_NBR</A>(rrX);
+              <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(1)
+            <B>END</B>;
+            <A HREF="basic_io.mch.html#OPNAME!NWL">NWL</A>(1)
+          <B>END</B>
+        <B>END</B>;
+        op <-- <A HREF="ArithmeticIo.mch.html#OPNAME!Get_Arithmetic_Op">Get_Arithmetic_Op</A>; count := count - 1
+      <B>VARIANT</B>
+        count
+      <A NAME="INVARIANT"><B>INVARIANT</B></A>
+        true
+      <B>END</B>
+    <B>END</B>
+
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Sun Mar  2 22:06:47 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

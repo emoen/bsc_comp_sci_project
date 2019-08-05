@@ -1,0 +1,27 @@
+PROOFMETHOD ExponentialCipherRef.ref.1.btl IS
+
+  THEORY BToolUsersTheory IS
+    binhyp(n : NAT1) & binhyp(e : NAT)  => encrypt(x) == exp(x , e) mod n;
+    binhyp(n : NAT1) & binhyp(dd : NAT)  => decrypt(x) == exp(x , dd) mod n;
+    b : NAT & n : NAT1  => exp(a mod n , b) mod n == exp(a , b) mod n;
+    b : NAT & c : NAT  => exp(exp(a , b) , c) == exp(a , b*c);
+    e : NAT & d : NAT & binhyp(n : NAT1) & d*e mod (n-1) = 1 & k : NAT1  => e*d == k*(n-1)+1;
+    k : NAT1;
+    b : NAT  => exp(a , b+1) == exp(a , b)*a;
+    k : NAT1  => k : NAT;
+    a : NAT & b : NAT  => a*b == b*a;
+    b : NAT & c : NAT  => exp(a , b*c) == exp(exp(a , b) , c);
+    n : NAT1  => a*b mod n == a mod n*b mod n mod n;
+    b : NAT & c : NAT & n : NAT1  => exp(exp(a , b) , c) mod n == exp(exp(a , b) mod n , c) mod n;
+    n : NAT1  => exp(a , n-1) mod n == 1;
+    n : NAT1 & a : NAT1  => a mod n*b mod n == a*b mod n;
+    a : NAT1  => exp(1 , a) == 1;
+    n : NAT1  => a mod n mod n == a mod n;
+    n : NAT1  => mm mod n == mm;
+    #(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))
+  END
+  &
+  THEORY FwdBToolUsersTheory
+  END
+
+END

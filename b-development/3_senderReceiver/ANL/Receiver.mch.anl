@@ -1,0 +1,126 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (maxSize == 100)
+ )
+ )
+ )
+;
+(?)
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(MESSAGE)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(card(MESSAGE) : NAT1)
+;
+(
+(SecureNetwork(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(inval)
+;
+(inval , msg)
+;
+(inval : MESSAGE)
+;
+(inval : MESSAGE & msg : seq(MESSAGE) & card(msg) <= 100)
+;
+(?)
+;
+(?)
+;
+(msg := {})
+;
+(do_receive,can_do_send)
+;
+(do_receive , can_do_send)
+;
+(Receiver(?):(?):(?))
+;
+(
+(
+ (do_receive)
+;
+ (? , Val_Op , Det_Op , (rep <-- do_receive))
+;
+ (?)
+;
+ (rep)
+;
+ (
+ (true)
+ |
+ (
+ (inval , rep <-- receive)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (inval , rep <-- receive)
+ )
+ )
+)
+,
+(
+ (can_do_send)
+;
+ (? , Mod_Op , NonDet_Op , (rep <-- can_do_send))
+;
+ (?)
+;
+ (rep)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ ANY bb WHERE
+ bb : MESSAGE
+ THEN
+ rep <-- send(bb)
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(bb).
+ (
+ (
+ (bb : MESSAGE)
+ )
+ ==>
+ (
+ (rep <-- send(bb))
+ )
+ )
+ )
+ )
+)
+)

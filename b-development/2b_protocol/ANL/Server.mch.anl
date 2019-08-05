@@ -1,0 +1,325 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (ACCOUNTS == 1..10)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+,
+(CommsDefs(?):(?):((?),(?),(?)))
+,
+(Globals(maxAccounts):(maxAccounts : NAT):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(
+(Bank(10):(10 : 1..200000):((?),(?),(?)))
+)
+;
+(?)
+;
+(sstate)
+;
+(sstate , account , accountNumber)
+;
+(sstate : STATE)
+;
+(sstate : STATE & accountNumber <: 1..10 & account : accountNumber >-> NAT)
+;
+(?)
+;
+(sstate := idle)
+;
+(accountNumber , account := {} , {} || sstate := idle)
+;
+(sinit,conin,server_con_report,screate_acc,sdeposit,swithdraw,sisaccount)
+;
+(sinit , conin , server_con_report , screate_acc , sdeposit , swithdraw , sisaccount)
+;
+(Server(?):(?):(?))
+;
+(
+(
+ (sinit)
+;
+ (? , Mod_Op , Det_Op , sinit)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (sstate := idle)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (sstate := idle)
+ )
+ )
+)
+,
+(
+ (conin)
+;
+ (? , Mod_Op , Det_Op , (ok <-- conin))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (IF sstate = idle THEN
+ sstate := conrequest ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (sstate = idle)
+ )
+ ==>
+ (
+ (sstate , ok := conrequest , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(sstate = idle))
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (server_con_report)
+;
+ (? , Mod_Op , NonDet_Op , (msg <-- server_con_report))
+;
+ (?)
+;
+ (msg)
+;
+ (
+ (true)
+ |
+ (
+ (IF sstate = conrequest THEN
+ ANY pp WHERE
+ pp : BOOL
+ THEN
+ IF pp = TRUE THEN
+ sstate := connected ||
+ msg := TRUE
+ ELSE
+ sstate := idle ||
+ msg := FALSE
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (sstate = conrequest)
+ )
+ ==>
+ (
+ @(pp).
+ (
+ (
+ (pp : BOOL)
+ )
+ ==>
+ (
+ (
+ (
+ (pp = TRUE)
+ )
+ ==>
+ (
+ (sstate , msg := connected , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (not(pp = TRUE))
+ )
+ ==>
+ (
+ (sstate , msg := idle , FALSE)
+ )
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(sstate = conrequest))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (screate_acc)
+;
+ (? , Mod_Op , NonDet_Op , (ans <-- screate_acc))
+;
+ (?)
+;
+ (ans)
+;
+ (
+ (sstate = connected)
+ |
+ (
+ (ans <-- create_acc)
+ )
+ )
+;
+ (
+ (sstate = connected)
+ |
+ (
+ (ans <-- create_acc)
+ )
+ )
+)
+,
+(
+ (sdeposit)
+;
+ (? , Mod_Op , Det_Op , (new <-- sdeposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (new)
+;
+ (
+ (acc : NAT & amount : NAT & sstate = connected)
+ |
+ (
+ (new <-- deposit(acc , amount))
+ )
+ )
+;
+ (
+ (acc : NAT & amount : NAT & sstate = connected)
+ |
+ (
+ (new <-- deposit(acc , amount))
+ )
+ )
+)
+,
+(
+ (swithdraw)
+;
+ (? , Mod_Op , Det_Op , (ans <-- swithdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ans)
+;
+ (
+ (acc : NAT & amount : NAT & sstate = connected)
+ |
+ (
+ (ans <-- withdraw(acc , amount))
+ )
+ )
+;
+ (
+ (acc : NAT & amount : NAT & sstate = connected)
+ |
+ (
+ (ans <-- withdraw(acc , amount))
+ )
+ )
+)
+,
+(
+ (sisaccount)
+;
+ (? , Val_Op , Det_Op , (rr <-- sisaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (acc : NAT & sstate = connected)
+ |
+ (
+ (rr <-- isaccount(acc))
+ )
+ )
+;
+ (
+ (acc : NAT & sstate = connected)
+ |
+ (
+ (rr <-- isaccount(acc))
+ )
+ )
+)
+)

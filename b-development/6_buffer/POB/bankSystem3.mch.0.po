@@ -1,0 +1,119 @@
+THEORY PropertiesX IS
+  ctx(bankSystem3) => maxAccounts = 6;
+  ctx(bankSystem3) => ctx(Bool_TYPE);
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE
+END
+&
+THEORY ExpandHypX IS
+  inv(bankSystem3) => inv(Bool_TYPE);
+  inv(bankSystem3) => accountNumber <: 1..maxAccounts;
+  inv(bankSystem3) => accountBalance : accountNumber --> NAT;
+  inv(bankSystem3) => totalBalance : accountNumber --> NAT;
+  inv(bankSystem3) => ATMData : accountNumber --> NAT;
+  inv(bankSystem3) => networkData : accountNumber --> NAT;
+  inv(bankSystem3) => transactionId <: 1..100;
+  inv(bankSystem3) => req_deposit : transactionId --> accountNumber*NAT;
+  inv(bankSystem3) => req_withdraw : transactionId --> accountNumber*NAT;
+  inv(bankSystem3) => confirm_deposit <: transactionId;
+  inv(bankSystem3) => confirm_withdrawal <: transactionId;
+  inv(bankSystem3) => !aa.(aa : accountNumber => totalBalance(aa) = accountBalance(aa)+ATMData(aa));
+  pre(request_deposit) => acc : accountNumber;
+  pre(request_deposit) => amount : NAT;
+  pre(request_withdraw) => acc : accountNumber;
+  pre(request_withdraw) => amount : NAT
+END
+&
+THEORY Initialisation IS
+  cst(bankSystem3) & ctx(bankSystem3) => {} <: 1..maxAccounts;
+  cst(bankSystem3) & ctx(bankSystem3) => {} : {} --> NAT;
+  cst(bankSystem3) & ctx(bankSystem3) => {} <: 1..100;
+  cst(bankSystem3) & ctx(bankSystem3) => {} : {} --> {}*NAT;
+  cst(bankSystem3) & ctx(bankSystem3) => {} <: {}
+END
+&
+THEORY request_deposit IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(request_deposit) => (xx : transactionId & not(xx : dom(req_deposit)) => req_deposit \/ {xx |-> (acc |-> amount)} : transactionId --> accountNumber*NAT)
+END
+&
+THEORY request_withdraw IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(request_withdraw) => (xx : transactionId & not(xx : dom(req_withdraw)) => req_withdraw \/ {xx |-> (acc |-> amount)} : transactionId --> accountNumber*NAT)
+END
+&
+THEORY ATM_deposit IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & not(yy |-> zz : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_deposit => totalBalance <+ {yy |-> totalBalance(yy)+zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & not(yy |-> zz : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_deposit => ATMData <+ {yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & not(yy |-> zz : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_deposit => networkData <+ {yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & not(yy |-> zz : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_deposit & aa : accountNumber => (totalBalance <+ {yy |-> totalBalance(yy)+zz})(aa) = accountBalance(aa)+(ATMData <+ {yy |-> zz})(aa))
+END
+&
+THEORY Bank_deposit IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & xx |-> yy : ATMData & yy |-> zz : networkData & xx |-> (yy |-> zz) : req_deposit & ATMData(yy) = networkData(yy) => accountBalance <+ {yy |-> accountBalance(yy)+zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & xx |-> yy : ATMData & yy |-> zz : networkData & xx |-> (yy |-> zz) : req_deposit & ATMData(yy) = networkData(yy) => ATMData-{yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & xx |-> yy : ATMData & yy |-> zz : networkData & xx |-> (yy |-> zz) : req_deposit & ATMData(yy) = networkData(yy) => networkData-{yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & xx |-> yy : ATMData & yy |-> zz : networkData & xx |-> (yy |-> zz) : req_deposit & ATMData(yy) = networkData(yy) => confirm_deposit \/ {xx} <: transactionId);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_deposit) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_deposit) & xx |-> yy : ATMData & yy |-> zz : networkData & xx |-> (yy |-> zz) : req_deposit & ATMData(yy) = networkData(yy) & aa : accountNumber => totalBalance(aa) = (accountBalance <+ {yy |-> accountBalance(yy)+zz})(aa)+(ATMData-{yy |-> zz})(aa))
+END
+&
+THEORY ATM_withdraw IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & not(xx |-> yy : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_withdraw & zz <= accountBalance(yy) => totalBalance <+ {yy |-> totalBalance(yy)-zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & not(xx |-> yy : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_withdraw & zz <= accountBalance(yy) => ATMData <+ {yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & not(xx |-> yy : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_withdraw & zz <= accountBalance(yy) => networkData <+ {yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(ATM_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & not(xx |-> yy : ATMData) & not(yy |-> zz : networkData) & xx |-> (yy |-> zz) : req_withdraw & zz <= accountBalance(yy) & aa : accountNumber => (totalBalance <+ {yy |-> totalBalance(yy)-zz})(aa) = accountBalance(aa)+(ATMData <+ {yy |-> zz})(aa))
+END
+&
+THEORY Bank_withdraw IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & xx |-> (yy |-> zz) : req_withdraw & yy |-> zz : networkData & zz <= accountBalance(yy) & ATMData(yy) = networkData(yy) => accountBalance <+ {yy |-> accountBalance(yy)-zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & xx |-> (yy |-> zz) : req_withdraw & yy |-> zz : networkData & zz <= accountBalance(yy) & ATMData(yy) = networkData(yy) => ATMData-{yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & xx |-> (yy |-> zz) : req_withdraw & yy |-> zz : networkData & zz <= accountBalance(yy) & ATMData(yy) = networkData(yy) => networkData-{yy |-> zz} : accountNumber --> NAT);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & xx |-> (yy |-> zz) : req_withdraw & yy |-> zz : networkData & zz <= accountBalance(yy) & ATMData(yy) = networkData(yy) => confirm_withdrawal \/ {xx} <: transactionId);
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(Bank_withdraw) => (xx : transactionId & yy : accountNumber & zz : NAT & not(xx : confirm_withdrawal) & xx |-> (yy |-> zz) : req_withdraw & yy |-> zz : networkData & zz <= accountBalance(yy) & ATMData(yy) = networkData(yy) & aa : accountNumber => totalBalance(aa) = (accountBalance <+ {yy |-> accountBalance(yy)-zz})(aa)+(ATMData-{yy |-> zz})(aa))
+END
+&
+THEORY network_goes_down IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(network_goes_down) => {} : accountNumber --> NAT
+END
+&
+THEORY corrupt_network IS
+  cst(bankSystem3) & ctx(bankSystem3) & inv(bankSystem3) & asn(bankSystem3) & pre(corrupt_network) => (xx : accountNumber & vv : NAT => networkData <+ {xx |-> networkData(xx)-vv} : accountNumber --> NAT)
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints
+END

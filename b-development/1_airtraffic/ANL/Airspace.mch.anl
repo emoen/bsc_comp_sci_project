@@ -1,0 +1,155 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(
+(Aircraft(maxaircraft):(maxaircraft : NAT):((?),(?),(?)))
+,
+(Controller(maxcontroller):(maxcontroller : NAT):((?),(?),(?)))
+)
+;
+(AIRSPACE)
+;
+(AIRSPACE)
+;
+(?)
+;
+(?)
+;
+(card(AIRSPACE) = maxairspace & card(AIRSPACE) : NAT1)
+;
+(card(AIRSPACE) = maxairspace & card(AIRSPACE) : NAT1)
+;
+(?)
+;
+(?)
+;
+(airspaces , maxholding , occupied_by , assigned , airport_zones , military_zones , city_regions)
+;
+(airspaces , maxholding , occupied_by , assigned , airport_zones , military_zones , city_regions)
+;
+(airspaces <: AIRSPACE & airport_zones <: airspaces & military_zones <: airspaces & city_regions <: airspaces & airport_zones \/ military_zones \/ city_regions = airspaces & airport_zones /\ military_zones = {} & airport_zones /\ city_regions = {} & military_zones /\ city_regions = {} & maxholding : airspaces --> NAT & occupied_by : airspaces --> FIN(aircraft) & assigned : airspaces >-> controllers & !(as1 , as2).(as1 : airspaces & as2 : airspaces & not(as1 = as2) => occupied_by(as1) /\ occupied_by(as2) = {}) & !as.(as : airspaces => card(occupied_by(as)) <= maxholding(as)))
+;
+(airspaces <: AIRSPACE & airport_zones <: airspaces & military_zones <: airspaces & city_regions <: airspaces & airport_zones \/ military_zones \/ city_regions = airspaces & airport_zones /\ military_zones = {} & airport_zones /\ city_regions = {} & military_zones /\ city_regions = {} & maxholding : airspaces --> NAT & occupied_by : airspaces --> FIN(aircraft) & assigned : airspaces >-> controllers & !(as1 , as2).(as1 : airspaces & as2 : airspaces & not(as1 = as2) => occupied_by(as1) /\ occupied_by(as2) = {}) & !as.(as : airspaces => card(occupied_by(as)) <= maxholding(as)))
+;
+(?)
+;
+(airspaces := {} || maxholding := {} || occupied_by := {} || assigned := {} || city_regions := {} || military_zones := {} || airport_zones := {})
+;
+(airspaces , maxholding , occupied_by , assigned , city_regions , military_zones , airport_zones := {} , {} , {} , {} , {} , {} , {})
+;
+(create_airspace,do_aircraft_arrives,transfer_aircraft)
+;
+(create_airspace , do_aircraft_arrives , transfer_aircraft)
+;
+(Airspace(maxairspace):(maxairspace : NAT):(?))
+;
+(
+(
+ (create_airspace)
+;
+ (? , Mod_Op , NonDet_Op , (as <-- create_airspace(maxacft , cont)))
+;
+ (maxacft , cont)
+;
+ (as)
+;
+ (
+ (maxacft : NAT & cont : controllers & airspaces /= AIRSPACE)
+ |
+ (
+ (ANY oo WHERE
+ oo : AIRSPACE-airspaces
+ THEN
+ as := oo ||
+ maxholding(oo) := maxacft ||
+ occupied_by(oo) := {} ||
+ assigned(oo) := cont ||
+ airspaces := airspaces \/ {oo} ||
+ airport_zones := airport_zones \/ {oo}
+ END)
+ )
+ )
+;
+ (
+ (maxacft : NAT & cont : controllers & not(airspaces = AIRSPACE))
+ |
+ (
+ @(oo).
+ (
+ (
+ (oo : AIRSPACE-airspaces)
+ )
+ ==>
+ (
+ (as , maxholding , occupied_by , assigned , airspaces , airport_zones := oo , maxholding <+ {oo |-> maxacft} , occupied_by <+ {oo |-> {}} , assigned <+ {oo |-> cont} , airspaces \/ {oo} , airport_zones \/ {oo})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (do_aircraft_arrives)
+;
+ (? , Mod_Op , Det_Op , do_aircraft_arrives(as , acft))
+;
+ (as , acft)
+;
+ (?)
+;
+ (
+ (acft : aircraft & as : airspaces & acft /: union(ran(occupied_by)) & acft /: union(ran(controls)) & card(occupied_by(as)) < maxholding(as))
+ |
+ (
+ (occupied_by(as) := occupied_by(as) /\ {acft})
+ )
+ )
+;
+ (
+ (acft : aircraft & as : airspaces & not(acft : union(ran(occupied_by))) & not(acft : union(ran(controls))) & card(occupied_by(as)) < maxholding(as))
+ |
+ (
+ (occupied_by := occupied_by <+ {as |-> (occupied_by(as) /\ {acft})})
+ )
+ )
+)
+,
+(
+ (transfer_aircraft)
+;
+ (? , Mod_Op , Det_Op , transfer_aircraft(as1 , as2 , acft))
+;
+ (as1 , as2 , acft)
+;
+ (?)
+;
+ (
+ (as1 : airspaces & as2 : airspaces & acft : aircraft & as1 /= as2 & acft : occupied_by(as1))
+ |
+ (
+ (occupied_by := occupied_by +> {as1 |-> occupied_by(as1)-{acft} , as2 |-> (occupied_by(as2) \/ {acft})})
+ )
+ )
+;
+ (
+ (as1 : airspaces & as2 : airspaces & acft : aircraft & not(as1 = as2) & acft : occupied_by(as1))
+ |
+ (
+ (occupied_by := occupied_by +> {as1 |-> occupied_by(as1)-{acft} , as2 |-> (occupied_by(as2) \/ {acft})})
+ )
+ )
+)
+)

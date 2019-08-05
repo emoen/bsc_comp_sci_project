@@ -1,0 +1,120 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(ServeBank_Ops(ServeBank_Menu_OP , startServer_OP , listenForUser_OP , Quit_OP))
+;
+(ServeBank_Ops(ServeBank_Menu_OP , startServer_OP , listenForUser_OP , Quit_OP))
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(ServeBank_Menu,Get_ServeBank_Op)
+;
+(ServeBank_Menu , Get_ServeBank_Op)
+;
+(ServeBankIo(?):(?):(?))
+;
+(
+(
+ (ServeBank_Menu)
+;
+ (? , Val_Op , Det_Op , ServeBank_Menu)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+)
+,
+(
+ (Get_ServeBank_Op)
+;
+ (? , Val_Op , NonDet_Op , (op <-- Get_ServeBank_Op))
+;
+ (?)
+;
+ (op)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ op :: ServeBank_Ops
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(opx).
+ (
+ (
+ (opx : ServeBank_Ops)
+ )
+ ==>
+ (
+ (op := opx)
+ )
+ )
+ )
+ )
+)
+)

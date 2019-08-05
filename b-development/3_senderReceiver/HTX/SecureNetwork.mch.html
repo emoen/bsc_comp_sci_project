@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of SecureNetwork">
+  <TITLE>The SecureNetwork machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE>
+<A NAME="MACHINE"><B>MACHINE</B></A>  
+	SecureNetwork
+
+<A NAME="SETS"><B>SETS</B></A>	
+	MESSAGE
+
+<A NAME="USES"><B>USES</B></A>
+	<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="DEFINITIONS"><B>DEFINITIONS</B></A>
+	maxSize == 100
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>
+	msg
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>
+	msg : seq(MESSAGE) &
+	card(msg) &lt;= maxSize
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>
+	msg := {}
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  mm, ok <-- <A NAME="OPNAME!receive">receive</A> =
+	<B>BEGIN</B>
+		<B>IF</B> card(msg) &gt; 0 <B>THEN</B>
+			mm := first(msg) ||
+			ok := TRUE
+		<B>ELSE</B> 	ok := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+  ok <-- <A NAME="OPNAME!send">send</A>(mm : MESSAGE) =
+	<B>IF</B> card(msg) < maxSize <B>THEN</B>
+		msg := msg &lt;- mm ||
+		ok := TRUE
+	<B>ELSE</B>	ok := FALSE
+	<B>END</B>
+<B>END</B>
+/*
+unproved
+...
+pre(send)
+=&gt;
+( card(msg) &lt; 100
+	=&gt;
+	card(msg &lt;- mm) <= 100 )
+*/
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Thu Feb 27 15:36:11 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

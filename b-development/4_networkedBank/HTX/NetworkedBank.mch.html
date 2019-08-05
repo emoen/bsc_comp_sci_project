@@ -1,0 +1,226 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of NetworkedBank">
+  <TITLE>The NetworkedBank machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE>/*
+It becomes problematic to call operations within a machine
+because one must make sure that the preconditions are preserved 
+when the operation is called. It is not even allowed by the toolkit
+
+I have had to substitue ff : seq(NAT) with xx and yy because
+ff gave problems in operation ATM_XXX because ff(1) := ??? ||
+ff(2) := ??? gives the following analysis error 
+"Repetition of 'ff' in left-hand side of substitution.
+Surly this is too strong! Surely it must be allow to 
+stor values in ff at two different slots. 
+
+The modefication has made it unconvenient to add a
+new operation to Bank.mach which has more than two 
+parametres.
+
+I can not use ff ether as follows
+ATM_XXX
+...
+ff <- 'some parametre value> || 'will not work here
+ff <- 'some parametre value>
+....
+check_clientreq
+...
+aa := ff(1) || 'Will not work here
+ff := <>
+...
+
+
+
+Why is B such a diffecult language to learn:
+One of the reason is that you need a firm knowledge
+of the matematical notation and the method behind
+b but there is also another reason. The syntax has many 
+small oddeties to it and somethimes syntax you might think
+is ok is not. For exampl '-0' anywhere in context of
+NAT will give a parse error. The BToolkit also gives
+poor feedback on errors. Therefore it takes long
+time to learn B syntax. An example to show special 
+rules of B is:A small example to illustrate this is from this
+operation:
+  status &lt;-- ATM_create_account = 
+	creq := creq &lt;- 1 
+It parses and analysises fine
+
+  status &lt;-- ATM_create_account = 
+	creq := creq &lt;- 1 ||
+	status := TRUE;
+You should think that this would also work fine
+but it does not and should be modified as follows
+
+  status &lt;-- ATM_create_account = 
+	BEGIN
+	creq := creq &lt;- 1 ||
+	status := TRUE
+	END;
+
+It is also diffecult to learn B
+because it requires a different mind-set than when
+you hack away on your average java or c program.
+
+Another obscurity: 
+you initialize a sequence with <{something}>, but inside
+the operatinos you denote sequences with [{something}]
+*/
+<A NAME="MACHINE"><B>MACHINE</B></A>		NetworkedBank
+
+<A NAME="INCLUDES"><B>INCLUDES</B></A> 	<A HREF="Bank.mch.html#MACHINE">Bank</A>
+
+<A NAME="SEES"><B>SEES</B></A>		<A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="DEFINITIONS"><B>DEFINITIONS</B></A>
+	maxParams == 100;
+	maxReq == 33
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A> 
+	ff,creq
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>
+	ff : seq(NAT) &
+	creq : seq(NAT) &
+	size(ff) &lt;= maxParams 
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>
+	 creq, ff := <>, <>
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  status <-- <A NAME="OPNAME!ATM_create_account">ATM_create_account</A> = 
+	<B>BEGIN</B>
+		creq := creq &lt;- 1 ||
+		status := TRUE
+	<B>END</B>;
+
+  status <-- <A NAME="OPNAME!ATM_deposit">ATM_deposit</A>(acc, amount) =
+	<B>PRE</B> 		
+		acc : <A HREF="Bank.mch.html#INVARIANT">accountNumber</A> & 
+		amount : NAT1 
+	<B>THEN</B>
+		<B>IF</B> size(ff) <= maxParams - 2 & size(ff) < maxReq <B>THEN</B>
+			creq := creq &lt;- 2 ||
+			ff := ff <+ {card(ff)+1 |-> acc, card(ff)+2 |-&gt; amount} ||
+/*			ff := ff ^ [acc, amount] ||*/
+			status := TRUE
+		<B>ELSE</B>
+			status := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+  status <-- <A NAME="OPNAME!ATM_withdraw">ATM_withdraw</A>(acc, amount)=
+	<B>PRE</B> 		
+		acc : <A HREF="Bank.mch.html#INVARIANT">accountNumber</A> & 
+		amount : NAT1 
+	<B>THEN</B>
+		<B>IF</B> size(ff) <= maxParams - 2 & size(ff) < maxReq <B>THEN</B>
+			creq := creq &lt;- 3 ||
+/*		ff := ff ^ {card(ff)+1 |-&gt; acc, card(ff)+2 |-&gt; amount} ||*/
+			ff := ff ^ [acc, amount] ||
+			status := TRUE
+		<B>ELSE</B> 	status := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+  status <--  <A NAME="OPNAME!ATM_isaccount">ATM_isaccount</A>(acc)=
+	<B>PRE</B> 		
+		acc : <A HREF="Bank.mch.html#INVARIANT">accountNumber</A> 
+	<B>THEN</B>
+		<B>IF</B> size(ff) <= maxParams - 2 & size(ff) < maxReq <B>THEN</B>
+			creq := creq &lt;- 4 ||
+/*		ff := ff ^ {card(ff)+1 |-&gt; acc} ||*/
+			ff := ff ^ [acc] ||
+			status := TRUE
+		<B>ELSE</B>	status := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+  status <-- <A NAME="OPNAME!ATM_getbalance">ATM_getbalance</A>(acc) =
+	<B>PRE</B> 		
+		acc : <A HREF="Bank.mch.html#INVARIANT">accountNumber</A>   
+	<B>THEN</B>
+		<B>IF</B> size(ff) <= maxParams - 2 & size(ff) < maxReq <B>THEN</B>
+			creq := creq &lt;- 5 ||
+/*		ff := ff ^ {card(ff)+1 |-&gt; acc} ||*/
+			ff := ff ^ [acc] ||
+			status := TRUE
+		<B>ELSE</B>	status := FALSE
+		<B>END</B>
+	<B>END</B>;
+
+
+  num, ok, op  <-- <A NAME="OPNAME!check_clientreq">check_clientreq</A> =
+	<B>IF</B> card(creq) &gt; 0 <B>THEN</B>
+	<B>VAR</B> aa, bb <B>IN</B>
+		<B>IF</B> last(creq) = 1 <B>THEN</B>
+			creq := front(creq) ||
+			num, ok <-- <A HREF="Bank.mch.html#OPNAME!create_account">create_account</A> ||
+			op := 1
+		<B>ELSE</B> <B>IF</B> last(creq) = 2 <B>THEN</B>
+			creq := front(creq) ||
+			aa := ff(card(ff)-1) ||
+			bb := ff(card(ff)) ||
+			ff := ff /|\ (card(ff) - 2) ||
+			ok, num <-- <A HREF="Bank.mch.html#OPNAME!deposit">deposit</A>(aa, bb) ||
+			op := 2
+		<B>ELSE</B> <B>IF</B> last(creq) = 3 <B>THEN</B>
+			creq := front(creq) ||
+			aa := ff(card(ff)-1) ||
+			bb := ff(card(ff)) ||
+			ff := ff /|\ (card(ff) - 2) ||
+			ok <-- <A HREF="Bank.mch.html#OPNAME!withdraw">withdraw</A>(aa, bb) ||
+			num := 0 ||
+			op := 3
+		<B>ELSE</B> <B>IF</B> last(creq) = 4 <B>THEN</B>
+			creq := front(creq) ||
+			aa := ff(card(ff)) ||
+			ff := tail(ff) ||
+			ok <-- <A HREF="Bank.mch.html#OPNAME!isaccount">isaccount</A>(aa) ||
+			num := 0 ||
+			op := 4
+		<B>ELSE</B> <B>IF</B> last(creq) = 5 <B>THEN</B>
+			creq := front(creq) ||
+			aa := ff(card(ff)) ||
+			ff := tail(ff) ||
+			num <-- <A HREF="Bank.mch.html#OPNAME!getbalance">getbalance</A>(aa) ||
+			ok := FALSE ||
+			op := 5
+		<B>END</B>
+		<B>END</B>
+		<B>END</B>
+		<B>END</B>
+		<B>END</B>
+	<B>END</B>
+	<B>END</B>
+<B>END</B>
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 00:05:44 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

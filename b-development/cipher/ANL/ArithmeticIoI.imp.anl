@@ -1,0 +1,202 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(basic_io(?):(?):((?),(?),(?)))
+,
+(String_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(Arithmetic_Ops(Arithmetic_Menu_OP , exp_op_OP , Quit_OP))
+;
+(Arithmetic_Ops(Arithmetic_Menu_OP , exp_op_OP , Quit_OP))
+;
+(string1)
+;
+(string1)
+;
+(string1 = "Arithmetic operation number? ")
+;
+(string1 = "Arithmetic operation number? ")
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(Arithmetic_Menu,Get_Arithmetic_Op)
+;
+(Arithmetic_Menu , Get_Arithmetic_Op)
+;
+(ArithmeticIoI(?):(?):(ArithmeticIo))
+;
+(
+(
+ (Arithmetic_Menu)
+;
+ (? , Val_Op , Det_Op , Arithmetic_Menu)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ PUT_STR(" 0 Arithmetic Menu ");
+ NWL(2);
+ PUT_STR(" 1 exp_op");
+ NWL(2);
+ PUT_STR(" 2 Quit");
+ NWL(1)
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (
+ (
+ (
+ (PUT_STR(" 0 Arithmetic Menu "))
+ )
+ ;
+ (
+ (NWL(2))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" 1 exp_op"))
+ )
+ )
+ ;
+ (
+ (NWL(2))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" 2 Quit"))
+ )
+ )
+ ;
+ (
+ (NWL(1))
+ )
+ )
+ )
+)
+,
+(
+ (Get_Arithmetic_Op)
+;
+ (? , Val_Op , NonDet_Op , (op <-- Get_Arithmetic_Op))
+;
+ (?)
+;
+ (op)
+;
+ (
+ (true)
+ |
+ (
+ (VAR opcode IN
+ opcode <-- GET_PROMPT_NBR(string1 , 2);
+ CASE opcode OF
+ EITHER 0 THEN
+ op := Arithmetic_Menu_OP
+ OR
+ 1
+ THEN
+ op := exp_op_OP
+ OR
+ 2
+ THEN
+ op := Quit_OP
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(opcode).
+ (
+ (
+ (opcode <-- GET_PROMPT_NBR(string1 , 2))
+ )
+ ;
+ (
+ (
+ (
+ (
+ (opcode : {0})
+ )
+ ==>
+ (
+ (op := Arithmetic_Menu_OP)
+ )
+ )
+ []
+ (
+ (
+ (opcode : {1})
+ )
+ ==>
+ (
+ (op := exp_op_OP)
+ )
+ )
+ )
+ []
+ (
+ (
+ (opcode : {2})
+ )
+ ==>
+ (
+ (op := Quit_OP)
+ )
+ )
+ )
+ )
+ )
+ )
+)
+)

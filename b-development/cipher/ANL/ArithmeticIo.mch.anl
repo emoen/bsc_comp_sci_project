@@ -1,0 +1,120 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(?)
+;
+(?)
+;
+(Arithmetic_Ops(Arithmetic_Menu_OP , exp_op_OP , Quit_OP))
+;
+(Arithmetic_Ops(Arithmetic_Menu_OP , exp_op_OP , Quit_OP))
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(Arithmetic_Menu,Get_Arithmetic_Op)
+;
+(Arithmetic_Menu , Get_Arithmetic_Op)
+;
+(ArithmeticIo(?):(?):(?))
+;
+(
+(
+ (Arithmetic_Menu)
+;
+ (? , Val_Op , Det_Op , Arithmetic_Menu)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ skip
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (skip)
+ )
+ )
+)
+,
+(
+ (Get_Arithmetic_Op)
+;
+ (? , Val_Op , NonDet_Op , (op <-- Get_Arithmetic_Op))
+;
+ (?)
+;
+ (op)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ op :: Arithmetic_Ops
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(opx).
+ (
+ (
+ (opx : Arithmetic_Ops)
+ )
+ ==>
+ (
+ (op := opx)
+ )
+ )
+ )
+ )
+)
+)

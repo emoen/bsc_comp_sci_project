@@ -1,0 +1,50 @@
+THEORY PropertiesX IS
+  ctx(Cipher) => encrypt : NAT --> NAT;
+  ctx(Cipher) => decrypt : NAT --> NAT;
+  ctx(Cipher) => !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm);
+  ctx(Cipher) => !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm);
+  ctx(Cipher) => ctx(Arithmetic);
+  ctx(Arithmetic) => exp : NAT*NAT +-> NAT;
+  ctx(Arithmetic) => !(aa , bb).(aa : NAT & bb : NAT1 => exp(aa , bb) = exp(aa , bb-1)*aa & exp(aa , 1) = aa & exp(bb , 0) = 1 & exp(0 , bb) = 0);
+  ctx(Arithmetic) => prime <: NAT
+END
+&
+THEORY EnumerateX END
+&
+THEORY NotEqualX END
+&
+THEORY RewriteToFalseOrTrueX END
+&
+THEORY FwdContra0X END
+&
+THEORY FwdEqual1X END
+&
+THEORY ExpandHypX IS
+  inv(Cipher) => inv(Arithmetic);
+  cst(Cipher) => ee*dd mod (nn-1) = 1;
+  cst(Cipher) => dd : NAT;
+  cst(Cipher) => ee : NAT;
+  cst(Cipher) => nn : NAT1;
+  pre(encrypt_op) => mm : 0..nn-1;
+  pre(decrypt_op) => mm : 0..nn-1
+END
+&
+THEORY Initialisation
+END
+&
+THEORY encrypt_op
+END
+&
+THEORY decrypt_op
+END
+&
+THEORY Context IS
+  cst(Cipher) => (ctx(Arithmetic) => #(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm)))
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints IS
+  ( #(dd , nn , ee).(dd : NAT & ee : NAT & nn : NAT1 & ee*dd mod (nn-1) = 1) )
+END

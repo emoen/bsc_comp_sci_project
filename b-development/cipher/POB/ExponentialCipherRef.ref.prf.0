@@ -1,0 +1,246 @@
+(
+ExponentialCipherRef.ref(1):Context.1:
+
+(1[1] | (cst(ExponentialCipherRef$1)) | HYP),
+(2[2] | (nn : NAT1) | 1,HypExp.9),
+(3[2] | (ee : NAT) | 1,HypExp.8),
+(4[2] | (dd : NAT) | 1,HypExp.7),
+(5[2] | (ee*dd mod (nn-1) = 1) | 1,HypExp.6),
+(6[2] | (nn : NAT) | 2,Law.1),
+(7[2] | (ctx(Arithmetic)) | HYP),
+(8[3] | (k : NAT1) | BToolUsersTheory.6),
+(9[3] | (k : NAT) | 8,BToolUsersTheory.8),
+(10[3] | (1 : NAT) | Law.2),
+(11[3] | (1 <= nn) | 2,Law.3),
+(12[3] | (nn-1 : NAT) | 6,10,11,Law.4),
+(13[3] | (k*(nn-1) : NAT) | 9,12,Law.5),
+(14[3] | (0 < 1) | ARI),
+(15[3] | (1 : NAT1) | 10,14,Law.6),
+(16[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | BToolUsersTheory.18),
+(17[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & true & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 16,Law.7),
+(18[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.true & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 17,Law.8),
+(19[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => true) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 18,Law.9),
+(20[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => mm = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 19,Law.10),
+(21[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => mm mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 2,20,BToolUsersTheory.17),
+(22[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => 1*mm mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 21,Law.11),
+(23[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => 1 mod nn*mm mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 2,15,22,BToolUsersTheory.14),
+(24[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => 1 mod nn*mm mod nn mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 2,23,BToolUsersTheory.16),
+(25[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(1 , k) mod nn*mm mod nn mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 8,24,BToolUsersTheory.15),
+(26[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(exp(mm , nn-1) mod nn , k) mod nn*mm mod nn mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 2,25,BToolUsersTheory.13),
+(27[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(exp(mm , nn-1) , k) mod nn*mm mod nn mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 12,9,2,26,BToolUsersTheory.12),
+(28[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(exp(mm , nn-1) , k)*mm mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 2,27,BToolUsersTheory.11),
+(29[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(mm , (nn-1)*k)*mm mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 12,9,28,BToolUsersTheory.10),
+(30[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(mm , k*(nn-1))*mm mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 9,12,29,BToolUsersTheory.9),
+(31[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(mm , k*(nn-1)+1) mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 13,30,BToolUsersTheory.7),
+(32[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(mm , dd*ee) mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 4,3,2,5,8,31,BToolUsersTheory.5),
+(33[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(exp(mm , dd) , ee) mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 4,3,32,BToolUsersTheory.4),
+(34[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => exp(exp(mm , dd) mod nn , ee) mod nn = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 3,2,33,BToolUsersTheory.3),
+(35[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(exp(mm , dd) mod nn) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 2,3,34,BToolUsersTheory.1),
+(36[3] | (#(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))) | 2,4,35,BToolUsersTheory.2),
+(37[1] | (QED) | DED)
+)
+;
+LAWS
+(
+HypExp.9:
+(
+  cst(ExponentialCipherRef$1)
+ =>
+  nn : NAT1
+);
+HypExp.8:
+(
+  cst(ExponentialCipherRef$1)
+ =>
+  ee : NAT
+);
+HypExp.7:
+(
+  cst(ExponentialCipherRef$1)
+ =>
+  dd : NAT
+);
+HypExp.6:
+(
+  cst(ExponentialCipherRef$1)
+ =>
+  ee*dd mod (nn-1) = 1
+);
+BToolUsersTheory.6:
+(
+  k : NAT1
+);
+BToolUsersTheory.8:
+(
+  k : NAT1
+ =>
+  k : NAT
+);
+BToolUsersTheory.18:
+(
+  #(encrypt , decrypt).(encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..nn-1 => decrypt(encrypt(mm)) = mm))
+);
+BToolUsersTheory.17:
+(
+  n : NAT1
+ =>
+  mm mod n == mm
+);
+BToolUsersTheory.14:
+(
+  n : NAT1 &
+  a : NAT1
+ =>
+  a mod n*b mod n == a*b mod n
+);
+BToolUsersTheory.16:
+(
+  n : NAT1
+ =>
+  a mod n mod n == a mod n
+);
+BToolUsersTheory.15:
+(
+  a : NAT1
+ =>
+  exp(1 , a) == 1
+);
+BToolUsersTheory.13:
+(
+  n : NAT1
+ =>
+  exp(a , n-1) mod n == 1
+);
+BToolUsersTheory.12:
+(
+  b : NAT &
+  c : NAT &
+  n : NAT1
+ =>
+  exp(exp(a , b) , c) mod n == exp(exp(a , b) mod n , c) mod n
+);
+BToolUsersTheory.11:
+(
+  n : NAT1
+ =>
+  a*b mod n == a mod n*b mod n mod n
+);
+BToolUsersTheory.10:
+(
+  b : NAT &
+  c : NAT
+ =>
+  exp(a , b*c) == exp(exp(a , b) , c)
+);
+BToolUsersTheory.9:
+(
+  a : NAT &
+  b : NAT
+ =>
+  a*b == b*a
+);
+BToolUsersTheory.7:
+(
+  b : NAT
+ =>
+  exp(a , b+1) == exp(a , b)*a
+);
+BToolUsersTheory.5:
+(
+  e : NAT &
+  d : NAT &
+  n : NAT1 &
+  d*e mod (n-1) = 1 &
+  k : NAT1
+ =>
+  e*d == k*(n-1)+1
+);
+BToolUsersTheory.4:
+(
+  b : NAT &
+  c : NAT
+ =>
+  exp(exp(a , b) , c) == exp(a , b*c)
+);
+BToolUsersTheory.3:
+(
+  b : NAT &
+  n : NAT1
+ =>
+  exp(a mod n , b) mod n == exp(a , b) mod n
+);
+BToolUsersTheory.1:
+(
+  n : NAT1 &
+  e : NAT
+ =>
+  encrypt(x) == exp(x , e) mod n
+);
+BToolUsersTheory.2:
+(
+  n : NAT1 &
+  dd : NAT
+ =>
+  decrypt(x) == exp(x , dd) mod n
+);
+Law.1(FwdInNat1X.19):
+(
+  n : NAT1
+ =>
+  n : NAT
+);
+Law.2(InNatX.25):
+(
+  n : 0..2147483647
+ =>
+  n : NAT
+);
+Law.3(LessThanOrEqualX.74):
+(
+  x : NAT1
+ =>
+  1 <= x
+);
+Law.4(InNatX.20):
+(
+  n : NAT &
+  p : NAT &
+  p <= n
+ =>
+  n-p : NAT
+);
+Law.5(InNatX.23):
+(
+  n : NAT &
+  p : NAT
+ =>
+  n*p : NAT
+);
+Law.6(InNatX.10):
+(
+  n : NAT &
+  0 < n
+ =>
+  n : NAT1
+);
+Law.7(RewriteNonHypLogic2X.3):
+(
+  (a & true) == a
+);
+Law.8(RewriteToFalseOrTrueX.14):
+(
+  !a.true == true
+);
+Law.9(RewriteToFalseOrTrueX.15):
+(
+  (a => true) == true
+);
+Law.10(RewritePredicate1X.9):
+(
+  a = a == true
+);
+Law.11(RewriteNat0X.6):
+(
+  1*n == n
+)
+)

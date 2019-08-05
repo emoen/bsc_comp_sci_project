@@ -1,0 +1,767 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts),
+ (MAXINT == 5000),
+ (ee_ser == 5),
+ (dd_ser == 17),
+ (nn == 7),
+ (ee_cli == 9),
+ (dd_cli == 11),
+ (RES == accountNumber , account := {} , {})
+ )
+ )
+ )
+;
+(
+(basic_io(?):(?):((?),(?),(?)))
+,
+(file_dump(?):(?):((?),(?),(?)))
+,
+(String_TYPE(?):(?):((?),(?),(?)))
+,
+(Scalar_TYPE(?):(?):((?),(?),(?)))
+,
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(maxAccounts , encrypt , decrypt)
+;
+(?)
+;
+(maxAccounts = 6 & encrypt : NAT --> NAT & decrypt : NAT --> NAT & !mm.(mm : 0..6 => encrypt(decrypt(mm)) = mm) & !mm.(mm : 0..6 => decrypt(encrypt(mm)) = mm))
+;
+(
+(Bank(?):(?):((?),(?),(?)))
+,
+(Bank_SocketServer(SCALAR \/ BOOL , 10 , 10):(card(SCALAR \/ BOOL) : NAT1 & 10 : NAT & 10 : NAT):((?),(?),(?)))
+,
+(Cipher(5 , 17 , 7):(85 mod 7-1 = 1 & 17 : NAT & 5 : NAT & 7 : NAT1):((?),(?),(?)))
+,
+(publicDecrypt_Nvar(5000):(5000 <= 2147483646 & 5000 : NAT):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(account , accountNumber , in , inptr , outptr , no_of_saves , outbufsize , publicDecrypt_Nvar)
+;
+(?)
+;
+(accountNumber <: 1..maxAccounts & account : accountNumber --> NAT & dom(account) = accountNumber & outbufsize : NAT1 & 10 <= outbufsize & in : NAT1 & 10 <= in & inptr : 0..in & outptr : 0..outbufsize & no_of_saves : NAT & publicDecrypt_Nvar : 0..5000)
+;
+(?)
+;
+(publicDecrypt_STO_NVAR(0))
+;
+(publicDecrypt_Nvar := 0;
+in , inptr , outptr , no_of_saves , outbufsize := 0 , 0 , 0 , 0 , 10;
+accountNumber , account := {} , {};
+publicDecrypt_STO_NVAR(0))
+;
+(startServer,listenForUser)
+;
+(startServer , listenForUser)
+;
+(ServeBankI(?):(?):(ServeBank))
+;
+(
+(
+ (startServer)
+;
+ (? , Val_Op , NonDet_Op , (ok <-- startServer))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR xx IN
+ PUT_STR("Server running.\n");
+ FLSH;
+ xx <-- Bank_INIT("banklock" , 3200 , "bankbuff");
+ ok <-- Bank_ACCEPT;
+ PUT_STR("connection Established.\n")
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(xx).
+ (
+ (
+ (
+ (
+ (
+ (PUT_STR("Server running.\n"))
+ )
+ ;
+ (
+ (FLSH)
+ )
+ )
+ ;
+ (
+ (xx <-- Bank_INIT("banklock" , 3200 , "bankbuff"))
+ )
+ )
+ ;
+ (
+ (ok <-- Bank_ACCEPT)
+ )
+ )
+ ;
+ (
+ (PUT_STR("connection Established.\n"))
+ )
+ )
+ )
+ )
+)
+,
+(
+ (listenForUser)
+;
+ (? , Mod_Op , NonDet_Op , listenForUser)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ VAR rep , pp , op IN
+ WHILE 1 = 1 DO
+ PUT_STR("\nWAITING HERE...\n");
+ rep , pp <-- Bank_READ;
+ op <-- Bank_GET_TOK(1);
+ PUT_STR("First tok is");
+ PUT_NAT(op);
+ PUT_STR("\n");
+ IF op = 1 THEN
+ PUT_STR("\nINSIDE create_account\n");
+ VAR ret_a , ret_b , crypt_ret IN
+ ret_a , ret_b <-- create_account;
+ PUT_STR("calling create acc.\n");
+ PUT_STR("account number is:");
+ PUT_NAT(ret_a);
+ PUT_STR("\n");
+ crypt_ret <-- encrypt_op(ret_a);
+ Bank_PUT_TOK(crypt_ret , 1);
+ Bank_PUT_TOK(ret_b , 1);
+ PUT_STR("Going to write tok\n");
+ rep <-- Bank_WRITE;
+ PUT_STR("have put str\n")
+ END
+ END;
+ IF op = 2 THEN
+ PUT_STR("\nINSIDE deposit\n");
+ VAR in_a , in_b , ret_a , ret_b IN
+ in_a <-- Bank_GET_TOK(1);
+ in_b <-- Bank_GET_TOK(1);
+ ret_a , ret_b <-- deposit(in_a , in_b);
+ PUT_STR("deposit to accNr: ");
+ PUT_NAT(in_a);
+ PUT_STR(" amount:");
+ PUT_NAT(in_b);
+ PUT_STR("\n");
+ Bank_PUT_TOK(ret_a , 1);
+ Bank_PUT_TOK(ret_b , 1);
+ rep <-- Bank_WRITE
+ END
+ END;
+ IF op = 3 THEN
+ PUT_STR("\nINSIDE withdraw\n");
+ VAR in_a , in_b , ret_a IN
+ in_a <-- Bank_GET_TOK(1);
+ in_b <-- Bank_GET_TOK(1);
+ ret_a <-- withdraw(in_a , in_b);
+ PUT_STR("withdraw from accNr: ");
+ PUT_NAT(in_a);
+ PUT_STR(" amount: ");
+ PUT_NAT(in_b);
+ PUT_STR("\n");
+ Bank_PUT_TOK(ret_a , 1);
+ rep <-- Bank_WRITE
+ END
+ END;
+ IF op = 4 THEN
+ PUT_STR("\nINSIDE isaccount\n");
+ VAR in_a , ret_a IN
+ in_a <-- Bank_GET_TOK(1);
+ ret_a <-- isaccount(in_a);
+ PUT_STR("isaccount with accNr: ");
+ PUT_NAT(in_a);
+ PUT_STR("\n");
+ Bank_PUT_TOK(ret_a , 1);
+ rep <-- Bank_WRITE
+ END
+ END;
+ IF op = 5 THEN
+ PUT_STR("\nINSIDE getbalance\n");
+ VAR in_a , ret_a IN
+ in_a <-- Bank_GET_TOK(1);
+ ret_a <-- getbalance(in_a);
+ PUT_STR("balance for accNr: ");
+ PUT_NAT(in_a);
+ PUT_STR("\n");
+ Bank_PUT_TOK(ret_a , 1);
+ rep <-- Bank_WRITE
+ END
+ END;
+ IF rep = FALSE THEN
+ PUT_STR("could not send value\n")
+ ELSE
+ PUT_STR("AND returning values\n")
+ END;
+ op := 0;
+ PUT_STR("value of OP");
+ PUT_NAT(op);
+ PUT_STR("\n")
+ INVARIANT
+ 1 = 1
+ VARIANT
+ 1
+ END
+ END
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(rep , pp , op).
+ (
+ WHILE
+ (1 = 1)
+ DO
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (PUT_STR("\nWAITING HERE...\n"))
+ )
+ ;
+ (
+ (rep , pp <-- Bank_READ)
+ )
+ )
+ ;
+ (
+ (op <-- Bank_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("First tok is"))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(op))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ ;
+ (
+ (
+ (
+ (op = 1)
+ )
+ ==>
+ (
+ (
+ (PUT_STR("\nINSIDE create_account\n"))
+ )
+ ;
+ (
+ @(ret_a , ret_b , crypt_ret).
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (ret_a , ret_b <-- create_account)
+ )
+ ;
+ (
+ (PUT_STR("calling create acc.\n"))
+ )
+ )
+ ;
+ (
+ (PUT_STR("account number is:"))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(ret_a))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ ;
+ (
+ (crypt_ret <-- encrypt_op(ret_a))
+ )
+ )
+ ;
+ (
+ (Bank_PUT_TOK(crypt_ret , 1))
+ )
+ )
+ ;
+ (
+ (Bank_PUT_TOK(ret_b , 1))
+ )
+ )
+ ;
+ (
+ (PUT_STR("Going to write tok\n"))
+ )
+ )
+ ;
+ (
+ (rep <-- Bank_WRITE)
+ )
+ )
+ ;
+ (
+ (PUT_STR("have put str\n"))
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(op = 1))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ ;
+ (
+ (
+ (
+ (op = 2)
+ )
+ ==>
+ (
+ (
+ (PUT_STR("\nINSIDE deposit\n"))
+ )
+ ;
+ (
+ @(in_a , in_b , ret_a , ret_b).
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (in_a <-- Bank_GET_TOK(1))
+ )
+ ;
+ (
+ (in_b <-- Bank_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (ret_a , ret_b <-- deposit(in_a , in_b))
+ )
+ )
+ ;
+ (
+ (PUT_STR("deposit to accNr: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(in_a))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" amount:"))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(in_b))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ ;
+ (
+ (Bank_PUT_TOK(ret_a , 1))
+ )
+ )
+ ;
+ (
+ (Bank_PUT_TOK(ret_b , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- Bank_WRITE)
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(op = 2))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ ;
+ (
+ (
+ (
+ (op = 3)
+ )
+ ==>
+ (
+ (
+ (PUT_STR("\nINSIDE withdraw\n"))
+ )
+ ;
+ (
+ @(in_a , in_b , ret_a).
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (in_a <-- Bank_GET_TOK(1))
+ )
+ ;
+ (
+ (in_b <-- Bank_GET_TOK(1))
+ )
+ )
+ ;
+ (
+ (ret_a <-- withdraw(in_a , in_b))
+ )
+ )
+ ;
+ (
+ (PUT_STR("withdraw from accNr: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(in_a))
+ )
+ )
+ ;
+ (
+ (PUT_STR(" amount: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(in_b))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ ;
+ (
+ (Bank_PUT_TOK(ret_a , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- Bank_WRITE)
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(op = 3))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ ;
+ (
+ (
+ (
+ (op = 4)
+ )
+ ==>
+ (
+ (
+ (PUT_STR("\nINSIDE isaccount\n"))
+ )
+ ;
+ (
+ @(in_a , ret_a).
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (in_a <-- Bank_GET_TOK(1))
+ )
+ ;
+ (
+ (ret_a <-- isaccount(in_a))
+ )
+ )
+ ;
+ (
+ (PUT_STR("isaccount with accNr: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(in_a))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ ;
+ (
+ (Bank_PUT_TOK(ret_a , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- Bank_WRITE)
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(op = 4))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ ;
+ (
+ (
+ (
+ (op = 5)
+ )
+ ==>
+ (
+ (
+ (PUT_STR("\nINSIDE getbalance\n"))
+ )
+ ;
+ (
+ @(in_a , ret_a).
+ (
+ (
+ (
+ (
+ (
+ (
+ (
+ (in_a <-- Bank_GET_TOK(1))
+ )
+ ;
+ (
+ (ret_a <-- getbalance(in_a))
+ )
+ )
+ ;
+ (
+ (PUT_STR("balance for accNr: "))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(in_a))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ ;
+ (
+ (Bank_PUT_TOK(ret_a , 1))
+ )
+ )
+ ;
+ (
+ (rep <-- Bank_WRITE)
+ )
+ )
+ )
+ )
+ )
+ []
+ (
+ (
+ (not(op = 5))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+ ;
+ (
+ (
+ (
+ (rep = FALSE)
+ )
+ ==>
+ (
+ (PUT_STR("could not send value\n"))
+ )
+ )
+ []
+ (
+ (
+ (not(rep = FALSE))
+ )
+ ==>
+ (
+ (PUT_STR("AND returning values\n"))
+ )
+ )
+ )
+ )
+ ;
+ (
+ (op := 0)
+ )
+ )
+ ;
+ (
+ (PUT_STR("value of OP"))
+ )
+ )
+ ;
+ (
+ (PUT_NAT(op))
+ )
+ )
+ ;
+ (
+ (PUT_STR("\n"))
+ )
+ )
+ INVARIANT
+ (1 = 1)
+ VARIANT
+ (1)
+ END
+ )
+ )
+ )
+)
+)

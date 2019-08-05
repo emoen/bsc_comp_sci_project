@@ -1,0 +1,112 @@
+THEORY PropertiesX IS
+  ctx(BankI$1) => maxAccounts = 6;
+  ctx(BankI$1) => ctx(Bool_TYPE);
+  ctx(Bool_TYPE) => BOOL = {FALSE , TRUE};
+  ctx(Bool_TYPE) => card(BOOL) = 2;
+  ctx(BankI$1) => ctx(accNr_Narr);
+  ctx(BankI$1) => ctx(count_Nvar)
+END
+&
+THEORY EnumerateX IS
+  binhyp(ctx(Bool_TYPE)) => BOOL == {FALSE , TRUE}
+END
+&
+THEORY NotEqualX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(FALSE = TRUE);
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => not(TRUE = FALSE)
+END
+&
+THEORY RewriteToFalseOrTrueX IS
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => FALSE = TRUE == false;
+  binhyp(BOOL = {FALSE , TRUE}) & binhyp(card(BOOL) = 2) => TRUE = FALSE == false
+END
+&
+THEORY FwdContra0X IS
+  TRUE = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & x = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = TRUE & y = x & y = FALSE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & x = TRUE & ctx(Bool_TYPE) => bfalse;
+  x = FALSE & y = x & y = TRUE & ctx(Bool_TYPE) => bfalse
+END
+&
+THEORY FwdEqual1X IS
+  FALSE = x => x = FALSE;
+  TRUE = x => x = TRUE;
+  not(FALSE = x) & ctx(Bool_TYPE) => x = TRUE;
+  not(x = FALSE) & ctx(Bool_TYPE) => x = TRUE;
+  not(TRUE = x) & ctx(Bool_TYPE) => x = FALSE;
+  not(x = TRUE) & ctx(Bool_TYPE) => x = FALSE
+END
+&
+THEORY ExpandHypX IS
+  inv(BankI$1) => inv(Bool_TYPE);
+  inv(Bank) => accountNumber <: 1..maxAccounts;
+  inv(Bank) => account : accountNumber --> NAT;
+  inv(Bank) => dom(account) = accountNumber;
+  pre(deposit) => acc : accountNumber;
+  pre(deposit) => amount : NAT1;
+  pre(withdraw) => acc : accountNumber;
+  pre(withdraw) => amount : NAT;
+  pre(isaccount) => acc : 1..maxAccounts;
+  pre(getbalance) => acc : accountNumber;
+  inv(BankI$1) => inv(Bank);
+  asn(BankI$1) => asn(Bank);
+  inv(BankI$1) => accNr_Narr$1 : 1..maxAccounts --> 0..5000;
+  inv(BankI$1) => count_Nvar$1 : 0..maxAccounts
+END
+&
+THEORY Initialisation IS
+  cst(BankI$1) & ctx(BankI$1) => (accNr_Narrx : 1..maxAccounts --> 0..5000 => 0 : 0..maxAccounts)
+END
+&
+THEORY create_account IS
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(create_account) => (maxAccounts < count_Nvar$1+1 => accountNumber = 1..maxAccounts);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(create_account) => (count_Nvar$1+1 <= maxAccounts => 0 : 0..5000);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(create_account) => (count_Nvar$1+1 <= maxAccounts => count_Nvar$1+1 : 1..maxAccounts);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(create_account) => (count_Nvar$1+1 <= maxAccounts => count_Nvar$1+1 : 0..maxAccounts);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(create_account) => (count_Nvar$1+1 <= maxAccounts => not(accountNumber = 1..maxAccounts));
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(create_account) => (count_Nvar$1+1 <= maxAccounts => count_Nvar$1+1 : (1..maxAccounts)-accountNumber)
+END
+&
+THEORY deposit IS
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(deposit) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount => acc : 1..maxAccounts);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(deposit) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount => accNr_Narr$1(acc)+amount : 0..5000);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(deposit) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount & account(acc) < 5000-amount => accNr_Narr$1(acc)+amount = account(acc)+amount);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(deposit) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount & 5000-amount <= account(acc) => false);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(deposit) => (not(acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount) & account(acc) < 5000-amount => false)
+END
+&
+THEORY withdraw IS
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(withdraw) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount => acc : 1..maxAccounts);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(withdraw) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount & 0 <= accNr_Narr$1(acc)-amount => accNr_Narr$1(acc)-amount : 0..5000);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(withdraw) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount & 0 <= accNr_Narr$1(acc)-amount => acc : 1..maxAccounts);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(withdraw) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount & accNr_Narr$1(acc)-amount < 0 & amount <= account(acc) => okZ = TRUE);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(withdraw) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount & 0 <= accNr_Narr$1(acc)-amount & account(acc) < amount => false);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(withdraw) => (acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount & accNr_Narr$1(acc)-amount < 0 & account(acc) < amount => okZ = FALSE);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(withdraw) => (not(acc <= count_Nvar$1 & acc <= maxAccounts & 0 < amount) & amount <= account(acc) => false)
+END
+&
+THEORY isaccount IS
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(isaccount) => (acc : accountNumber => acc <= count_Nvar$1);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(isaccount) => (acc <= count_Nvar$1 => acc : accountNumber)
+END
+&
+THEORY getbalance IS
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(getbalance) => (acc <= count_Nvar$1 => acc : 1..maxAccounts);
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(getbalance) => (acc <= count_Nvar$1 => accNr_Narr$1(acc) = account(acc));
+  cst(BankI$1) & ctx(BankI$1) & inv(BankI$1) & asn(BankI$1) & pre(getbalance) => (count_Nvar$1 < acc => account(acc) = 0)
+END
+&
+THEORY Context
+END
+&
+THEORY Assertions
+END
+&
+THEORY Constraints IS
+  cst(BankI$1) & ctx(BankI$1) => 0 < 5000;
+  cst(BankI$1) & ctx(BankI$1) => 5000 <= 2147483646;
+  cst(BankI$1) & ctx(BankI$1) => maxAccounts <= 2147483646;
+  cst(BankI$1) & ctx(BankI$1) => maxAccounts : NAT;
+  cst(BankI$1) & ctx(BankI$1) => 5000 : NAT
+END

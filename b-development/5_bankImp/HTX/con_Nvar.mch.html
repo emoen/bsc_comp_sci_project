@@ -1,0 +1,240 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of con_Nvar">
+  <TITLE>The con_Nvar machine</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFE0" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+
+<PRE><A NAME="MACHINE"><B>MACHINE</B></A>         con_Nvar(maxint)
+
+<A NAME="CONSTRAINTS"><B>CONSTRAINTS</B></A>     maxint &lt;= 2147483646
+
+<A NAME="SEES"><B>SEES</B></A>            <A HREF="Bool_TYPE.mch.html#MACHINE">Bool_TYPE</A>
+
+<A NAME="VARIABLES"><B>VARIABLES</B></A>       con_Nvar
+
+<A NAME="INVARIANT"><B>INVARIANT</B></A>       con_Nvar:0..maxint
+
+<A NAME="INITIALISATION"><B>INITIALISATION</B></A>  con_Nvar:=0
+
+<A NAME="OPERATIONS"><B>OPERATIONS</B></A>
+
+  vv <-- <A NAME="OPNAME!con_VAL_NVAR">con_VAL_NVAR</A> =
+  <B>BEGIN</B> 
+    vv:=con_Nvar
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_STO_NVAR">con_STO_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B> 
+    con_Nvar:=vv
+  <B>END</B>;
+
+  uu <-- <A NAME="OPNAME!con_MIN_NVAR">con_MIN_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    uu:=min({con_Nvar,vv})
+  <B>END</B>;
+
+  uu <-- <A NAME="OPNAME!con_MAX_NVAR">con_MAX_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    uu:=max({con_Nvar,vv})
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_PRE_INC_NVAR">con_PRE_INC_NVAR</A> =
+  <B>BEGIN</B>
+    bb:=<B>bool</B>(con_Nvar&lt;maxint)
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_INC_NVAR">con_INC_NVAR</A> =
+  <B>PRE</B>
+    con_Nvar+1:0..maxint
+  <B>THEN</B>
+    con_Nvar:=con_Nvar+1
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_PRE_DEC_NVAR">con_PRE_DEC_NVAR</A> =
+  <B>BEGIN</B>
+    bb:=<B>bool</B>(con_Nvar&gt;0)
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_DEC_NVAR">con_DEC_NVAR</A> =
+  <B>PRE</B>
+    con_Nvar:1..maxint
+  <B>THEN</B>
+    con_Nvar:=con_Nvar-1
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_PRE_ADD_NVAR">con_PRE_ADD_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar+vv &lt;= maxint)
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_ADD_NVAR">con_ADD_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    con_Nvar+vv &lt;= maxint
+  <B>THEN</B> 
+    con_Nvar:=con_Nvar+vv
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_PRE_MUL_NVAR">con_PRE_MUL_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar*vv &lt;= maxint)
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_MUL_NVAR">con_MUL_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    con_Nvar*vv &lt;= maxint
+  <B>THEN</B> 
+    con_Nvar:=con_Nvar*vv
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_PRE_SUB_NVAR">con_PRE_SUB_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar-vv &gt;= 0)
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_SUB_NVAR">con_SUB_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint &
+    con_Nvar-vv &gt;= 0
+  <B>THEN</B> 
+    con_Nvar:=con_Nvar-vv
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_PRE_DIV_NVAR">con_PRE_DIV_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(vv &gt; 0)
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_DIV_NVAR">con_DIV_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:1..maxint
+  <B>THEN</B> 
+    con_Nvar:=con_Nvar/vv
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_PRE_MOD_NVAR">con_PRE_MOD_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(vv &gt; 0)
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_MOD_NVAR">con_MOD_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:1..maxint
+  <B>THEN</B> 
+    con_Nvar:=con_Nvar-vv*(con_Nvar/vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_EQL_NVAR">con_EQL_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar=vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_NEQ_NVAR">con_NEQ_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar/=vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_GTR_NVAR">con_GTR_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar&gt;vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_GEQ_NVAR">con_GEQ_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar&gt;=vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_SMR_NVAR">con_SMR_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar&lt;vv)
+  <B>END</B>;
+
+  bb <-- <A NAME="OPNAME!con_LEQ_NVAR">con_LEQ_NVAR</A>(vv) =
+  <B>PRE</B>
+    vv:0..maxint
+  <B>THEN</B>
+    bb:=<B>bool</B>(con_Nvar&lt;=vv)
+  <B>END</B>;
+
+
+/**************  save/restore host byte order **************/
+
+  <A NAME="OPNAME!con_SAV_NVAR">con_SAV_NVAR</A> =
+  <B>BEGIN</B>
+     <B>skip</B>
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_RST_NVAR">con_RST_NVAR</A> =
+  <B>BEGIN</B>
+    con_Nvar :: 0..maxint
+  <B>END</B>;
+
+/**************  save/restore network byte order **************/
+
+  <A NAME="OPNAME!con_SAVN_NVAR">con_SAVN_NVAR</A> =
+  <B>BEGIN</B>
+     <B>skip</B>
+  <B>END</B>;
+
+  <A NAME="OPNAME!con_RSTN_NVAR">con_RSTN_NVAR</A> =
+  <B>BEGIN</B>
+    con_Nvar :: 0..maxint
+  <B>END</B>
+
+<B>END</B>
+
+
+
+</PRE>
+<P><HR WIDTH=80%>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:12:58 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,90 @@
+<HTML>
+<HEAD>
+  <META NAME="Author" CONTENT="B-Toolkit Release 5.1.4">
+  <META NAME="Description" CONTENT="Hypertext version of ATM_SocketClient.h Code Module">
+  <TITLE>ATM_SocketClient.h Code Module</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#CCCCCC" LINK="#2A9BFF" VLINK="#FF6565" ALINK="#FF0000">
+<PRE>
+<B>#include</B> &lt;sys/types.h&gt;
+<B>#include</B> &lt;sys/file.h&gt;
+<B>#include</B> &lt;sys/stat.h&gt;
+<B>#include</B> &lt;sys/signal.h&gt;
+<B>#include</B> &lt;sys/socket.h&gt;
+<B>#include</B> &lt;sys/resource.h&gt;
+<B>#include</B> &lt;sys/wait.h&gt;
+<B>#include</B> &lt;sys/time.h&gt;
+<B>#include</B> &lt;sys/utsname.h&gt;
+<B>#include</B> &lt;sys/ioctl.h&gt;
+<B>#include</B> &lt;netinet/in.h&gt;
+<B>#include</B> &lt;arpa/inet.h&gt;
+<B>#include</B> &lt;fcntl.h&gt;
+<B>#include</B> &lt;netdb.h&gt;
+<B>#include</B> &lt;syslog.h&gt;
+<B>#include</B> &lt;unistd.h&gt;
+<B>#include</B> &lt;stdio.h&gt;
+<B>#include</B> &lt;stdlib.h&gt;
+<B>#include</B> &lt;string.h&gt;
+<B>#include</B> &lt;signal.h&gt;
+<B>#include</B> &lt;errno.h&gt;
+
+<B>#ifndef</B> INADDR_NONE
+<B>#define</B> INADDR_NONE  0xffffffff
+<B>#endif</B> /* INADDR_NONE */
+
+<B>extern</B> <B>char</B> * ATM_SocketClientP1<B>[</B><B>]</B>;
+<B>extern</B> <B>int</B> ATM_SocketClientP2;
+<B>extern</B> <B>int</B> ATM_SocketClientP3;
+
+<B>extern</B> <B>char</B> * _out_buf;
+<B>extern</B> <B>int</B> _out_buf_size;
+<B>extern</B> <B>int</B> _out_buf_ptr;
+
+<B>extern</B> <B>char</B> * _in_buf;
+<B>extern</B> <B>int</B> _in_buf_size;
+<B>extern</B> <B>int</B> _in_buf_ptr;
+<B>extern</B> <B>int</B> _in_buf_len;
+
+
+<B>#define</B> <A NAME="OPNAME!INI_ATM_SocketClient"><A HREF="ATM_SocketClient.mch.html">INI_ATM_SocketClient</A></A>()   <B>{</B> _out_buf_ptr = 4; _in_buf_ptr = 4; <B>}</B>
+
+<B>void</B> <A NAME="OPNAME!ATM_INIT"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_INIT">ATM_INIT</A></A> ( <B>int</B> * _rep, <B>void</B> * _ipaddress, <B>int</B> _port );
+<B>void</B> <A NAME="OPNAME!ATM_CONNECT"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_CONNECT">ATM_CONNECT</A></A> ( <B>int</B> * _rep );
+<B>void</B> <A NAME="OPNAME!ATM_WRITE"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_WRITE">ATM_WRITE</A></A> ( <B>int</B> * _rep );
+<B>void</B> <A NAME="OPNAME!ATM_READ"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_READ">ATM_READ</A></A> ( <B>int</B> * _rep, <B>int</B> * _pp );
+<B>void</B> <A NAME="OPNAME!ATM_CLOSE"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_CLOSE">ATM_CLOSE</A></A> ( <B>int</B> * _rep );
+<B>void</B> <A NAME="OPNAME!ATM_GET_TOK"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_TOK">ATM_GET_TOK</A></A> ( <B>int</B> * _tok, <B>int</B> _toksize );
+<B>void</B> <A NAME="OPNAME!ATM_GET_STR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_STR">ATM_GET_STR</A></A> ( <B>int</B> * _ss );
+<B>void</B> <A NAME="OPNAME!ATM_GET_FIL"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_FIL">ATM_GET_FIL</A></A> ( <B>int</B> * _rep, <B>int</B> * _filesize, <B>int</B> * _filename );
+<B>void</B> <A NAME="OPNAME!ATM_PUT_TOK"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_TOK">ATM_PUT_TOK</A></A> ( <B>int</B> _tok, <B>int</B> _toksize );
+<B>void</B> <A NAME="OPNAME!ATM_PUT_STR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_PUT_STR">ATM_PUT_STR</A></A> ( <B>int</B> * _ss );
+<B>void</B> <A NAME="OPNAME!ATM_GET_IN_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_IN_PTR">ATM_GET_IN_PTR</A></A> ( <B>int</B> * _ptr );
+<B>void</B> <A NAME="OPNAME!ATM_SET_IN_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_SET_IN_PTR">ATM_SET_IN_PTR</A></A> ( <B>int</B> _ptr );
+<B>void</B> <A NAME="OPNAME!ATM_GET_OUT_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_OUT_PTR">ATM_GET_OUT_PTR</A></A> ( <B>int</B> * _ptr );
+<B>void</B> <A NAME="OPNAME!ATM_GET_OUT_SIZE"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_GET_OUT_SIZE">ATM_GET_OUT_SIZE</A></A> ( <B>int</B> * _sz );
+<B>void</B> <A NAME="OPNAME!ATM_SET_OUT_PTR"><A HREF="ATM_SocketClient.mch.html#OPNAME!ATM_SET_OUT_PTR">ATM_SET_OUT_PTR</A></A> ( <B>int</B> _ptr );
+</PRE>
+<P><HR>
+<P>
+<H3><FONT COLOR="#004EFF">Analysed Constructs</FONT></H3>
+
+<MENU>
+<DD><A HREF="ConstructsSummary.html">Hypertext Constructs Page</A></DD>
+</MENU>
+
+<H3><FONT COLOR="#004EFF">On-line Help</FONT></H3>
+
+<MENU>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Contents.html">Help Contents Page</A>
+<DD><A HREF="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/Index.html">Index</A></DD>
+</MENU>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+<FONT FACE="sans-serif, Arial, Helvetica"><FONT COLOR="#CF6500"><FONT SIZE=-2>Document Last Updated: Fri Feb 28 20:12:56 2003
+<BR>
+<IMG SRC="/home/moen/BT_5.1.4_Linux_stat_i586/BKIT/BHELP/B.gif" VSPACE=5><BR>B-Toolkit Release 5.1.4</FONT></FONT></FONT>
+<CENTER>
+<HR  WIDTH=33% SIZE=2 COLOR="#CF6500" NOSHADE>
+</CENTER>
+</BODY>
+</HTML>

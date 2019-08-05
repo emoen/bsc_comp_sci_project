@@ -1,0 +1,110 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Client.mch.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MACHINE
+%
+\bbnl
+{\bf MACHINE} \+ \bbnl
+{\em Client\/} \-\label{Client}\index{Client}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \+ \bbnl
+{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}  , {\em CommsDefs\/}\label{CommsDefs}\index{CommsDefs}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VARIABLES
+%
+\bbnl
+{\bf VARIABLES} \+ \bbnl
+{\em clientstate\/}\label{clientstate}\index{clientstate}  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INVARIANT
+%
+\bbnl
+{\bf INVARIANT} \+ \bbnl
+{\em clientstate\/} $\in$ {\em STATE\/}\label{STATE}\index{STATE}
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em clientstate\/} $:=$  {\em idle\/} \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION cinit
+%
+{\bf { cinit}}  \bhsp $\defs$ \+ \bnl
+{\em clientstate\/} $:=$  {\em idle\/} \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION client\_con\_request
+%
+{\em ok\/} $\longleftarrow$  {\bf { client\_con\_request}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em clientstate\/} $=$ {\em idle\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em clientstate\/} $:=$  {\em conpending\/} \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon \bbnl
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION client\_con\_report
+%
+{\em ok\/} $\longleftarrow$  {\bf { client\_con\_report}} ( {\em response\/} $\in$ {\em BOOL\/}\label{BOOL}\index{BOOL}  ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{IF} \+{\em clientstate\/} $=$ {\em conpending\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{IF} \+{\em response\/} $=$ {\em TRUE\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em clientstate\/} $:=$  {\em connected\/} \-\bnl
+\bOpnWord{ELSE} \+{\em clientstate\/} $:=$  {\em idle\/} \-\bnl
+\bOpnWord{END}  \bparallel \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION query\_cstate
+%
+{\em state\/} $\longleftarrow$  {\bf { query\_cstate}}  \bhsp $\defs$ \bhsp \+{\em state\/} $:=$  {\em clientstate\/} \-\- \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for Client
+%
+\bxrefhead{Cross-references for Client}
+\bxrefline{{\em BOOL}}{{\em Bool\_TYPE}}{{\sc sets}}{\bbpageref{BOOL}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em CommsDefs}}{}{{\sc machine}}{\bbpageref{CommsDefs}}
+\bxrefline{{\em STATE}}{{\em CommsDefs}}{{\sc sets}}{\bbpageref{STATE}}
+\vskip 3.5ex

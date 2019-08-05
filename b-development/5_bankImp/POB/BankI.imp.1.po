@@ -1,0 +1,27 @@
+THEORY Initialisation IS
+0
+END
+&
+THEORY create_account IS
+1;0;0;0;1;1
+END
+&
+THEORY deposit IS
+0;1;1;1;1
+END
+&
+THEORY withdraw IS
+0;0;0;1;1;1;1
+END
+&
+THEORY isaccount IS
+1;1
+END
+&
+THEORY getbalance IS
+0;1;1
+END
+&
+THEORY Constraints IS
+0;0;0;0;0
+END

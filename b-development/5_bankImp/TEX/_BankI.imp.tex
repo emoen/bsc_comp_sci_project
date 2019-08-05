@@ -1,0 +1,226 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  BankI.imp.tex
+%
+\bsetindent
+\begin{tabbing}
+\bSetTabs
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPLEMENTATION
+%
+\bbnl
+{\bf IMPLEMENTATION} \bhsp\+{\em BankI\/} \-\label{BankI}\index{BankI}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  REFINES
+%
+\bbnl
+{\bf REFINES} \bhsp{\em Bank\/}\label{Bank}\index{Bank}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SEES
+%
+\bbnl
+{\bf SEES} \bhsp{\em Bool\_TYPE\/}\label{Bool_TYPE}\index{Bool_TYPE}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPORTS
+%
+\bbnl
+{\bf IMPORTS} \+ \bbnl
+{\em accNr\_Narr\/}\label{accNr_Narr}\index{accNr_Narr}  ( {\em MAXINT\/}\label{MAXINT}\index{MAXINT}  , {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  )  , \bnl
+{\em count\_Nvar\/}\label{count_Nvar}\index{count_Nvar}  ( {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  )  \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  INITIALISATION
+%
+\bbnl
+{\bf INITIALISATION} \+ \bbnl
+{\em count\_STO\_NVAR\/}\label{count_STO_NVAR}\index{count_STO_NVAR}  ( {\em 0\/} )
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em count\_STO\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_STO_NVAR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATIONS
+%
+\bnl\bnl
+{\bf OPERATIONS} \+ \bbnl
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION create\_account
+%
+{\em accNr\/} , {\em rep\/} $\longleftarrow$  {\bf { create\_account}}  \bhsp $\defs$ \+ \bnl
+ \bOpnWord{VAR} \+{\em ii\/} , {\em ok\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em ii\/} $\longleftarrow$ {\em count\_VAL\_NVAR\/}\label{count_VAL_NVAR}\index{count_VAL_NVAR}  \bStatementSemiColon \bnl
+{\em ii\/} $:=$  {\em ii\/} $+$ {\em 1\/} \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em ii\/} $\leq$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em accNr\_STO\_NARR\/}\label{accNr_STO_NARR}\index{accNr_STO_NARR}  ( {\em ii\/} , {\em 0\/} )  \bStatementSemiColon \bnl
+{\em count\_STO\_NVAR\/}\label{count_STO_NVAR}\index{count_STO_NVAR}  ( {\em ii\/} )  \bStatementSemiColon \bnl
+{\em accNr\/} $:=$  {\em ii\/} \bStatementSemiColon \bnl
+{\em rep\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em accNr\/} $:=$  {\em 0\/} \bStatementSemiColon \bnl
+{\em rep\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accNr\_STO\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_STO_NARR}}
+\bxrefline{{\em count\_STO\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_STO_NVAR}}
+\bxrefline{{\em count\_VAL\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em Bank}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION deposit
+%
+{\em ok\/} , {\em newBalance\/} $\longleftarrow$  {\bf { deposit}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em ii\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em ii\/} $\longleftarrow$ {\em count\_VAL\_NVAR\/}\label{count_VAL_NVAR}\index{count_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em acc\/} $\leq$ {\em ii\/} $\wedge$
+{\em acc\/} $\leq$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$
+{\em amount\/} $>$ {\em 0\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{VAR} \+{\em curBal\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em curBal\/} $\longleftarrow$ {\em accNr\_VAL\_NARR\/}\label{accNr_VAL_NARR}\index{accNr_VAL_NARR}  ( {\em acc\/} )  \bStatementSemiColon \bnl
+{\em newBalance\/} $:=$  {\em curBal\/} $+$ {\em amount\/} \bStatementSemiColon \bnl
+{\em accNr\_STO\_NARR\/}\label{accNr_STO_NARR}\index{accNr_STO_NARR}  ( {\em acc\/} , {\em newBalance\/} )  \bStatementSemiColon \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em ok\/} $:=$  {\em FALSE\/} \bStatementSemiColon \bnl
+{\em newBalance\/} $:=$  {\em 0\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accNr\_STO\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_STO_NARR}}
+\bxrefline{{\em accNr\_VAL\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_VAL_NARR}}
+\bxrefline{{\em count\_VAL\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em Bank}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION withdraw
+%
+{\em ok\/} $\longleftarrow$  {\bf { withdraw}} ( {\em acc\/} , {\em amount\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em ii\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em ii\/} $\longleftarrow$ {\em count\_VAL\_NVAR\/}\label{count_VAL_NVAR}\index{count_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em acc\/} $\leq$ {\em ii\/} $\wedge$
+{\em acc\/} $\leq$ {\em maxAccounts\/}\label{maxAccounts}\index{maxAccounts}  $\wedge$
+{\em amount\/} $>$ {\em 0\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+\bOpnWord{VAR} \+{\em curBal\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em curBal\/} $\longleftarrow$ {\em accNr\_VAL\_NARR\/}\label{accNr_VAL_NARR}\index{accNr_VAL_NARR}  ( {\em acc\/} )  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em curBal\/} $-$ {\em amount\/} $\geq$ {\em 0\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em accNr\_STO\_NARR\/}\label{accNr_STO_NARR}\index{accNr_STO_NARR}  ( {\em acc\/} , {\em curBal\/} $-$ {\em amount\/} )  \bStatementSemiColon \bnl
+{\em ok\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em ok\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accNr\_STO\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_STO_NARR}}
+\bxrefline{{\em accNr\_VAL\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_VAL_NARR}}
+\bxrefline{{\em count\_VAL\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em Bank}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION isaccount
+%
+{\em rr\/} $\longleftarrow$  {\bf { isaccount}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em ii\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em ii\/} $\longleftarrow$ {\em count\_VAL\_NVAR\/}\label{count_VAL_NVAR}\index{count_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em acc\/} $\leq$ {\em ii\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em rr\/} $:=$  {\em TRUE\/} \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em rr\/} $:=$  {\em FALSE\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \- \bOperationSemiColon 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em count\_VAL\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_VAL_NVAR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  OPERATION getbalance
+%
+{\em bal\/} $\longleftarrow$  {\bf { getbalance}} ( {\em acc\/} ) \bhsp $\defs$ \+ \bnl
+ \bOpnWord{BEGIN} \+\bnl
+\bOpnWord{VAR} \+{\em ii\/} \- \bhsp \bOpnWord{IN} \+\bnl
+{\em ii\/} $\longleftarrow$ {\em count\_VAL\_NVAR\/}\label{count_VAL_NVAR}\index{count_VAL_NVAR}  \bStatementSemiColon \bnl
+\bOpnWord{IF} \+{\em acc\/} $\leq$ {\em ii\/} \- \bhsp \bOpnWord{THEN} \+\bnl
+{\em bal\/} $\longleftarrow$ {\em accNr\_VAL\_NARR\/}\label{accNr_VAL_NARR}\index{accNr_VAL_NARR}  ( {\em acc\/} )  \-\bnl
+\bOpnWord{ELSE} \+\bnl
+{\em bal\/} $:=$  {\em 0\/} \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-\bnl
+\bOpnWord{END}  \-
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Clause cross-references
+%
+\bxrefhead{Cross-references}
+\bxrefline{{\em accNr\_VAL\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_VAL_NARR}}
+\bxrefline{{\em count\_VAL\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_VAL_NVAR}}
+\vspace{-4.5ex}\bsetindent
+\begin{tabbing}
+\bSetTabs
+\+\> \-
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END
+%
+\bbnl
+{\bf END} 
+\end{tabbing}
+\bresetindent
+%
+%%%%%%%%%%%%%%%%%%%%%%%%% Construct cross-references for BankI
+%
+\bxrefhead{Cross-references for BankI}
+\bxrefline{{\em accNr\_Narr}}{{\em accNr\_Narr}}{{\sc variables}}{\bbpageref{accNr_Narr}}
+\bxrefline{{\em accNr\_STO\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_STO_NARR}}
+\bxrefline{{\em accNr\_VAL\_NARR}}{{\em accNr\_Narr}}{{\sc operations}}{\bbpageref{accNr_VAL_NARR}}
+\bxrefline{{\em Bank}}{}{{\sc machine}}{\bbpageref{Bank}}
+\bxrefline{{\em Bool\_TYPE}}{}{{\sc machine}}{\bbpageref{Bool_TYPE}}
+\bxrefline{{\em count\_Nvar}}{{\em count\_Nvar}}{{\sc variables}}{\bbpageref{count_Nvar}}
+\bxrefline{{\em count\_STO\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_STO_NVAR}}
+\bxrefline{{\em count\_VAL\_NVAR}}{{\em count\_Nvar}}{{\sc operations}}{\bbpageref{count_VAL_NVAR}}
+\bxrefline{{\em maxAccounts}}{{\em Bank}}{{\sc constants}}{\bbpageref{maxAccounts}}
+\bxrefline{{\em MAXINT}}{{\em Bank}}{{\sc definitions}}{\bbpageref{MAXINT}}
+\vskip 3.5ex

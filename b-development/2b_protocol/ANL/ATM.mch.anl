@@ -1,0 +1,273 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (ACCOUNTS == 1..10)
+ )
+ )
+ )
+;
+(
+(CommsDefs(?):(?):((?),(?),(?)))
+,
+(Bool_TYPE(?):(?):((?),(?),(?)))
+,
+(Globals(maxAccounts):(maxAccounts : NAT):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(
+(Protocol(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(atm_state)
+;
+(atm_state , p_state , report , clientstate , sstate , account , accountNumber , clientcontents , servercontents)
+;
+(atm_state : STATE)
+;
+(atm_state : STATE & p_state : STATE & report : BOOL & clientstate : STATE & sstate : STATE & accountNumber <: 1..10 & account : accountNumber >-> NAT & clientcontents : seq(MESSAGES) & size(clientcontents) <= buffsize & servercontents : seq(MESSAGES) & size(servercontents) <= buffsize)
+;
+(?)
+;
+(atm_state := idle)
+;
+(servercontents := <> || clientcontents := <> || accountNumber , account := {} , {} || sstate := idle || clientstate := idle || p_state , report := idle , FALSE || atm_state := idle)
+;
+(get_protocol_state,deposit,withdraw,create_acc,isaccount)
+;
+(get_protocol_state , deposit , withdraw , create_acc , isaccount)
+;
+(ATM(?):(?):(?))
+;
+(
+(
+ (get_protocol_state)
+;
+ (? , Val_Op , Det_Op , get_protocol_state)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (atm_state <-- query_pstate)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (atm_state <-- query_pstate)
+ )
+ )
+)
+,
+(
+ (deposit)
+;
+ (? , Mod_Op , Det_Op , (ans <-- deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (ans)
+;
+ (
+ (acc : NAT & amount : NAT1)
+ |
+ (
+ (IF atm_state = connected THEN
+ ans <-- pwithdraw(acc , amount)
+ END)
+ )
+ )
+;
+ (
+ (acc : NAT & amount : NAT1)
+ |
+ (
+ (
+ (
+ (atm_state = connected)
+ )
+ ==>
+ (
+ (ans <-- pwithdraw(acc , amount))
+ )
+ )
+ []
+ (
+ (
+ (not(atm_state = connected))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (withdraw)
+;
+ (? , Mod_Op , Det_Op , (ans <-- withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ans)
+;
+ (
+ (acc : NAT & amount : NAT1)
+ |
+ (
+ (IF atm_state = connected THEN
+ ans <-- pwithdraw(acc , amount)
+ END)
+ )
+ )
+;
+ (
+ (acc : NAT & amount : NAT1)
+ |
+ (
+ (
+ (
+ (atm_state = connected)
+ )
+ ==>
+ (
+ (ans <-- pwithdraw(acc , amount))
+ )
+ )
+ []
+ (
+ (
+ (not(atm_state = connected))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (create_acc)
+;
+ (? , Mod_Op , NonDet_Op , (aa <-- create_acc))
+;
+ (?)
+;
+ (aa)
+;
+ (
+ (true)
+ |
+ (
+ (IF atm_state = connected THEN
+ aa <-- pcreate_acc
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (atm_state = connected)
+ )
+ ==>
+ (
+ (aa <-- pcreate_acc)
+ )
+ )
+ []
+ (
+ (
+ (not(atm_state = connected))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (isaccount)
+;
+ (? , Val_Op , Det_Op , (rr <-- isaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (acc : NAT)
+ |
+ (
+ (IF atm_state = connected THEN
+ rr <-- pisaccount(acc)
+ END)
+ )
+ )
+;
+ (
+ (acc : NAT)
+ |
+ (
+ (
+ (
+ (atm_state = connected)
+ )
+ ==>
+ (
+ (rr <-- pisaccount(acc))
+ )
+ )
+ []
+ (
+ (
+ (not(atm_state = connected))
+ )
+ ==>
+ (
+ (skip)
+ )
+ )
+ )
+ )
+)
+)

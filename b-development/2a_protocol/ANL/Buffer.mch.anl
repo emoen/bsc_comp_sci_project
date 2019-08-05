@@ -1,0 +1,248 @@
+(
+ (?)
+ ;
+ (
+ (
+ (?)
+ )
+ |
+ (
+ (?)
+ )
+ )
+ )
+;
+(
+(Bool_TYPE(?):(?):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(contents)
+;
+(contents)
+;
+(contents : seq(ITEM) & size(contents) <= maxsize)
+;
+(contents : seq(ITEM) & size(contents) <= maxsize)
+;
+(?)
+;
+(contents := <>)
+;
+(contents := <>)
+;
+(binit,add,initial,remove)
+;
+(binit , add , initial , remove)
+;
+(Buffer(ITEM , maxsize):(card(ITEM) : NAT1 & maxsize : NAT):(?))
+;
+(
+(
+ (binit)
+;
+ (? , Mod_Op , Det_Op , binit)
+;
+ (?)
+;
+ (?)
+;
+ (
+ (true)
+ |
+ (
+ (BEGIN
+ contents := <>
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (contents := <>)
+ )
+ )
+)
+,
+(
+ (add)
+;
+ (? , Mod_Op , Det_Op , (ok <-- add(ee)))
+;
+ (ee)
+;
+ (ok)
+;
+ (
+ (ee : ITEM)
+ |
+ (
+ (IF size(contents) < maxsize THEN
+ contents := contents <- ee ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (ee : ITEM)
+ |
+ (
+ (
+ (
+ (size(contents) < maxsize)
+ )
+ ==>
+ (
+ (contents , ok := contents <- ee , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (maxsize <= size(contents))
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (initial)
+;
+ (? , Val_Op , NonDet_Op , (ok , oo <-- initial))
+;
+ (?)
+;
+ (ok , oo)
+;
+ (
+ (true)
+ |
+ (
+ (IF contents /= <> THEN
+ oo := first(contents) ||
+ ok := TRUE
+ ELSE
+ oo :: ITEM ||
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (not(contents = <>))
+ )
+ ==>
+ (
+ (oo , ok := first(contents) , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (contents = <>)
+ )
+ ==>
+ (
+ (
+ @(oox).
+ (
+ (
+ (oox : ITEM)
+ )
+ ==>
+ (
+ (oo := oox)
+ )
+ )
+ )
+ ||
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+ )
+)
+,
+(
+ (remove)
+;
+ (? , Mod_Op , Det_Op , (ok <-- remove))
+;
+ (?)
+;
+ (ok)
+;
+ (
+ (true)
+ |
+ (
+ (IF contents /= <> THEN
+ contents := tail(contents) ||
+ ok := TRUE
+ ELSE
+ ok := FALSE
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ (
+ (
+ (not(contents = <>))
+ )
+ ==>
+ (
+ (contents , ok := tail(contents) , TRUE)
+ )
+ )
+ []
+ (
+ (
+ (contents = <>)
+ )
+ ==>
+ (
+ (ok := FALSE)
+ )
+ )
+ )
+ )
+)
+)

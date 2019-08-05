@@ -1,0 +1,224 @@
+(
+ (?)
+ ;
+ (
+ (
+ (ACCOUNTS == 1..maxAccounts)
+ )
+ |
+ (
+ (ACCOUNTS == 1..maxAccounts)
+ )
+ )
+ )
+;
+(
+(Globals(maxAccounts):(maxAccounts : NAT):((?),(?),(?)))
+)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(?)
+;
+(account , accountNumber)
+;
+(account , accountNumber)
+;
+(accountNumber <: 1..maxAccounts & account : accountNumber >-> NAT)
+;
+(accountNumber <: 1..maxAccounts & account : accountNumber >-> NAT)
+;
+(?)
+;
+(accountNumber , account := {} , {})
+;
+(accountNumber , account := {} , {})
+;
+(create_acc,deposit,withdraw,isaccount)
+;
+(create_acc , deposit , withdraw , isaccount)
+;
+(Bank(maxAccounts):(maxAccounts : 1..200000):(?))
+;
+(
+(
+ (create_acc)
+;
+ (? , Mod_Op , NonDet_Op , (aa <-- create_acc))
+;
+ (?)
+;
+ (aa)
+;
+ (
+ (true)
+ |
+ (
+ (ANY acc WHERE
+ acc : (1..maxAccounts)-accountNumber
+ THEN
+ aa := acc ||
+ accountNumber := accountNumber \/ {acc} ||
+ account(acc) := 0
+ END)
+ )
+ )
+;
+ (
+ (true)
+ |
+ (
+ @(acc).
+ (
+ (
+ (acc : (1..maxAccounts)-accountNumber)
+ )
+ ==>
+ (
+ (aa , accountNumber , account := acc , accountNumber \/ {acc} , account <+ {acc |-> 0})
+ )
+ )
+ )
+ )
+)
+,
+(
+ (deposit)
+;
+ (? , Mod_Op , Det_Op , (ans <-- deposit(acc , amount)))
+;
+ (acc , amount)
+;
+ (ans)
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (BEGIN
+ account(acc) := account(acc)+amount ||
+ ans := account(acc)+amount
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (account , ans := account <+ {acc |-> account(acc)+amount} , account(acc)+amount)
+ )
+ )
+)
+,
+(
+ (withdraw)
+;
+ (? , Mod_Op , Det_Op , (ans <-- withdraw(acc , amount)))
+;
+ (acc , amount)
+;
+ (ans)
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (IF amount <= account(acc) THEN
+ account(acc) := account(acc)-amount ||
+ ans := yes
+ ELSE
+ ans := no
+ END)
+ )
+ )
+;
+ (
+ (acc : accountNumber & amount : NAT1)
+ |
+ (
+ (
+ (
+ (amount <= account(acc))
+ )
+ ==>
+ (
+ (account , ans := account <+ {acc |-> account(acc)-amount} , yes)
+ )
+ )
+ []
+ (
+ (
+ (account(acc) < amount)
+ )
+ ==>
+ (
+ (ans := no)
+ )
+ )
+ )
+ )
+)
+,
+(
+ (isaccount)
+;
+ (? , Val_Op , Det_Op , (rr <-- isaccount(acc)))
+;
+ (acc)
+;
+ (rr)
+;
+ (
+ (acc : NAT)
+ |
+ (
+ (IF acc : accountNumber THEN
+ rr := yes
+ ELSE
+ rr := no
+ END)
+ )
+ )
+;
+ (
+ (acc : NAT)
+ |
+ (
+ (
+ (
+ (acc : accountNumber)
+ )
+ ==>
+ (
+ (rr := yes)
+ )
+ )
+ []
+ (
+ (
+ (not(acc : accountNumber))
+ )
+ ==>
+ (
+ (rr := no)
+ )
+ )
+ )
+ )
+)
+)
